@@ -1,0 +1,79 @@
+﻿@model IEnumerable<ItWebSite.Core.DbModel.Order>
+
+
+<h2>@ViewBag.Title</h2>
+
+<div class="form-group">
+    @using (Html.BeginForm("Index", "Orders", FormMethod.Get))
+    {
+        <p>
+            订单类型: @Html.DropDownList("type", new List<SelectListItem>
+        {new SelectListItem{
+            Text = "全部订单",
+            Value ="2"
+        },new SelectListItem
+        {
+            Text = "未支付订单",
+            Value ="0"
+        },new SelectListItem
+        {
+            Text = "己支付订单",
+            Value ="1"
+        }})
+            <input type="submit" value="查询" />
+        </p>
+    }
+
+
+</div>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.OrderNumber)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CustomerPhone)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ReceiveAddress)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.TotalPrice)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.IsPay)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CreateDate)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                <a href="/Orders/Details/@item.Id">@item.OrderNumber</a>
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CustomerPhone)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ReceiveAddress)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TotalPrice)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsPay)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CreateDate)
+            </td>
+            <td>
+                @Html.ActionLink("删除", "Delete", new { id = item.Id })
+            </td>
+        </tr>
+    }
+
+</table>

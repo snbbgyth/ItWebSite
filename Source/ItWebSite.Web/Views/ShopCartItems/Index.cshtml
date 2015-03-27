@@ -1,0 +1,54 @@
+﻿@model IList<ItWebSite.Core.DbModel.ShopCartItem>
+
+@{
+    ViewBag.Title = "购物车";
+}
+
+<h2>购物车</h2>
+@using (Html.BeginForm())
+{
+    <table class="table">
+        <tr>
+            <th>
+               产品名称
+            </th>
+            <th>
+                用户名
+            </th>
+            <th>
+                数量
+            </th>
+            <th>
+                选择
+            </th>
+            <th></th>
+        </tr>
+    
+        @for (var i = 0; i < Model.Count(); i++)
+        {
+            <tr>
+                <td>
+                    <a href="/Products/Details/@Model[i].Product.Id">@Model[i].Product.Name</a>
+                    @Html.HiddenFor(x => x[i].Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(x => x[i].CustomerName)
+                </td>
+                <td>
+                    @Html.EditorFor(x => x[i].Count)
+                </td>
+                <td>
+                    @Html.CheckBoxFor(x => x[i].IsSubmit)
+                </td>
+                <td>
+                    @Html.ActionLink("删除", "Delete", new { id = Model[i].Id })
+                </td>
+            </tr>
+        }
+    </table>
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value="确认购买" class="btn btn-default" />
+        </div>
+    </div>
+}

@@ -1,0 +1,12 @@
+﻿@model ItWebSite.Core.DbModel.Order
+
+@{
+    ViewBag.Title = "没有未生成订单";
+}
+
+<h2>没有未生成订单，请到购物车购买产品</h2>
+
+
+<div>
+    @Html.ActionLink("返回购物车", "Index","ShopCartItems")
+</div>

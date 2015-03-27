@@ -1,0 +1,44 @@
+﻿@using System.Web.Mvc.Html
+@model ItWebSite.Core.DbModel.News
+
+@{
+    ViewBag.Title = "祥细";
+}
+<h2>新闻</h2>
+<body>
+    <div id="layout-wrapper">
+        <div id="content">
+            <div>
+                <h1>@Html.DisplayFor(model => model.Title)</h1>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="pull-left">
+                            最后修改者：<a href="#">@Html.DisplayFor(model => model.LastModifier)</a>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="pull-right">
+                            最后修改日期：@Html.DisplayFor(model => model.LastModifyDate)
+                        </div>
+                    </div>
+                </div>
+                <div class="CompanyIntroBody">
+                    @Html.Raw(Model.Content)
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="pull-left">
+                            @Html.ActionLink("编辑", "Edit", new { id = Model.Id })
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="pull-right">
+                            @Html.ActionLink("删除", "Delete", new { id = Model.Id })
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>

@@ -1,0 +1,58 @@
+﻿@using ItWebSite.Web.Areas.Admin.Models
+@using NHibernate.Util
+@using ItWebSite.Web.Areas.Admin.Models
+@model  ItWebSite.Web.Areas.Admin.Models.ApplicationUser
+@{
+    ViewBag.Title = "编辑";
+}
+
+<hgroup class="title">
+    <h1>@ViewBag.Title.</h1>
+</hgroup>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary()
+    @Html.HiddenFor(model => model.Id)
+    <div class="form-horizontal">
+        <legend>编辑用户</legend>
+        <div class="form-group">
+            <label class="col-md-2">用户名</label>
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.UserName)
+            </div>
+        </div>
+        <legend>修改权限</legend>
+
+        <div class="form-group">
+            <label class="col-md-2">附加权限</label>
+            <div class="col-md-10">
+                @Html.DropDownList("RoleId", "No Roles")
+            </div>
+        </div>
+
+        <table class="table table-striped">
+            @foreach (var item in ViewBag.UserRoleList as List<UserRoleViewModel>)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.RoleName)
+                    </td>
+                    <td>
+                        @Html.ActionLink("删除", "DeleteRole", new { roleName = item.RoleName, userId = item.UserId })
+                    </td>
+                </tr>
+            }
+        </table>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="保存" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

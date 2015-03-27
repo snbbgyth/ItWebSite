@@ -1,0 +1,37 @@
+﻿@using ItWebSite.Web.DAL.Manage
+@model IEnumerable<ItWebSite.Core.DbModel.Product>
+
+@{
+    ViewBag.Title = "所有产品";
+}
+<h2>@ViewBag.Title</h2>
+<div class="product-grid">
+    @foreach (var item in Model)
+    {
+        string picturePath = "#";
+        var picture = ProductManage.GetFirstPictureById(item.Id);
+        if (picture != null)
+        {
+            picturePath = @ImageManage.GetThumbnailUrlByPictureId(picture.Id, 125);
+        }
+        <div class="item-box">
+            <div data-productid="16" class="product-item">
+                <div class="picture">
+                    <a href="/Products/Details/@item.Id" title="@item.Name">
+                        <img alt="21" src=@picturePath title=@item.Name>
+                    </a>
+                </div>
+                <div class="details">
+                    <h6>
+                        @Html.ActionLink(@item.Name, "Details", new { id = item.Id })
+                    </h6>
+                    <div>
+                        <div>
+                            <span>¥ @item.Price</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>

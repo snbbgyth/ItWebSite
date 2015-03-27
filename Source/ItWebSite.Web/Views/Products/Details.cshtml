@@ -1,0 +1,106 @@
+﻿@using ItWebSite.Web.DAL.Manage
+@model  ItWebSite.Web.Models.ProductContentViewModel
+@{
+    ViewBag.Title = @Model.Product.Name;
+}
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#AddToShopCart").on("click", function () {
+            var id = $("#ProductId").val();
+            var count = $("#ProductCount").val();
+            var isLogin = '@User.Identity.IsAuthenticated.ToString()';
+            if (isLogin == 'False') {
+                $("#SuccesDiv").html("<b>添加失败! 请先登陆。</b>");
+            }
+            else if (count == 0) {
+                $("#SuccesDiv").html("<b>添加失败! 请选择数商品数量。</b>");
+            } else {
+                $.ajax({
+                    type: "POST",
+                    data: { productId: id, count: count },
+                    url: '@Url.Action("AddShopCart", "ShopCartItems")',
+                    success: function (data) {
+                        $("#SuccesDiv").html("<b>添加成功!</b>");
+
+                    },
+                    error: function (data) {
+                        var htmlString = String.Format("<b>添加失败! {0}</b>", data.Message);
+                        $("#SuccesDiv").html(htmlString);
+                    }
+                });
+            }
+        });
+    });
+</script>
+<div>
+    <div class="breadcrumb">
+        <ul>
+            <li>
+                <span>
+                    <a href="~/" itemprop="url">
+                        <span itemprop="title">首页</span>
+                    </a>
+                    <span>/</span>
+                    <a href="/Products/ShowIndex/@Model.Product.ProductTypeId" itemprop="url">
+                        <span itemprop="title">@Model.Product.ProductType.Name</span>
+                    </a>
+                    <span>/</span>
+                    <a href="#" itemprop="url"><strong>@Model.Product.Name</strong></a>
+                </span>
+            </li>
+        </ul>
+    </div>
+    @Html.HiddenFor(model => model.Product.Id, new { id = "ProductId" })
+    <div>
+        <div>
+            <form action="#" id="product-details-form" method="post" novalidate="novalidate">
+                <div itemscope="" itemtype="http://schema.org/Product" data-productid="2">
+                    <div>
+                        <div>
+                            @foreach (var item in Model.ProductPictureList)
+                            {
+                                <div>
+                                    <img alt=@Model.Product.Name src=@ImageManage.GetThumbnailUrlByPictureId(item.PictureId, 125, Model.PictureList) title=@Model.Product.Name itemprop="image" id="main-product-img-2">
+                                </div>
+                            }
+                        </div>
+                        <div>
+                            <div>
+                                <h1 itemprop="name">
+                                    @Model.Product.Name
+                                </h1>
+                            </div>
+                            <div>
+                                @Model.Product.Name
+                            </div>
+                            <div itemprop="offers" itemscope="" itemtype="http://schema.org/Offer">
+                                <div>
+                                    <span itemprop="price">
+                                        价格: ¥ @Model.Product.Price
+                                    </span>
+                                </div>
+                                <meta itemprop="priceCurrency" content="CNY">
+                            </div>
+                            <div>
+                                @Html.LabelFor(model => model.ShopCartItem.Count, htmlAttributes: new { @class = "control-label col-md-2" })
+                                <div class="col-md-10">
+                                    @Html.EditorFor(model => model.ShopCartItem.Count, string.Empty, "ProductCount", new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.ShopCartItem.Count, "", new { @class = "text-danger" })
+                                </div>
+                                <input type="button" id="AddToShopCart" value="加入购物车" data-productid="2">
+                            </div>
+                            <div id="SuccesDiv" style="color:red"></div>
+                        </div>
+                        <h4>祥细信息</h4>
+                        <div itemprop="description">
+                            <p>@Html.Raw(Model.Product.Discrption)</p>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<p>
+    @Html.ActionLink("返回列表", "Index")
+</p>

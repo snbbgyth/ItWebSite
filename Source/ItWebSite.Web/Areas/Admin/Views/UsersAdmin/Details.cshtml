@@ -1,0 +1,42 @@
+﻿@model  ItWebSite.Web.Areas.Admin.Models.ApplicationUser
+
+<div>
+    <h4>用户</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.UserName)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.UserName)
+        </dd>
+    </dl>
+ 
+    <h4>所属权限</h4>
+    <table class="table table-striped">
+        @foreach (var item in ViewBag.RoleNameList)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item)
+                </td>
+            </tr>
+        }
+    </table>
+    <h4>登陆列表</h4>
+    <table class="table table-striped">
+        @foreach (var item in Model.Logins)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.LoginProvider)
+                </td>
+            </tr>
+        }
+    </table>
+    <p>
+        @Html.ActionLink("编辑", "Edit", new { id = Model.Id }) |
+        @Html.ActionLink("返回列表", "Index")
+    </p>
+</div>
+

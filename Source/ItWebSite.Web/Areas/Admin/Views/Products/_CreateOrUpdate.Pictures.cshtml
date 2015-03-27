@@ -1,0 +1,90 @@
+﻿@using ItWebSite.Web.DAL.Manage
+@using ItWebSite.Web.Help
+@model ItWebSite.Web.Areas.Admin.Models.ProductViewModel
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("#DeletePicture").on("click", function() {
+            var id = $("#item_Id").val();
+            $.ajax({
+                type: "POST",
+                data: { id: id },
+                url: '@Url.Action("DeletePicture", "Products")',
+                success: function(data) {
+                    $("#SuccesDiv").html("<b>删除成功!</b>");
+                    $("#PictureRow" + id).remove();
+                }
+            });
+        });
+    });
+
+    function EditPicturefun(itemId) {
+        var id =itemId;
+        var displayOrder = $("#item_DisplayOrder" + itemId).val();
+        $.ajax({
+            type: "POST",
+            data: { id: id, displayOrder: displayOrder },
+            url: '@Url.Action("EditPicture", "Products")',
+            success: function(data) {
+                $("#SuccesDiv"+itemId).html("<b>修改成功!</b>");
+            }
+        });
+    }
+    function DeletePicturefun(itemId) {
+        $.ajax({
+            type: "POST",
+            data: { id: itemId },
+            url: '@Url.Action("DeletePicture", "Products")',
+            success: function (data) {
+                $("#SuccesDiv" + itemId).html("<b>删除成功!</b>");
+                $("#PictureRow" + itemId).remove();
+            }
+        });
+    }
+</script>
+<table role="grid">
+    <colgroup>
+        <col style="width:200px">
+        <col style="width:200px">
+        <col style="width:150px">
+        <col style="width:200px">
+    </colgroup>
+    <thead  role="rowgroup">
+        <tr role="row">
+            <th></th>
+            <th role="columnheader" data-field="PictureUrl" data-title="图片" >图片</th>
+            <th role="columnheader" data-field="DisplayOrder" data-title="显示顺序" >显示顺序</th>
+            <th ></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody role="rowgroup">
+        @foreach (var item in Model.ProductPictureList)
+        {
+            string pictureRowId = "PictureRow" + @item.Id;
+            string succesDivId = "SuccesDiv" + @item.Id;
+            <tr role="row" id=@pictureRowId>
+                <td role="gridcell" />
+                <td role="gridcell">
+                    <a href=@ImageManage.GetThumbnailUrlByPictureId(item.PictureId, 100, Model.PictureList) target="_blank">
+                        <img alt="21" src=@ImageManage.GetThumbnailUrlByPictureId(item.PictureId, 100, Model.PictureList) width="150">
+                    </a>
+                    <a></a>
+                </td>
+                @Html.HiddenFor(model => item.Id, new { id = "item_Id"+@item.Id })
+                <td role="gridcell">
+                    @Html.EditorFor(model => item.DisplayOrder, null, "item_DisplayOrder"+@item.Id)
+                </td>
+                <td role="gridcell">
+                    <input id="EditPicture" type="button" value="编辑" onclick="javascript:EditPicturefun(@item.Id);" class="btn btn-default" />
+                    <input id="DeletePicture" type="button" value="删除" onclick="javascript:DeletePicturefun(@item.Id);" class="btn btn-default" />
+                </td>
+                <td><div id=@succesDivId style="color:red"></div></td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+ 
+ 

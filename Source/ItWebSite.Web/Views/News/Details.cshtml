@@ -1,0 +1,31 @@
+﻿@model ItWebSite.Core.DbModel.News
+
+@{
+    ViewBag.Title = "新闻";
+}
+
+<body>
+    <div id="layout-wrapper">
+        <div id="content">
+            <div>
+                <h1>@Html.DisplayFor(model => model.Title)</h1>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="pull-left">
+                            最后修改者：<a href="#">@Html.DisplayFor(model => model.LastModifier)</a>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="pull-right">
+                            最后修改日期：@Html.DisplayFor(model => model.LastModifyDate)
+                        </div>
+                    </div>
+                </div>
+                <div class="CompanyIntroBody">
+                    @Html.Raw(Model.Content)
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+

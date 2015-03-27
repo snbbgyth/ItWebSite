@@ -1,0 +1,92 @@
+﻿@model ItWebSite.Web.Models.OrderViewModel
+@{
+    ViewBag.Title = "订单生成";
+}
+<h2>订单生成</h2>
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    <div class="form-horizontal">
+        <div class="form-group">
+            @Html.LabelFor(model => model.Order.CustomerName, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DisplayFor(model => model.Order.CustomerName, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.HiddenFor(model => model.Order.CustomerName)
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.Order.CustomerPhone, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Order.CustomerPhone, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Order.CustomerPhone, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.Order.ReceiveAddress, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Order.ReceiveAddress, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Order.ReceiveAddress, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <table class="table">
+            <tr>
+                <th>
+                    产品名称
+                </th>
+                <th>
+                    价格
+                </th>
+                <th>
+                    数量
+                </th>
+                <th>
+                    总金额
+                </th>
+                <th></th>
+            </tr>
+            @for (var i = 0; i < Model.OrderItemViewList.Count(); i++)
+            {
+                <tr>
+                    <td>
+                        <a href="/Orders/Details/@Model.OrderItemViewList[i].OrderItem.Product.Id">@Model.OrderItemViewList[i].OrderItem.Product.Name</a>
+                        @Html.HiddenFor(model => model.OrderItemViewList[i].OrderItem.ProductId)
+                        @Html.HiddenFor(model => model.OrderItemViewList[i].ShopCartItem.Id)
+                        @Html.HiddenFor(model => model.OrderItemViewList[i].OrderItem.Product.Id)
+                        @Html.HiddenFor(model => model.OrderItemViewList[i].OrderItem.Product.Name)
+                    </td>
+                    <td>
+                        ¥@Html.DisplayFor(x => x.OrderItemViewList[i].OrderItem.Price)
+                        @Html.HiddenFor(model => model.OrderItemViewList[i].OrderItem.Price)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(x => x.OrderItemViewList[i].OrderItem.Count)
+                        @Html.HiddenFor(model => model.OrderItemViewList[i].OrderItem.Count)
+                    </td>
+                    <td>
+                        ¥@Html.DisplayFor(x => x.OrderItemViewList[i].OrderItem.Total)
+                        @Html.HiddenFor(model => model.OrderItemViewList[i].OrderItem.Total)
+                    </td>
+                    <td>
+                        @Html.ActionLink("删除", "DeleteShopCartItem",  new { id = @Model.OrderItemViewList[i].ShopCartItem.Id })
+                    </td>
+                </tr>
+            }
+        </table>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Order.TotalPrice, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                ¥@Html.DisplayFor(model => model.Order.TotalPrice, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.HiddenFor(model => model.Order.TotalPrice)
+        
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="生成订单" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+

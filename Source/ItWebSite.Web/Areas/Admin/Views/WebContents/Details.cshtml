@@ -1,0 +1,41 @@
+﻿@model ItWebSite.Core.DbModel.WebContent
+
+@{
+    ViewBag.Title = "祥细";
+}
+
+<h2>网页内容</h2>
+
+<div>
+
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.WebContentType.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.WebContentType.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Content)
+        </dt>
+
+        <dd>
+            @Html.Raw(Model.Content)
+        </dd>
+        
+        <dt>
+            @Html.DisplayNameFor(model => model.DisplayOrder)
+        </dt>
+
+        <dd>
+            @Html.Raw(Model.DisplayOrder)
+        </dd>
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("编辑", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("返回列表", "Index")
+</p>

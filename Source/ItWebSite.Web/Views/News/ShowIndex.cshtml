@@ -1,0 +1,42 @@
+﻿@using ItWebSite.Web.Help
+
+@model PagedList.IPagedList<ItWebSite.Core.DbModel.News>
+@using PagedList.Mvc;
+ 
+<h2>@ViewBag.Title</h2>
+@using (Html.BeginForm("ShowIndex", "News", new { id = @ViewBag.NewsTypeId, }, FormMethod.Get))
+{
+    <p>
+        输入查找内容: @Html.TextBox("SearchString", ViewBag.CurrentFilter as string)
+        <input type="submit" value="Search" />
+    </p>
+}
+
+@foreach (var item in Model)
+{
+    <div>
+        <h2>
+            <a href="/News/Details/@item.Id">@item.Title</a>
+        </h2>
+        <div class="col-md-6">
+            <div class="pull-left">
+                来源：<a href="#">@item.Creater</a>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="pull-right">
+                最后修改时间 @item.LastModifyDate
+            </div>
+        </div>
+
+        <p>@Html.Raw(item.Content.StripTagsRegex().ToSummary(100))</p>
+
+    </div>
+}
+
+<br />
+页数 @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) 总数 @Model.PageCount
+
+@Html.PagedListPager(Model, page => Url.Action("ShowIndex",
+    new {id=@ViewBag.NewsTypeId, page, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter }))
+

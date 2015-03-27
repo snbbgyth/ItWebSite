@@ -1,0 +1,17 @@
+﻿@{
+    ViewBag.Title = "留言";
+}
+
+<h2>留言</h2>
+<div class="form-horizontal">
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <h2 class="Message">@ViewBag.Message</h2>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+         @Html.ActionLink("继续留言","Create","Comments")
+        </div>
+    </div>
+</div>

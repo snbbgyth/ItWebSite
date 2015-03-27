@@ -1,0 +1,11 @@
+﻿<script type="text/javascript">
+if(typeof $==='undefined'){alert('JQuery must be loaded before TinyMCE!');}
+</script>
+
+<script src="@Url.Content("~/Scripts/tinymce/jquery.tinymce.min.js")" type="text/javascript"></script>
+
+<script type="text/javascript">
+(function(){$(function(){$('#@ViewData.TemplateInfo.GetFullHtmlFieldId(string.Empty)').tinymce({script_url:'@Url.Content("~/Scripts/tinymce/tinymce.js")',theme:"modern",height:500,width:790,plugins:["advlist autolink lists link image charmap print preview anchor","searchreplace visualblocks code fullscreen","insertdatetime media table contextmenu paste"],toolbar:"insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image"});});})();
+</script>
+
+@Html.TextArea(string.Empty,ViewData.TemplateInfo.FormattedModelValue)

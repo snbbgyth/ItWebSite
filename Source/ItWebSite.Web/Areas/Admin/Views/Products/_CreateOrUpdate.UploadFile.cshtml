@@ -1,0 +1,52 @@
+﻿@using ItWebSite.Web.DAL.Manage
+@model ItWebSite.Web.Areas.Admin.Models.ProductViewModel
+@Html.ValidationSummary(false)
+@*<script type="text/javascript">
+        $(document).ready(function () {
+            $("#uploadFile").on("click", function () {
+                var inputdata = new FormData();
+                var files = $("#UploadFile_File").get(0).files;
+
+                if (files.length > 0) {
+                    inputdata.append("fileName", files[0]);
+                    var showImage = "  <a href=" + $("#UploadFile_File").val() + " target=\"_blank\"><img alt=\"21\" src=" + $("#UploadFile_File").val() + " width=\"150\"></a>";
+
+                    $.ajax({
+                        type: "POST",
+                        data: inputdata,
+                        url: '@Url.Action("UploadFile", "Products")',
+                        contentType: false,
+                        processData: false,
+                        success: function (data) {
+                            var pictureId = data.PitureId;
+                            $("#divFileUploadMessage").html("<b>上传成功!</b>");
+                            $("#divShowUploadImage").html(showImage);
+                            document.getElementById('hidPictureId').value = data.PitureId;
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+    <div id="divShowUploadImage">
+    </div>*@
+
+    @*<span>上传文件</span>*@
+    @Html.LabelFor(x => x.UploadFile.File, htmlAttributes: new { @class = "control-label col-md-2" })
+<div class="col-md-10">
+    @Html.TextBoxFor(x => x.UploadFile.File, new { type = "file", htmlAttributes = new { @class = "form-control" } })
+
+</div>
+<div class="col-md-offset-2 col-md-10">
+    <input type="submit" value="上传文件" class="btn btn-default" />
+</div>
+@*<input id="uploadFile" type="button" value="上传文件" class="btn btn-default" />*@
+
+@*<div id="divFileUploadMessage"></div>
+    @Html.HiddenFor(model => model.AddPictureModel.PictureId)*@
+
+
+
+
+
+
