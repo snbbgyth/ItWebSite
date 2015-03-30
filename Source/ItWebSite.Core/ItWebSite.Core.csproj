@@ -86,6 +86,8 @@
   <ItemGroup>
     <Compile Include="BLL\CoreModule.cs" />
     <Compile Include="DAL\BaseQueueDal.cs" />
+    <Compile Include="DAL\BlogContentDal.cs" />
+    <Compile Include="DAL\BlogContentTypeDal.cs" />
     <Compile Include="DAL\CommentDal.cs" />
     <Compile Include="DAL\DataOperationActivityBase.cs" />
     <Compile Include="DAL\FluentNHibernateDal.cs" />
@@ -106,6 +108,8 @@
     <Compile Include="DbModel\BlogContentType.cs" />
     <Compile Include="DbModel\Comment.cs" />
     <Compile Include="DbModel\Mappings\AliPayPaymentSettingsMapping.cs" />
+    <Compile Include="DbModel\Mappings\BlogContentMapping.cs" />
+    <Compile Include="DbModel\Mappings\BlogContentTypeMapping.cs" />
     <Compile Include="DbModel\Mappings\CommentMapping.cs" />
     <Compile Include="DbModel\Mappings\NewsMapping.cs" />
     <Compile Include="DbModel\Mappings\NewsTypeMapping.cs" />
@@ -134,6 +138,8 @@
     <Compile Include="Help\Constants.cs" />
     <Compile Include="Help\Enums.cs" />
     <Compile Include="Help\UtilHelper.cs" />
+    <Compile Include="IDAL\IBlogContentDal.cs" />
+    <Compile Include="IDAL\IBlogContentTypeDal.cs" />
     <Compile Include="IDAL\ICommentDal.cs" />
     <Compile Include="IDAL\IDataOperationActivity.cs" />
     <Compile Include="IDAL\IFluentNHibernate.cs" />

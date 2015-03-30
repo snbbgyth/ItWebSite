@@ -2,16 +2,36 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using Abot.Crawler;
 using Abot.Poco;
+using Autofac;
 using HtmlAgilityPack;
+using ItWebSite.Core.BLL;
+using ItWebSite.Core.DbModel;
+using ItWebSite.Core.IDAL;
+
 
 namespace ItWebSite.Crawler
 {
     public class Handler
     {
+        private static IContainer _container;
+
+        private static IBlogContentDal _blogContentDal;
+        private static IBlogContentTypeDal _blogContentTypeDal;
+
+        private static string _blogContentTypeName = "技术博客";
+
+          static Handler()
+          {
+              _container = BuildContainer();
+              _blogContentDal = _container.Resolve<IBlogContentDal>();
+              _blogContentTypeDal = _container.Resolve<IBlogContentTypeDal>();
+          }
+
         private static string testUri = "http://www.cnblogs.com/";
 
         public static void Crawler(string url)
@@ -45,6 +65,17 @@ namespace ItWebSite.Crawler
             //Not enough data being logged? Change the app.config file's log4net log level from "INFO" TO "DEBUG"
 
             PrintDisclaimer();
+        }
+
+      
+
+        private static IContainer BuildContainer()
+        {
+            var builder = new ContainerBuilder();
+           
+            // FunnelWeb Database
+            builder.RegisterModule(new CoreModule());
+            return builder.Build();
         }
 
         private static IWebCrawler GetDefaultWebCrawler()
@@ -162,10 +193,7 @@ namespace ItWebSite.Crawler
 
         static void SaveContent(CrawledPage crawledPage)
         {
-
             GetContent(crawledPage.Content.Text);
-
-
         }
 
         private static void SaveFile(string title, string body)
@@ -182,8 +210,30 @@ namespace ItWebSite.Crawler
             catch (Exception ex)
             {
             }
+        }
+
+        private static void SaveBlogContent(string title, string body)
+        {
 
         }
+
+        private static int GetBlogContentTypeId(string typeName)
+        {
+           var entityList= _blogContentTypeDal.QueryByFun(t => t.Name == typeName);
+            if (entityList.Any())
+            {
+                return entityList.First().Id;
+            }
+            return _blogContentTypeDal.Insert(new BlogContentType
+            {
+                Creater = "snbbdx@sina.com",
+                LastModifier = "snbbdx@sina.com",
+                CreateDate = DateTime.Now,
+                LastModifyDate = DateTime.Now,
+                Name = typeName
+            });
+        }
+
 
         private static bool GetContent(string htmlString)
         {
@@ -196,6 +246,7 @@ namespace ItWebSite.Crawler
             if (title == null || body == null)
                 return false;
             SaveFile(title.InnerText, body.InnerHtml);
+          
             return true;
         }
 

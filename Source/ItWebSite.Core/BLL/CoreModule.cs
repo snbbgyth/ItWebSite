@@ -25,6 +25,8 @@ namespace ItWebSite.Core.BLL
             builder.RegisterType<ProductPictureDal>().As<IProductPictureDal>();
             builder.RegisterType<WebContentDal>().As<IWebContentDal>();
             builder.RegisterType<WebContentTypeDal>().As<IWebContentTypeDal>();
+            builder.RegisterType<BlogContentDal>().As<IBlogContentDal>();
+            builder.RegisterType<BlogContentTypeDal>().As<IBlogContentTypeDal>();
         }
     }
 }
