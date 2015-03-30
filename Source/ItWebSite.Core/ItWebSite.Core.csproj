@@ -102,6 +102,8 @@
     <Compile Include="DAL\WebContentDal.cs" />
     <Compile Include="DAL\WebContentTypeDal.cs" />
     <Compile Include="DbModel\AliPayPaymentSettings.cs" />
+    <Compile Include="DbModel\BlogContent.cs" />
+    <Compile Include="DbModel\BlogContentType.cs" />
     <Compile Include="DbModel\Comment.cs" />
     <Compile Include="DbModel\Mappings\AliPayPaymentSettingsMapping.cs" />
     <Compile Include="DbModel\Mappings\CommentMapping.cs" />
