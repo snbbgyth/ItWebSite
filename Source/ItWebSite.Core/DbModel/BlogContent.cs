@@ -25,6 +25,12 @@ namespace ItWebSite.Core.DbModel
         [DisplayName("显示顺序")]
         public virtual int DisplayOrder { get; set; }
 
+        [DisplayName("标题")]
+        public virtual string  Title { get; set; }
+
+         [DisplayName("来源")]
+        public virtual string BlogFrom { get; set; }
+
 
         [AllowHtml]
         [DisplayName("正文")]

@@ -32,6 +32,19 @@ namespace ItWebSite.Crawler
               _blogContentTypeDal = _container.Resolve<IBlogContentTypeDal>();
           }
 
+        public static  T Resolve<T>()
+        {
+            try
+            {
+                return _container.Resolve<T>();
+            }
+            catch (Exception ex)
+            {
+                return default (T);
+            }
+         
+        }
+
         private static string testUri = "http://www.cnblogs.com/";
 
         public static void Crawler(string url)
@@ -214,7 +227,20 @@ namespace ItWebSite.Crawler
 
         private static void SaveBlogContent(string title, string body)
         {
-
+            var blogContentTypeId = GetBlogContentTypeId(_blogContentTypeName);
+            var entity = new BlogContent
+            {
+                WebContentTypeId = blogContentTypeId,
+                Content = body,
+                Creater = "snbbdx@sina.com",
+                LastModifier = "snbbdx@sina.com",
+                CreateDate = DateTime.Now,
+                LastModifyDate = DateTime.Now,
+                DisplayOrder = 1,
+                Title = title,
+                BlogFrom = "博客园"
+            };
+         
         }
 
         private static int GetBlogContentTypeId(string typeName)
