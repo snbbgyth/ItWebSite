@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -12,6 +13,7 @@ using HtmlAgilityPack;
 using ItWebSite.Core.BLL;
 using ItWebSite.Core.DbModel;
 using ItWebSite.Core.IDAL;
+using ItWebSite.Core.QueueDAL;
 
 
 namespace ItWebSite.Crawler
@@ -23,16 +25,19 @@ namespace ItWebSite.Crawler
         private static IBlogContentDal _blogContentDal;
         private static IBlogContentTypeDal _blogContentTypeDal;
 
-        private static string _blogContentTypeName = "技术博客";
+        private static string _blogContentTypeName = ConfigurationManager.AppSettings["BlogTypeNmae"];
 
-          static Handler()
-          {
-              _container = BuildContainer();
-              _blogContentDal = _container.Resolve<IBlogContentDal>();
-              _blogContentTypeDal = _container.Resolve<IBlogContentTypeDal>();
-          }
+        private static bool _isSaveLocalFile;
 
-        public static  T Resolve<T>()
+        static Handler()
+        {
+            _container = BuildContainer();
+            _blogContentDal = _container.Resolve<IBlogContentDal>();
+            _blogContentTypeDal = _container.Resolve<IBlogContentTypeDal>();
+            _isSaveLocalFile = Convert.ToBoolean(ConfigurationManager.AppSettings["IsSaveLocalFile"]);
+        }
+
+        public static T Resolve<T>()
         {
             try
             {
@@ -40,52 +45,55 @@ namespace ItWebSite.Crawler
             }
             catch (Exception ex)
             {
-                return default (T);
+                return default(T);
             }
-         
+
         }
 
-        private static string testUri = "http://www.cnblogs.com/";
 
         public static void Crawler(string url)
         {
-            log4net.Config.XmlConfigurator.Configure();
-            PrintDisclaimer();
 
+            try
+            {
 
-            Uri uriToCrawl = GetSiteToCrawl(url);
+                log4net.Config.XmlConfigurator.Configure();
+                PrintDisclaimer();
+                Uri uriToCrawl = GetSiteToCrawl(url);
+                IWebCrawler crawler;
+                //Uncomment only one of the following to see that instance in action
+                crawler = GetDefaultWebCrawler();
+                //crawler = GetManuallyConfiguredWebCrawler();
+                //crawler = GetCustomBehaviorUsingLambdaWebCrawler();
 
-            IWebCrawler crawler;
+                //Subscribe to any of these asynchronous events, there are also sychronous versions of each.
+                //This is where you process data about specific events of the crawl
+                crawler.PageCrawlStartingAsync += crawler_ProcessPageCrawlStarting;
+                crawler.PageCrawlCompletedAsync += crawler_ProcessPageCrawlCompleted;
+                crawler.PageCrawlDisallowedAsync += crawler_PageCrawlDisallowed;
+                crawler.PageLinksCrawlDisallowedAsync += crawler_PageLinksCrawlDisallowed;
 
-            //Uncomment only one of the following to see that instance in action
-            crawler = GetDefaultWebCrawler();
-            //crawler = GetManuallyConfiguredWebCrawler();
-            //crawler = GetCustomBehaviorUsingLambdaWebCrawler();
+                //Start the crawl
+                //This is a synchronous call
+                CrawlResult result = crawler.Crawl(uriToCrawl);
 
-            //Subscribe to any of these asynchronous events, there are also sychronous versions of each.
-            //This is where you process data about specific events of the crawl
-            crawler.PageCrawlStartingAsync += crawler_ProcessPageCrawlStarting;
-            crawler.PageCrawlCompletedAsync += crawler_ProcessPageCrawlCompleted;
-            crawler.PageCrawlDisallowedAsync += crawler_PageCrawlDisallowed;
-            crawler.PageLinksCrawlDisallowedAsync += crawler_PageLinksCrawlDisallowed;
+                //Now go view the log.txt file that is in the same directory as this executable. It has
+                //all the statements that you were trying to read in the console window :).
+                //Not enough data being logged? Change the app.config file's log4net log level from "INFO" TO "DEBUG"
 
-            //Start the crawl
-            //This is a synchronous call
-            CrawlResult result = crawler.Crawl(uriToCrawl);
+                PrintDisclaimer();
 
-            //Now go view the log.txt file that is in the same directory as this executable. It has
-            //all the statements that you were trying to read in the console window :).
-            //Not enough data being logged? Change the app.config file's log4net log level from "INFO" TO "DEBUG"
-
-            PrintDisclaimer();
+            }
+            catch (Exception ex)
+            {
+                LogInfoQueue.Instance.Insert(typeof(Handler), MethodBase.GetCurrentMethod().Name, ex);
+            }
         }
-
-      
 
         private static IContainer BuildContainer()
         {
             var builder = new ContainerBuilder();
-           
+
             // FunnelWeb Database
             builder.RegisterModule(new CoreModule());
             return builder.Build();
@@ -94,31 +102,6 @@ namespace ItWebSite.Crawler
         private static IWebCrawler GetDefaultWebCrawler()
         {
             return new PoliteWebCrawler();
-        }
-
-        private static IWebCrawler GetManuallyConfiguredWebCrawler()
-        {
-            //Create a config object manually
-            CrawlConfiguration config = new CrawlConfiguration();
-            config.CrawlTimeoutSeconds = 0;
-            config.DownloadableContentTypes = "text/html, text/plain";
-            config.IsExternalPageCrawlingEnabled = false;
-            config.IsExternalPageLinksCrawlingEnabled = false;
-            config.IsRespectRobotsDotTextEnabled = false;
-            config.IsUriRecrawlingEnabled = false;
-            config.MaxConcurrentThreads = 10;
-            config.MaxPagesToCrawl = 10;
-            config.MaxPagesToCrawlPerDomain = 0;
-            config.MinCrawlDelayPerDomainMilliSeconds = 1000;
-
-            //Add you own values without modifying Abot's source code.
-            //These are accessible in CrawlContext.CrawlConfuration.ConfigurationException object throughout the crawl
-            config.ConfigurationExtensions.Add("Somekey1", "SomeValue1");
-            config.ConfigurationExtensions.Add("Somekey2", "SomeValue2");
-
-            //Initialize the crawler with custom configuration created above.
-            //This override the app.config file values
-            return new PoliteWebCrawler(config, null, null, null, null, null, null, null, null);
         }
 
         private static IWebCrawler GetCustomBehaviorUsingLambdaWebCrawler()
@@ -191,7 +174,6 @@ namespace ItWebSite.Crawler
         {
             //Process data
             SaveContent(e.CrawledPage);
-
         }
 
         static void crawler_PageLinksCrawlDisallowed(object sender, PageLinksCrawlDisallowedArgs e)
@@ -204,9 +186,26 @@ namespace ItWebSite.Crawler
             //Process data
         }
 
-        static void SaveContent(CrawledPage crawledPage)
+        static bool SaveContent(CrawledPage crawledPage)
         {
-            GetContent(crawledPage.Content.Text);
+            try
+            {
+                var document = new HtmlDocument();
+                document.LoadHtml(crawledPage.Content.Text);
+                var title = document.GetElementbyId("cb_post_title_url");
+                var body = document.GetElementbyId("cnblogs_post_body");
+                if (title == null || body == null || string.IsNullOrEmpty(crawledPage.Uri.ToString()))
+                    return false;
+                if (_isSaveLocalFile)
+                    SaveFile(title.InnerText, body.InnerHtml);
+                SaveBlogContent(title.InnerText, body.InnerHtml, crawledPage.Uri.ToString());
+                return true;
+            }
+            catch (Exception ex)
+            {
+                LogInfoQueue.Instance.Insert(typeof(Handler), MethodBase.GetCurrentMethod().Name, ex);
+                return false;
+            }
         }
 
         private static void SaveFile(string title, string body)
@@ -222,15 +221,16 @@ namespace ItWebSite.Crawler
             }
             catch (Exception ex)
             {
+                LogInfoQueue.Instance.Insert(typeof(Handler), MethodBase.GetCurrentMethod().Name, ex);
             }
         }
 
-        private static void SaveBlogContent(string title, string body)
+        private static void SaveBlogContent(string title, string body, string sourceUrl)
         {
             var blogContentTypeId = GetBlogContentTypeId(_blogContentTypeName);
             var entity = new BlogContent
             {
-                WebContentTypeId = blogContentTypeId,
+                BlogContentTypeId = blogContentTypeId,
                 Content = body,
                 Creater = "snbbdx@sina.com",
                 LastModifier = "snbbdx@sina.com",
@@ -238,14 +238,31 @@ namespace ItWebSite.Crawler
                 LastModifyDate = DateTime.Now,
                 DisplayOrder = 1,
                 Title = title,
-                BlogFrom = "博客园"
+                BlogFrom = "博客园",
+                BlogFromUrl = sourceUrl
             };
-         
+            HandlerQueue.Instance.Add(entity);
         }
+
+        private static int? blogContentTypeId = null;
+
+        private static object _syncTypeId = new object();
 
         private static int GetBlogContentTypeId(string typeName)
         {
-           var entityList= _blogContentTypeDal.QueryByFun(t => t.Name == typeName);
+            lock (_syncTypeId)
+            {
+                if (blogContentTypeId == null)
+                {
+                    blogContentTypeId = GetBlogContentTypeIdFromDb(typeName);
+                }
+                return (int)blogContentTypeId;
+            }
+        }
+
+        private static int GetBlogContentTypeIdFromDb(string typeName)
+        {
+            var entityList = _blogContentTypeDal.QueryByFun(t => t.Name == typeName);
             if (entityList.Any())
             {
                 return entityList.First().Id;
@@ -260,10 +277,9 @@ namespace ItWebSite.Crawler
             });
         }
 
-
         private static bool GetContent(string htmlString)
         {
-            HtmlDocument document = new HtmlDocument();
+            var document = new HtmlDocument();
 
             document.LoadHtml(htmlString);
             var title = document.GetElementbyId("cb_post_title_url");
@@ -272,7 +288,7 @@ namespace ItWebSite.Crawler
             if (title == null || body == null)
                 return false;
             SaveFile(title.InnerText, body.InnerHtml);
-          
+
             return true;
         }
 

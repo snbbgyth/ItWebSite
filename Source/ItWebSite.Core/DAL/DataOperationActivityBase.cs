@@ -209,6 +209,8 @@ namespace ItWebSite.Core.DAL
             return entity;
         }
 
+    
+
         public virtual int DeleteAll()
         {
             int result = 0;

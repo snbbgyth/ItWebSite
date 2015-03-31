@@ -18,6 +18,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ItWebSite.Web", "ItWebSite.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ItWebSite.Crawler", "ItWebSite.Crawler\ItWebSite.Crawler.csproj", "{728F8881-8F5A-46A2-884B-0A9FD2D6A5E2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ItWebSite.CrawlerService", "ItWebSite.CrawlerService\ItWebSite.CrawlerService.csproj", "{FF037536-64A4-47CA-A880-8F25547A78A7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -40,6 +42,10 @@ Global
 		{728F8881-8F5A-46A2-884B-0A9FD2D6A5E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{728F8881-8F5A-46A2-884B-0A9FD2D6A5E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{728F8881-8F5A-46A2-884B-0A9FD2D6A5E2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FF037536-64A4-47CA-A880-8F25547A78A7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FF037536-64A4-47CA-A880-8F25547A78A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FF037536-64A4-47CA-A880-8F25547A78A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FF037536-64A4-47CA-A880-8F25547A78A7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,0 +1,57 @@
+﻿@using System.Web.Mvc.Html
+@using ItWebSite.Web.Help
+@model PagedList.IPagedList<ItWebSite.Core.DbModel.News>
+@using PagedList.Mvc;
+@{
+    ViewBag.Title = "博客列表";
+}
+
+<h2>博客列表</h2>
+
+<p>
+    @Html.ActionLink("新建", "Create")
+</p>
+@using (Html.BeginForm("Index", "BlogContents", FormMethod.Get))
+{
+    <p>
+        输入查找内容: @Html.TextBox("SearchString", ViewBag.CurrentFilter as string)
+        <input type="submit" value="Search" />
+    </p>
+}
+@foreach (var item in Model)
+{
+    <div>
+        <h2>
+            @Html.ActionLink(@item.Title, "Details", new { id = item.Id })
+        </h2>
+        <div class="col-md-6">
+            <div class="pull-left">
+                来源：<a href="#">@item.Creater</a>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="pull-right">
+                最后修改时间 @item.LastModifyDate
+            </div>
+        </div>
+
+        <p>@Html.Raw(item.Content.StripTagsRegex().ToSummary(100))</p>
+        <div class="col-md-6">
+            <div class="pull-left">
+                @Html.ActionLink("编辑", "Edit", new { id = item.Id })
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="pull-right">
+                @Html.ActionLink("删除", "Delete", new { id = item.Id })
+            </div>
+        </div>
+
+    </div>
+}
+
+<br />
+页数 @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) 总数 @Model.PageCount
+
+@Html.PagedListPager(Model, page => Url.Action("Index",
+    new { page, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter }))

@@ -18,9 +18,12 @@ namespace ItWebSite.Core.DbModel.Mappings
             Map(x => x.LastModifier);
             Map(x => x.LastModifyDate);
 
-            Map(x => x.Content).Length(5000);
-            Map(x => x.WebContentTypeId);
+            Map(x => x.Content).Length(50000);
+            Map(x => x.BlogContentTypeId);
             Map(x => x.DisplayOrder);
+            Map(x => x.Title).Length(100);
+            Map(x => x.BlogFrom).Length(200);
+            Map(x => x.BlogFromUrl).Length(200).Index("UrlIndex");
         }
     }
 }

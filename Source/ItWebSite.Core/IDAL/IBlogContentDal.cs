@@ -9,5 +9,6 @@ namespace ItWebSite.Core.IDAL
 {
     public interface IBlogContentDal : IDataOperationActivity<BlogContent>
     {
+        int DeleteByBlogFromUrl(string url);
     }
 }

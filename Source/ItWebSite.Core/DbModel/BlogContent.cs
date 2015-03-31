@@ -17,7 +17,7 @@ namespace ItWebSite.Core.DbModel
             BlogContentTypeList = new List<BlogContentType>();
         }
 
-        public virtual int WebContentTypeId { get; set; }
+        public virtual int BlogContentTypeId { get; set; }
 
         /// <summary>
         /// Each content type just display max display order
@@ -30,6 +30,9 @@ namespace ItWebSite.Core.DbModel
 
          [DisplayName("来源")]
         public virtual string BlogFrom { get; set; }
+
+         [DisplayName("来源URL")]
+         public virtual string BlogFromUrl { get; set; }
 
 
         [AllowHtml]

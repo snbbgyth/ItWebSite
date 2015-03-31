@@ -1,10 +1,10 @@
-﻿@using System.Web.Mvc.Html
-@model ItWebSite.Core.DbModel.News
+﻿@model ItWebSite.Core.DbModel.BlogContent
 
 @{
-    ViewBag.Title = "祥细";
+    ViewBag.Title = @Model.Title;
 }
-<h2>新闻</h2>
+
+ 
 <body>
     <div id="layout-wrapper">
         <div id="content">
@@ -26,7 +26,18 @@
                 <div class="CompanyIntroBody">
                     @Html.Raw(Model.Content)
                 </div>
-    
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="pull-left">
+                            来源：<a href="#">@Html.DisplayFor(model => model.BlogFrom)</a>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="pull-right">
+                            源Url：@Html.DisplayFor(model => model.BlogFromUrl)
+                        </div>
+                    </div>
+                </div>
                 <div class="row">
                     <div class="col-md-6">
                         <div class="pull-left">
@@ -43,3 +54,5 @@
         </div>
     </div>
 </body>
+
+ 

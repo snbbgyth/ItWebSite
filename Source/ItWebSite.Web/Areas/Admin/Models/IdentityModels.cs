@@ -38,7 +38,9 @@ namespace ItWebSite.Web.Areas.Admin.Models
             return new ApplicationDbContext();
         }
 
-        public System.Data.Entity.DbSet<Order> Orders { get; set; }
+        public System.Data.Entity.DbSet<ItWebSite.Core.DbModel.BlogContentType> BlogContentTypes { get; set; }
+
+        public System.Data.Entity.DbSet<ItWebSite.Core.DbModel.BlogContent> BlogContents { get; set; }
 
     }
 }
