@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
@@ -53,7 +54,17 @@ namespace ItWebSite.Core.IDAL
 
         IEnumerable<T> QueryLast(int count);
 
+        Task<IEnumerable<T>> QueryLastAsync(int count);
+
         IEnumerable<T> QueryLastByFun(Expression<Func<T, bool>> fun,int count);
+
+        Task<IEnumerable<T>> QueryLastByFunAsync(Expression<Func<T, bool>> fun, int count);
+
+        IEnumerable<T> QueryPage(Expression<Func<T, bool>> whereFunc, Expression<Func<T, object>> orderByFunc, bool isAsc, int pageNum, int count);
+
+        Task<IEnumerable<T>> QueryPageAsync(Expression<Func<T, bool>> whereFunc, Expression<Func<T, object>> orderByFunc, bool isAsc, int pageNum, int count);
+
+        IQueryable<T> GetQueryAble();
 
     }
 }

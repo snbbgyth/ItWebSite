@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using System.Net;
 using System.Web;
@@ -12,6 +13,7 @@ using ItWebSite.Core.IDAL;
 using ItWebSite.Web.Areas.Admin.Models;
 using ItWebSite.Web.DAL;
 using ItWebSite.Web.DAL.MySql;
+using NHibernate.Criterion;
 using PagedList;
 
 namespace ItWebSite.Web.Areas.Admin.Controllers
@@ -39,38 +41,44 @@ namespace ItWebSite.Web.Areas.Admin.Controllers
             {
                 searchString = currentFilter;
             }
+            int pageSize = 20;
+            int pageNumber = (page ?? 1);
             ViewBag.CurrentFilter = searchString;
-            var entityList = await _blogContentTypeDal.QueryAllAsync();
-                       if (entityList.Any())
+            Expression<Func<BlogContentType, object>> orderByExpression = null;
+            bool isAsc = false;
+            if (!string.IsNullOrEmpty(sortOrder))
             {
-                if (!String.IsNullOrEmpty(searchString))
-                {
-                    entityList = entityList.Where(s => (s.Name != null && s.Name.Contains(searchString))
-                                                                      || (s.Creater != null && s.Creater.Contains(searchString))
-                                                                      || (s.LastModifier != null && s.LastModifier.Contains(searchString)));
-                }
                 switch (sortOrder)
                 {
                     case "name_desc":
-                        entityList = entityList.OrderByDescending(s => s.Name);
+                        orderByExpression = (s => s.Name);
                         break;
                     case "Date":
-                        entityList = entityList.OrderBy(s => s.LastModifyDate);
+                        orderByExpression = (s => s.LastModifyDate);
+                        isAsc = true;
                         break;
                     case "date_desc":
-                        entityList = entityList.OrderByDescending(s => s.LastModifyDate);
+                        orderByExpression = (s => s.LastModifyDate);
                         break;
                     default:
-                        entityList = entityList.OrderBy(s => s.Name);
+                        orderByExpression = (s => s.Name);
+                        isAsc = true;
                         break;
                 }
             }
-            int pageSize = 20;
-            int pageNumber = (page ?? 1);
+            Expression<Func<BlogContentType, bool>> wherExpression = t => t.Id > 0;
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                wherExpression = s => (s.Name != null && s.Name.IsLike(searchString))
+                                                                      || (s.Creater != null && s.Creater.IsLike(searchString))
+                                                                      || (s.LastModifier != null && s.LastModifier.IsLike(searchString));
+            }
+            var entityList = await _blogContentTypeDal.QueryPageAsync(wherExpression, orderByExpression, isAsc, pageNumber, pageSize);
+
             return View(entityList.ToPagedList(pageNumber, pageSize));
         }
 
-       
+
 
         // GET: Admin/BlogContentTypes/Details/5
         public async Task<ActionResult> Details(int? id)
@@ -168,7 +176,7 @@ namespace ItWebSite.Web.Areas.Admin.Controllers
         {
             if (disposing)
             {
- 
+
             }
             base.Dispose(disposing);
         }

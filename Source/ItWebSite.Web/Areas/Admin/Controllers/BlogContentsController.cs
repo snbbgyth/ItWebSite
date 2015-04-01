@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
 using System.Linq;
+using System.Linq.Expressions;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using System.Net;
 using System.Web;
@@ -12,6 +14,8 @@ using ItWebSite.Core.IDAL;
 using ItWebSite.Web.Areas.Admin.Models;
 using ItWebSite.Web.DAL;
 using PagedList;
+using WebGrease.Css.Extensions;
+using NHibernate.Criterion;
 
 namespace ItWebSite.Web.Areas.Admin.Controllers
 {
@@ -28,6 +32,7 @@ namespace ItWebSite.Web.Areas.Admin.Controllers
 
         public async Task<ActionResult> Index(string currentFilter, string searchString, int? page)
         {
+            int pageSize = 20;
             if (searchString != null)
             {
                 page = 1;
@@ -36,25 +41,17 @@ namespace ItWebSite.Web.Areas.Admin.Controllers
             {
                 searchString = currentFilter;
             }
-            ViewBag.CurrentFilter = searchString;
-            var entityList = await _blogContentDal.QueryAllAsync();
-            if (entityList.Any())
-            {
-                if (!String.IsNullOrEmpty(searchString))
-                {
-                    entityList = entityList.Where(s => (s.Content != null && s.Content.Contains(searchString))
-                                                                                          || (s.Title != null && s.Title.Contains(searchString))
-                                                                                          || (s.Creater != null && s.Creater.Contains(searchString))
-                                                                                          || (s.LastModifier != null && s.LastModifier.Contains(searchString)));
 
-                }
-                entityList = entityList.OrderByDescending(s => s.LastModifyDate);
+            Expression<Func<BlogContent, bool>> wherExpression = t => t.Id > 0;
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                wherExpression = s => s.Content.IsLike(searchString) || s.Title.IsLike(searchString) || s.Creater.IsLike(searchString) || s.LastModifier.IsLike(searchString);
             }
-            int pageSize = 20;
             int pageNumber = (page ?? 1);
+            ViewBag.CurrentFilter = searchString;
+            var entityList = await _blogContentDal.QueryPageAsync(wherExpression, t => t.LastModifyDate, false, pageNumber, pageSize);
             return View(entityList.ToPagedList(pageNumber, pageSize));
         }
- 
 
         // GET: Admin/BlogContents/Details/5
         public async Task<ActionResult> Details(int? id)
@@ -68,13 +65,16 @@ namespace ItWebSite.Web.Areas.Admin.Controllers
             {
                 return HttpNotFound();
             }
+            blogContent.BlogContentType = await _blogContentTypeDal.QueryByIdAsync(id);
             return View(blogContent);
         }
 
         // GET: Admin/BlogContents/Create
-        public ActionResult Create()
+        public async Task<ActionResult> Create()
         {
-            return View();
+            var blogContent = new BlogContent();
+            blogContent.BlogContentTypeList = await _blogContentTypeDal.QueryAllAsync();
+            return View(blogContent);
         }
 
         // POST: Admin/BlogContents/Create
@@ -82,16 +82,18 @@ namespace ItWebSite.Web.Areas.Admin.Controllers
         // 详细信息，请参阅 http://go.microsoft.com/fwlink/?LinkId=317598。
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind(Include = "Id,WebContentTypeId,DisplayOrder,Title,BlogFrom,BlogFromUrl,Content,CreateDate,LastModifyDate,IsDelete,Creater,LastModifier")] BlogContent blogContent)
+        public async Task<ActionResult> Create(BlogContent blogContent)
         {
-            if (ModelState.IsValid)
+            try
             {
                 InitInsert(blogContent);
                 await _blogContentDal.InsertAsync(blogContent);
                 return RedirectToAction("Index");
             }
-
-            return View(blogContent);
+            catch (Exception ex)
+            {
+                return View(blogContent);
+            }
         }
 
         // GET: Admin/BlogContents/Edit/5
@@ -106,6 +108,8 @@ namespace ItWebSite.Web.Areas.Admin.Controllers
             {
                 return HttpNotFound();
             }
+            blogContent.BlogContentType = await _blogContentTypeDal.QueryByIdAsync(blogContent.BlogContentTypeId);
+            blogContent.BlogContentTypeList = await _blogContentTypeDal.QueryAllAsync();
             return View(blogContent);
         }
 
@@ -114,15 +118,18 @@ namespace ItWebSite.Web.Areas.Admin.Controllers
         // 详细信息，请参阅 http://go.microsoft.com/fwlink/?LinkId=317598。
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit([Bind(Include = "Id,WebContentTypeId,DisplayOrder,Title,BlogFrom,BlogFromUrl,Content,CreateDate,LastModifyDate,IsDelete,Creater,LastModifier")] BlogContent blogContent)
+        public async Task<ActionResult> Edit(BlogContent blogContent)
         {
-            if (ModelState.IsValid)
+            try
             {
                 InitModify(blogContent);
                 await _blogContentDal.ModifyAsync(blogContent);
                 return RedirectToAction("Index");
             }
-            return View(blogContent);
+            catch (Exception ex)
+            {
+                return View(blogContent);
+            }
         }
 
         // GET: Admin/BlogContents/Delete/5
@@ -137,6 +144,7 @@ namespace ItWebSite.Web.Areas.Admin.Controllers
             {
                 return HttpNotFound();
             }
+            blogContent.BlogContentType = await _blogContentTypeDal.QueryByIdAsync(blogContent.BlogContentTypeId);
             return View(blogContent);
         }
 
@@ -145,7 +153,7 @@ namespace ItWebSite.Web.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(int id)
         {
- 
+
             await _blogContentDal.DeleteByIdAsync(id);
             return RedirectToAction("Index");
         }

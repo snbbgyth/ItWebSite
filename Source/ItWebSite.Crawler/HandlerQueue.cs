@@ -41,24 +41,23 @@ namespace ItWebSite.Crawler
         {
             if (entity is BlogContent)
             {
-             //Task.Factory.StartNew(()=>  HandleBlogContent(entity));
-                HandleBlogContent(entity);
+                var blogContent = entity as BlogContent;
+                Task.Factory.StartNew(() => HandleBlogContent(blogContent));
+                //HandleBlogContent(blogContent);
             }
         }
 
-        private void HandleBlogContent(dynamic entity)
+        private void HandleBlogContent(BlogContent entity)
         {
             try
             {
-                var blogContent = entity as BlogContent;
-                _blogContentDal.DeleteByBlogFromUrl(blogContent.BlogFromUrl);
-                _blogContentDal.Insert(blogContent);
+                _blogContentDal.DeleteByBlogFromUrl(entity.BlogFromUrl);
+                _blogContentDal.Insert(entity);
             }
             catch (Exception ex)
             {
                 LogInfoQueue.Instance.Insert(GetType(), MethodBase.GetCurrentMethod().Name, ex);
             }
-
         }
     }
 }

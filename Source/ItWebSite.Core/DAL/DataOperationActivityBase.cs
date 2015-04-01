@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using ItWebSite.Core.IDAL;
 using ItWebSite.Core.Model;
 using ItWebSite.Core.QueueDAL;
+using NHibernate.Criterion;
+using NHibernate.Transform;
 
 namespace ItWebSite.Core.DAL
 {
@@ -142,7 +144,7 @@ namespace ItWebSite.Core.DAL
             {
                 using (var session = FluentNHibernateDal.Instance.GetSession())
                 {
-                    session.Delete(string.Format("from {0} where id = {1}", typeof (T).Name, id));
+                    session.Delete(string.Format("from {0} where id = {1}", typeof(T).Name, id));
                     session.Flush();
                 }
             }
@@ -209,7 +211,7 @@ namespace ItWebSite.Core.DAL
             return entity;
         }
 
-    
+
 
         public virtual int DeleteAll()
         {
@@ -248,7 +250,7 @@ namespace ItWebSite.Core.DAL
         }
 
 
-        public IEnumerable<T> QueryLast( int count)
+        public IEnumerable<T> QueryLast(int count)
         {
             try
             {
@@ -262,10 +264,30 @@ namespace ItWebSite.Core.DAL
                 LogInfoQueue.Instance.Insert(GetType(), MethodBase.GetCurrentMethod().Name, ex);
                 return new List<T>();
             }
-            
         }
 
-        public IEnumerable<T> QueryLastByFun(Expression<Func<T, bool>> fun,int count)
+
+        public IEnumerable<T> QueryPage( Expression<Func<T, bool>> whereFunc, Expression<Func<T, object>> orderByFunc, bool isAsc, int pageNum, int count)
+        {
+            try
+            {
+                using (var session = FluentNHibernateDal.Instance.GetSession())
+                {
+                    if (orderByFunc == null)
+                        return session.QueryOver<T>().Where(whereFunc).Skip(pageNum * (count - 1)).Take(count * 10).List(); ;
+                    if (isAsc)
+                        return session.QueryOver<T>().Where(whereFunc).OrderBy(orderByFunc).Asc.Skip(pageNum * (count - 1)).Take(count * 10).List(); ;
+                    return session.QueryOver<T>().Where(whereFunc).OrderBy(orderByFunc).Desc.Skip(pageNum * (count - 1)).Take(count * 10).List(); ;
+                }
+            }
+            catch (Exception ex)
+            {
+                LogInfoQueue.Instance.Insert(GetType(), MethodBase.GetCurrentMethod().Name, ex);
+                return new List<T>();
+            }
+        }
+
+        public IEnumerable<T> QueryLastByFun(Expression<Func<T, bool>> fun, int count)
         {
             var entityList = new List<T>();
             try
@@ -274,7 +296,7 @@ namespace ItWebSite.Core.DAL
                 {
                     if (fun != null)
                     {
-                       return  session.QueryOver<T>().Where(fun).OrderBy(t=>t.CreateDate).Desc.Take(count).Future().ToList();
+                        return session.QueryOver<T>().Where(fun).OrderBy(t => t.CreateDate).Desc.Take(count).Future().ToList();
                     }
                 }
             }
@@ -283,6 +305,25 @@ namespace ItWebSite.Core.DAL
                 LogInfoQueue.Instance.Insert(GetType(), MethodBase.GetCurrentMethod().Name, ex);
             }
             return entityList;
+        }
+
+        public IQueryable<T> GetQueryAble()
+        {
+            var entityList = new List<T>();
+            try
+            {
+                var session = FluentNHibernateDal.Instance.GetSession();
+
+          
+                return session.QueryOver<T>().Future().AsQueryable();
+
+
+            }
+            catch (Exception ex)
+            {
+                LogInfoQueue.Instance.Insert(GetType(), MethodBase.GetCurrentMethod().Name, ex);
+                return null;
+            }
         }
 
         /// <summary>
@@ -374,6 +415,25 @@ namespace ItWebSite.Core.DAL
         public async Task<T> FirstOrDefaultAsync(Expression<Func<T, bool>> fun)
         {
             var task = Task.Factory.StartNew(() => FirstOrDefault(fun));
+            return await task;
+        }
+
+
+        public async Task<IEnumerable<T>> QueryLastAsync(int count)
+        {
+            var task = Task.Factory.StartNew(() => QueryLast(count));
+            return await task;
+        }
+
+        public async Task<IEnumerable<T>> QueryLastByFunAsync(Expression<Func<T, bool>> fun, int count)
+        {
+            var task = Task.Factory.StartNew(() => QueryLastByFun(fun, count));
+            return await task;
+        }
+
+        public async Task<IEnumerable<T>> QueryPageAsync(Expression<Func<T, bool>> whereFunc, Expression<Func<T, object>> orderByFunc, bool isAsc, int pageNum, int count)
+        {
+            var task = Task.Factory.StartNew(() => QueryPage(whereFunc,orderByFunc, isAsc, pageNum, count));
             return await task;
         }
     }
