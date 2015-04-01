@@ -1,0 +1,2 @@
+ItWebSiteCrawlerService.exe -u
+pause
