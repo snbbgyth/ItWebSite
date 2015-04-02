@@ -309,15 +309,10 @@ namespace ItWebSite.Core.DAL
 
         public IQueryable<T> GetQueryAble()
         {
-            var entityList = new List<T>();
             try
             {
                 var session = FluentNHibernateDal.Instance.GetSession();
-
-          
                 return session.QueryOver<T>().Future().AsQueryable();
-
-
             }
             catch (Exception ex)
             {
