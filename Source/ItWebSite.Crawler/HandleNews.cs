@@ -226,10 +226,10 @@ namespace ItWebSite.Crawler
 
         private static void SaveNews(string title, string body, string sourceUrl)
         {
-            var blogContentTypeId = GetBlogContentTypeId(_newsTypeName);
-            var entity = new BlogContent
+            var newsTypeId = GetNewsTypeId(_newsTypeName);
+            var entity = new News
             {
-                BlogContentTypeId = blogContentTypeId,
+                NewsTypeId = newsTypeId,
                 Content = body,
                 Creater = "snbbdx@sina.com",
                 LastModifier = "snbbdx@sina.com",
@@ -237,25 +237,25 @@ namespace ItWebSite.Crawler
                 LastModifyDate = DateTime.Now,
                 DisplayOrder = 1,
                 Title = title,
-                BlogFrom = "博客园",
-                BlogFromUrl = sourceUrl
+                NewsFrom = "CSDN",
+                NewsFromUrl = sourceUrl
             };
             HandlerQueue.Instance.Add(entity);
         }
 
-        private static int? blogContentTypeId = null;
+        private static int? newsTypeId = null;
 
         private static object _syncTypeId = new object();
 
-        private static int GetBlogContentTypeId(string typeName)
+        private static int GetNewsTypeId(string typeName)
         {
             lock (_syncTypeId)
             {
-                if (blogContentTypeId == null)
+                if (newsTypeId == null)
                 {
-                    blogContentTypeId = GetNewsTypeIdFromDb(typeName);
+                    newsTypeId = GetNewsTypeIdFromDb(typeName);
                 }
-                return (int)blogContentTypeId;
+                return (int)newsTypeId;
             }
         }
 
@@ -276,20 +276,7 @@ namespace ItWebSite.Crawler
             });
         }
 
-        private static bool GetContent(string htmlString)
-        {
-            var document = new HtmlDocument();
-
-            document.LoadHtml(htmlString);
-            var title = document.GetElementbyId("cb_post_title_url");
-
-            var body = document.GetElementbyId("cnblogs_post_body");
-            if (title == null || body == null)
-                return false;
-            SaveFile(title.InnerText, body.InnerHtml);
-
-            return true;
-        }
+        
 
         private static string NoHTML(string Htmlstring)
         {
