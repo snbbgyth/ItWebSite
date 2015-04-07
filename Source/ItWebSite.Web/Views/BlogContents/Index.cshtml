@@ -66,7 +66,7 @@
 {
     <div>
         <h2>
-            @Html.ActionLink(@item.Title, "Details", new { id = item.Id })
+            <a href="/BlogContents/Details/@item.Id" target="_blank">@item.Title</a>
         </h2>
         <div class="col-md-6">
             <div class="pull-left">

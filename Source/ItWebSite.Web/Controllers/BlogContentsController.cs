@@ -47,7 +47,7 @@ namespace ItWebSite.Web.Controllers
             int pageNumber = (page ?? 1);
             ViewBag.CurrentPageIndex = pageNumber;
           
-            ViewBag.LastPageIndex =   _blogContentDal.QueryCount()/pageSize ;
+            ViewBag.LastPageIndex =(await  _blogContentDal.QueryCountAsync())/pageSize ;
             ViewBag.CurrentFilter = searchString;
             var entityList = await _blogContentDal.QueryPageAsync(wherExpression, t => t.LastModifyDate, false, pageNumber, pageSize);
             return View(entityList);
@@ -66,6 +66,20 @@ namespace ItWebSite.Web.Controllers
             if (blogContent == null)
             {
                 return HttpNotFound();
+            }
+            
+            var nextEntity = await _blogContentDal.QueryByIdAsync(id+1);
+            if (nextEntity != null)
+            {
+                ViewBag.NextId = nextEntity.Id;
+                ViewBag.NextTitle = nextEntity.Title;
+            }
+
+            var previousEntity = await _blogContentDal.QueryByIdAsync(id-1);
+            if (previousEntity != null)
+            {
+                ViewBag.PriviousId = previousEntity.Id;
+                ViewBag.PriviousTitle = previousEntity.Title;
             }
             blogContent.BlogContentType = await _blogContentTypeDal.QueryByIdAsync(id);
             return View(blogContent);

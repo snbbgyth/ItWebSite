@@ -68,5 +68,15 @@ namespace ItWebSite.Core.IDAL
 
         int QueryCount();
 
+        Task<int> QueryCountAsync();
+
+        T QueryNext(dynamic id);
+
+        T QueryPrevious(dynamic id);
+
+        Task<T> QueryNextAsync(dynamic id);
+
+        Task<T> QueryPreviousAsync(dynamic id);
+
     }
 }

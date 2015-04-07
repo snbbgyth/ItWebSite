@@ -107,6 +107,7 @@ namespace ItWebSite.Core.DAL
                     if (fun != null)
                     {
                         entityList = session.QueryOver<T>().Where(fun).List().ToList();
+                     
                     }
                 }
             }
@@ -345,6 +346,39 @@ namespace ItWebSite.Core.DAL
             }
         }
 
+        public T QueryNext(dynamic id)
+        {
+            try
+            {
+                int newId = Convert.ToInt32(id);
+                var session = FluentNHibernateDal.Instance.GetSession();
+                return session.QueryOver<T>().Where(t => t.Id > newId).OrderBy(t => t.Id).Asc.SingleOrDefault();
+            }
+            catch (Exception ex)
+            {
+                LogInfoQueue.Instance.Insert(GetType(), MethodBase.GetCurrentMethod().Name, ex);
+            }
+            return default(T);
+        }
+
+        public T QueryPrevious(dynamic id)
+        {
+            try
+            {
+                int newId = Convert.ToInt32(id);
+                var session = FluentNHibernateDal.Instance.GetSession();
+                return session.QueryOver<T>().Where(t => t.Id < newId).OrderBy(t => t.Id).Desc.SingleOrDefault();
+              
+            }
+            catch (Exception ex)
+            {
+                LogInfoQueue.Instance.Insert(GetType(), MethodBase.GetCurrentMethod().Name, ex);
+
+            }
+            return default(T);
+        }
+
+
         /// <summary>
         /// Find first or default by funcation
         /// </summary>
@@ -453,6 +487,26 @@ namespace ItWebSite.Core.DAL
         public async Task<IEnumerable<T>> QueryPageAsync(Expression<Func<T, bool>> whereFunc, Expression<Func<T, object>> orderByFunc, bool isAsc, int pageNum, int count)
         {
             var task = Task.Factory.StartNew(() => QueryPage(whereFunc,orderByFunc, isAsc, pageNum, count));
+            return await task;
+        }
+
+
+        public async Task<int> QueryCountAsync()
+        {
+            var task = Task.Factory.StartNew(() => QueryCount());
+            return await task;
+        }
+
+
+        public async Task<T> QueryNextAsync(dynamic id)
+        {
+            var task = Task.Factory.StartNew(() => QueryNext(id));
+            return await task;
+        }
+
+        public async Task<T> QueryPreviousAsync(dynamic id)
+        {
+            var task = Task.Factory.StartNew(() => QueryPrevious(id));
             return await task;
         }
     }

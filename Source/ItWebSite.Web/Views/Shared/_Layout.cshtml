@@ -57,21 +57,12 @@
                 </button>
             </div>
             @{
-                var productTypeList = ProductManage.QueryAllProductType();
                 var newsTypeList = NewsManage.QueryAllNewsTypes();
             }
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li>@Html.ActionLink("主页", "Index", "Home")</li>
                     <li>@Html.ActionLink("企业简介", "CompanyIntro", "Home")</li>
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">产品介绍<span class="caret"></span></a>
-                        <ul class="dropdown-menu" role="menu">
-                            <li>@Html.ActionLink("网站产品", "WebSiteProductIntro", "Home")</li>
-                            <li>@Html.ActionLink("软件产品", "SoftwareProductIntro", "Home")</li>
-                            <li>@Html.ActionLink("培训", "TrainProductIntro", "Home")</li>
-                        </ul>
-                    </li>
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">新闻<span class="caret"></span></a>
                         <ul class="dropdown-menu" role="menu">
@@ -82,29 +73,9 @@
                         </ul>
                     </li>
                     <li>@Html.ActionLink("博客", "Index", "BlogContents")</li>
-              
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">产品<span class="caret"></span></a>
-                        <ul class="dropdown-menu" role="menu">
-                            <li>@Html.ActionLink("所有产品", "Index", "Products")</li>
-                            @foreach (var productType in productTypeList)
-                            {
-                                <li>@Html.ActionLink(productType.Name, "ShowIndex", "Products", new { id =productType.Id},string.Empty)</li>
-                            }
-                        </ul>
-                    </li>
                     <li>@Html.ActionLink("关于我们", "About", "Home")</li>
                     <li>@Html.ActionLink("联系方式", "Contact", "Home")</li>
                     <li>@Html.ActionLink("留言", "Create", "Comments")</li>
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">我的订单<span class="caret"></span></a>
-                        <ul class="dropdown-menu" role="menu">
-                            <li>@Html.ActionLink("购物车", "Index", "ShopCartItems")</li>
-                            <li>@Html.ActionLink("末生成订单", "Submit", "Orders")</li>
-                            <li>@Html.ActionLink("末支付订单", "NoPay", "Orders")</li>
-                            <li>@Html.ActionLink("己完成订单", "Complete", "Orders")</li>
-                        </ul>
-                    </li>
                 </ul>
                 @Html.Partial("_LoginPartial")
             </div>

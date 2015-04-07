@@ -37,6 +37,40 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="pull-left">
+                            上一页：
+                            @{
+                                if (ViewBag.NextId != null)
+                                {
+                                    <a href="/BlogContents/Details/@ViewBag.NextId">@ViewBag.NextTitle</a>
+                                }
+                                else
+                                {
+                                    <a>没有了</a>
+                                }
+                            }
+
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="pull-right">
+                            下一页：
+                            @{
+                                if (ViewBag.PriviousId != null)
+                                {
+                                    <a href="/BlogContents/Details/@ViewBag.PriviousId">@ViewBag.PriviousTitle</a>
+                                }
+                                else
+                                {
+                                    <a>没有了</a>
+                                }
+                            }
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

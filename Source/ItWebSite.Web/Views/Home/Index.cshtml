@@ -1,45 +1,149 @@
 ﻿@using System.Web.Mvc.Html
 @using ItWebSite.Web.Help
-@model PagedList.IPagedList<ItWebSite.Core.DbModel.BlogContent>
-    @using PagedList.Mvc;
-    @{
-        ViewBag.Title = "技术分享网";
+@model IEnumerable<ItWebSite.Core.DbModel.BlogContent>
+
+@{
+    ViewBag.Title = "技术分享网";
+}
+
+<h2>最新博客</h2>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#btnNext").click(function () {
+            var nextPage = @ViewBag.CurrentPageIndex +1;
+            $.ajax({
+                url: '@Url.Action("Index", "Home")',
+                data: { currentFilter: null, searchString: null, page: nextPage },
+                success: function (response) {
+                    $("body").html(response);
+                }
+            });
+        });
+
+        $("#btnPrevious").click(function () {
+            var previousPage = @ViewBag.CurrentPageIndex -1;
+            $.ajax({
+                url: '@Url.Action("Index", "Home")',
+                data: { currentFilter: null, searchString: null, page: previousPage },
+                success: function (response) {
+                    $("body").html(response);
+                }
+            });
+        });
+        $("#btnSkip").click(function () {
+            var skip2Page = $("#txtSkipTo").val();;
+            $.ajax({
+                url: '@Url.Action("Index", "Home")',
+                data: { currentFilter: null, searchString: null, page: skip2Page },
+                success: function (response) {
+                    $("body").html(response);
+                }
+            });
+        });
+
+    });
+    function NavigaePage(itemId) {
+        $.ajax({
+
+            url: '@Url.Action("Index", "Home")',
+            data: { currentFilter: null, searchString: null, page: itemId },
+            success: function (response) {
+                $("body").html(response);
+            }
+        });
     }
+</script>
 
-    <h2>最新博客</h2>
-
-    @using (Html.BeginForm("Index", "BlogContents", FormMethod.Get))
-    {
-        <p>
-            输入查找内容: @Html.TextBox("SearchString", ViewBag.CurrentFilter as string)
-            <input type="submit" value="Search" />
-        </p>
-    }
-    @foreach (var item in Model)
-    {
-        <div>
-            <h2>
-                @Html.ActionLink(@item.Title, "Details", new { id = item.Id })
-            </h2>
-            <div class="col-md-6">
-                <div class="pull-left">
-                    来源：<a href="#">@item.Creater</a>
-                </div>
+@using (Html.BeginForm("Index", "Home", FormMethod.Get))
+{
+    <p>
+        输入查找内容: @Html.TextBox("SearchString", ViewBag.CurrentFilter as string)
+        <input type="submit" value="Search" />
+    </p>
+}
+@foreach (var item in Model)
+{
+    <div>
+        <h2>
+            <a href="/BlogContents/Details/@item.Id" target="_blank">@item.Title</a>
+        </h2>
+        <div class="col-md-6">
+            <div class="pull-left">
+                来源：<a href="#">@item.Creater</a>
             </div>
-            <div class="col-md-6">
-                <div class="pull-right">
-                    最后修改时间 @item.LastModifyDate
-                </div>
-            </div>
-
-            <p>@Html.Raw(item.Content.StripTagsRegex().ToSummary(100))</p>
-
-
         </div>
+        <div class="col-md-6">
+            <div class="pull-right">
+                最后修改时间 @item.LastModifyDate
+            </div>
+        </div>
+        <p>@Html.Raw(item.Content.StripTagsRegex().ToSummary(300))</p>
+    </div>
+}
+
+
+@{
+    int one = 1;
+    if (ViewBag.CurrentPageIndex > 2)
+    {
+        one = ViewBag.CurrentPageIndex - 2;
     }
 
-    <br />
-    页数 @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) 总数 @Model.PageCount
+    var two = one + 1;
+    var three = two + 1;
+    var four = three + 1;
+    var five = four + 1;
+    var totalPage = "总页数是：" + ViewBag.LastPageIndex;
+}
+<tr>
+    <td></td>
+    <td></td>
+    <td>
+        <input id="btnPrevious" type="button" value="Previous" />
+        <input id="btnOne" type="button" value=@one onclick="javascript:NavigaePage(@one);" />
+        <input id="btnTwo" type="button" value=@two onclick="javascript:NavigaePage(@two);" />
+        <input id="btnThree" type="button" value=@three onclick="javascript:NavigaePage(@three);" />
+        <input id="btnFour" type="button" value=@four onclick="javascript:NavigaePage(@four);" />
+        <input id="btnFive" type="button" value=@five onclick="javascript:NavigaePage(@five);" />
+        <input id="btnNext" type="button" value="Next" />
+        <label id="lblPageNum">@totalPage</label>
+        <label id="lblSkipTo">跳转到</label>
+        <input id="txtSkipTo" type="text" value=@ViewBag.CurrentPageIndex />
+        <label id="lblSkipToPage">页</label>
+        <input id="btnSkip" type="button" value="转到" />
+        <script type="text/javascript">
+                @if (ViewBag.CurrentPageIndex > 1)
+                {
 
-    @Html.PagedListPager(Model, page => Url.Action("Index",
-    new { page, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter }))
+                    @:$("#btnPrevious").attr("disabled");
+                    if (ViewBag.CurrentPageIndex == 2)
+                    {
+                        @:$("#btnTwo").css("border", "1px solid #e1e2e3");
+                    }
+                    else
+                    {
+                        @:$("#btnThree").css("border", "1px solid #e1e2e3");
+                    }
+                }
+                else
+                {
+                    @:$("#btnPrevious").attr("disabled", true);
+                    @:$("#btnPrevious").css("color", "Gray");
+
+                    @:$("#btnOne").css("border", "1px solid #e1e2e3");
+                }
+
+            @if (ViewBag.CurrentPageIndex < ViewBag.LastPageIndex)
+            {
+                @:$("#btnNext").attr("disabled");
+            }
+            else
+            {
+                @:$("#btnNext").attr("disabled", true);
+                @:$("#btnNext").css("color", "Gray");
+            }
+        </script>
+        <input id="currentPageIndex" type="hidden" value=@ViewBag.CurrentPageIndex />
+    </td>
+</tr>
