@@ -11,17 +11,16 @@ namespace ItWebSite.Core.DbModel.Mappings
             Map(x => x.Creater);
             Map(x => x.IsDelete);
             Map(x => x.LastModifier);
-            Map(x => x.LastModifyDate);
+            Map(x => x.LastModifyDate).Index("LastModifyDate");
 
             Map(x => x.IsPublish);
             Map(x => x.Content);
             Map(x => x.Title);
-            References(x => x.NewsType, "NewsTypeId").Not.LazyLoad();
+            Map(x => x.NewsTypeId);
+            Map(x => x.NewsFrom);
+            Map(x => x.NewsFromUrl).Index("NewsFromUrl");
+            Map(x => x.DisplayOrder);
 
-            HasManyToMany(x => x.NewsTypeList)
-              .Cascade.All()
-              .Inverse()
-              .Table("NewsType");
         }
     }
 }

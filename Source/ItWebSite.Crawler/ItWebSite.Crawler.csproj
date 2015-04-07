@@ -69,6 +69,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="HandleNews.cs" />
     <Compile Include="HandlerQueue.cs" />
     <Compile Include="HandlerBlog.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
