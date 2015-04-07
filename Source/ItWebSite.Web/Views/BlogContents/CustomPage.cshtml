@@ -1,101 +1,122 @@
 ﻿@using System.Web.Mvc.Html
 @using ItWebSite.Web.Help
-@model PagedList.IPagedList<ItWebSite.Core.DbModel.BlogContent>
-@using PagedList.Mvc;
-@{
-    ViewBag.Title = "博客列表";
-}
+@model System.Collections.Generic.IEnumerable<ItWebSite.Core.DbModel.BlogContent>
 
-<h2>博客列表</h2>
+    @{
+        ViewBag.Title = "博客列表";
+    }
 
-<script type="text/javascript">
-    $(document).ready(function () {
-        $("#btnNext").click(function () {
+    <h2>博客列表</h2>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#btnNext").click(function () {
+                var nextPage = @ViewBag.CurrentPageIndex +1;
+                $.ajax({
+                    url: '@Url.Action("CustomPage", "BlogContents")',
+                    data: { currentFilter: null, searchString: null, page: nextPage },
+                    success: function (response) {
+                        $("body").html(response);
+                    }
+                });
+            });
+
+            $("#btnPrevious").click(function () {
+                var previousPage = @ViewBag.CurrentPageIndex -1;
+                $.ajax({
+                    url: '@Url.Action("CustomPage", "BlogContents")',
+                    data: { currentFilter: null, searchString: null, page: previousPage },
+                    success: function (response) {
+                        $("body").html(response);
+                    }
+                });
+            });
+        });
+        function NavigaePage(itemId) {
             $.ajax({
-                url: 'Category/Next',
-                data: { currentPageIndex: document.getElementById('currentPageIndex').value },
+
+                url: '@Url.Action("CustomPage", "BlogContents")',
+                data: { currentFilter: null, searchString: null, page: itemId },
                 success: function (response) {
                     $("body").html(response);
                 }
             });
-        });
+        }
+    </script>
 
-        $("#btnPrevious").click(function () {
-            $.ajax({
-                url: 'Category/Previous',
-                data: { currentPageIndex: document.getElementById('currentPageIndex').value },
-                success: function (response) {
-                    $("body").html(response);
+    @using (Html.BeginForm("Index", "BlogContents", FormMethod.Get))
+    {
+        <p>
+            输入查找内容: @Html.TextBox("SearchString", ViewBag.CurrentFilter as string)
+            <input type="submit" value="Search" />
+        </p>
+    }
+    @foreach (var item in Model)
+    {
+        <div>
+            <h2>
+                @Html.ActionLink(@item.Title, "Details", new { id = item.Id })
+            </h2>
+            <div class="col-md-6">
+                <div class="pull-left">
+                    来源：<a href="#">@item.Creater</a>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="pull-right">
+                    最后修改时间 @item.LastModifyDate
+                </div>
+            </div>
+            <p>@Html.Raw(item.Content.StripTagsRegex().ToSummary(100))</p>
+        </div>
+    }
+
+
+    @{
+        int one = 1;
+        if (ViewBag.CurrentPageIndex > 2)
+        {
+            one = ViewBag.CurrentPageIndex - 2;
+        }
+
+        var two = one + 1;
+        var three = two + 1;
+        var four = three + 1;
+        var five = four + 1;
+    }
+    <tr>
+        <td></td>
+        <td></td>
+        <td>
+            <input id="btnPrevious" type="button" value="Previous" />
+            <input id="btnOne" type="button" value=@one onclick="javascript:NavigaePage(@one);" />
+            <input id="btnTwo" type="button" value=@two onclick="javascript:NavigaePage(@two);" />
+            <input id="btnThree" type="button" value=@three onclick="javascript:NavigaePage(@three);" />
+            <input id="btnFour" type="button" value=@four onclick="javascript:NavigaePage(@four);" />
+            <input id="btnFive" type="button" value=@five onclick="javascript:NavigaePage(@five);" />
+            <input id="btnNext" type="button" value="Next" />
+            <script type="text/javascript">
+                @if (ViewBag.CurrentPageIndex > 1)
+                {
+                    @:$("#btnPrevious").attr("disabled");
                 }
-            });
-        });
-    });
-</script>
-
-@using (Html.BeginForm("Index", "BlogContents", FormMethod.Get))
-{
-    <p>
-        输入查找内容: @Html.TextBox("SearchString", ViewBag.CurrentFilter as string)
-        <input type="submit" value="Search" />
-    </p>
-}
-@foreach (var item in Model)
-{
-    <div>
-        <h2>
-            @Html.ActionLink(@item.Title, "Details", new { id = item.Id })
-        </h2>
-        <div class="col-md-6">
-            <div class="pull-left">
-                来源：<a href="#">@item.Creater</a>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="pull-right">
-                最后修改时间 @item.LastModifyDate
-            </div>
-        </div>
-
-        <p>@Html.Raw(item.Content.StripTagsRegex().ToSummary(100))</p>
-
-
-    </div>
-}
-
-<br />
-页数 @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) 总数 @Model.PageCount
-
-@Html.PagedListPager(Model, page => Url.Action("Index",
-    new { page, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter }))
-
-
-<tr>
-    <td></td>
-    <td></td>
-    <td>
-        <input id="btnPrevious" type="button" value="Previous" />
-        <input id="btnNext" type="button" value="Next" />
-        <script type="text/javascript">
-            @if (ViewBag.CurrentPageIndex > 1)
-            {
-                   @:$("#btnPrevious").attr("disabled");
-            }
-            else
-            {
-                   @:$("#btnPrevious").attr("disabled", true);
-                   @:$("#btnPrevious").css("color", "Gray");
-            }
-
-            @if (ViewBag.CurrentPageIndex < ViewBag.LastPageIndex)
-            {
-                   @:$("#btnNext").attr("disabled");
-            }
-            else
-            {
-                   @:$("#btnNext").attr("disabled", true);
-                   @:$("#btnNext").css("color", "Gray");
-            }
-        </script>
-        <input id="currentPageIndex" type="hidden" value=@ViewBag.CurrentPageIndex />
-    </td>
-</tr>
+                else
+                {
+                    @:$("#btnPrevious").attr("disabled", true);
+                    @:$("#btnPrevious").css("color", "Gray");
+                    @:$("#btnOne").css("color", "Red");
+                }
+ 
+                @if (ViewBag.CurrentPageIndex < ViewBag.LastPageIndex)
+                {
+                    @:$("#btnNext").attr("disabled");
+                }
+                else
+                {
+                    @:$("#btnNext").attr("disabled", true);
+                    @:$("#btnNext").css("color", "Gray");
+                }
+            </script>
+            <input id="currentPageIndex" type="hidden" value=@ViewBag.CurrentPageIndex />
+        </td>
+    </tr>

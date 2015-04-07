@@ -173,6 +173,23 @@ namespace ItWebSite.Core.DAL
             return entityList;
         }
 
+        public virtual int QueryCount()
+        {
+            var entityList = new List<T>();
+            try
+            {
+                using (var session = FluentNHibernateDal.Instance.GetSession())
+                {
+                   return  session.QueryOver<T>().RowCount() ;
+                }
+            }
+            catch (Exception ex)
+            {
+                LogInfoQueue.Instance.Insert(GetType(), MethodBase.GetCurrentMethod().Name, ex);
+            }
+            return 0;
+        }
+
         public virtual IEnumerable<T> QueryByIds(IEnumerable<dynamic> ids)
         {
             var entityList = new List<T>();
@@ -273,11 +290,18 @@ namespace ItWebSite.Core.DAL
             {
                 using (var session = FluentNHibernateDal.Instance.GetSession())
                 {
-                    if (orderByFunc == null)
-                        return session.QueryOver<T>().Where(whereFunc).Skip(pageNum * (count - 1)).Take(count * 10).List(); ;
+                    if (whereFunc == null&&orderByFunc==null)
+                        return session.QueryOver<T>().Skip((pageNum - 1) * count).Take(count ).List();
+                    if (whereFunc == null )
+                    {
+                        if (isAsc)
+                            return session.QueryOver<T>().OrderBy(orderByFunc).Asc.Skip((pageNum - 1) * count).Take(count ).List(); ;
+                        return session.QueryOver<T>().OrderBy(orderByFunc).Desc.Skip((pageNum - 1) * count).Take(count ).List(); ;
+
+                    }
                     if (isAsc)
-                        return session.QueryOver<T>().Where(whereFunc).OrderBy(orderByFunc).Asc.Skip(pageNum * (count - 1)).Take(count * 10).List(); ;
-                    return session.QueryOver<T>().Where(whereFunc).OrderBy(orderByFunc).Desc.Skip(pageNum * (count - 1)).Take(count * 10).List(); ;
+                        return session.QueryOver<T>().Where(whereFunc).OrderBy(orderByFunc).Asc.Skip((pageNum - 1) * count).Take(count ).List(); ;
+                    return session.QueryOver<T>().Where(whereFunc).OrderBy(orderByFunc).Desc.Skip((pageNum-1) * count).Take(count ).List(); ;
                 }
             }
             catch (Exception ex)

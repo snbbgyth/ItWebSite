@@ -32,7 +32,7 @@ namespace ItWebSite.Web.Controllers
             int pageSize = 20;
             if (searchString != null)
             {
-                page = 1;
+                //page = 1;
             }
             else
             {
@@ -45,9 +45,12 @@ namespace ItWebSite.Web.Controllers
                 wherExpression = s => s.Content.IsLike(searchString) || s.Title.IsLike(searchString) || s.Creater.IsLike(searchString) || s.LastModifier.IsLike(searchString);
             }
             int pageNumber = (page ?? 1);
+            ViewBag.CurrentPageIndex = pageNumber;
+          
+            ViewBag.LastPageIndex =   _blogContentDal.QueryCount() ;
             ViewBag.CurrentFilter = searchString;
             var entityList = await _blogContentDal.QueryPageAsync(wherExpression, t => t.LastModifyDate, false, pageNumber, pageSize);
-            return View(entityList.ToPagedList(pageNumber, pageSize));
+            return View(entityList);
         }
 
 
@@ -70,7 +73,7 @@ namespace ItWebSite.Web.Controllers
             }
             int pageNumber = (page ?? 1);
             ViewBag.CurrentFilter = searchString;
-            var entityList = await _blogContentDal.QueryPageAsync(wherExpression, t => t.LastModifyDate, false, pageNumber, pageSize);
+            var entityList = await _blogContentDal.QueryPageAsync(wherExpression, t => t.LastModifier, false, pageNumber, pageSize);
             return View(entityList.ToPagedList(pageNumber, pageSize));
         }
 

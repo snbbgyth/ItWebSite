@@ -66,5 +66,7 @@ namespace ItWebSite.Core.IDAL
 
         IQueryable<T> GetQueryAble();
 
+        int QueryCount();
+
     }
 }

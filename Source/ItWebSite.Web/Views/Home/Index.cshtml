@@ -1,32 +1,45 @@
-﻿@{
-    ViewBag.Title = "技术分享网";
-}
+﻿@using System.Web.Mvc.Html
+@using ItWebSite.Web.Help
+@model PagedList.IPagedList<ItWebSite.Core.DbModel.BlogContent>
+    @using PagedList.Mvc;
+    @{
+        ViewBag.Title = "技术分享网";
+    }
 
-<div class="jumbotron">
-    <h1>欢迎来到技术分享网</h1>
-    <p class="lead">春天软件致力为企业和个人提供公司网站开发和建设服务和企业管理软件的开发和维护。</p>
-    <p>
-        <img width="615" height="300" alt="" src="/Images/Home/1.png">
-    </p>
-    <p><a href="/Home/" class="btn btn-primary btn-lg">了解更多 &raquo;</a></p>
-</div>
+    <h2>最新博客</h2>
 
-<div class="row">
-    <div class="col-md-4">
-        <h2>为中小企业提供</h2>
+    @using (Html.BeginForm("Index", "BlogContents", FormMethod.Get))
+    {
         <p>
-            公司网站建设和维护，企业ERP软件定制开发和维护,微信公众号和微店的定制化开发和维护。
+            输入查找内容: @Html.TextBox("SearchString", ViewBag.CurrentFilter as string)
+            <input type="submit" value="Search" />
         </p>
-        <p><a class="btn btn-default" href="/Home/WebSiteProductIntro">了解更多 &raquo;</a></p>
-    </div>
-    <div class="col-md-4">
-        <h2>为社会有志青年</h2>
-        <p>提供计算机技术培训，主要有电脑基本技能培训和软件件开发培训等。</p>
-        <p><a class="btn btn-default" href="/Home/TrainProductIntro">了解更多 &raquo;</a></p>
-    </div>
-    <div class="col-md-4">
-        <h2>为政府机关和事业机构提供</h2>
-        <p>定制化软件和网站的设计和开发，以用对产品使用人员的培训。</p>
-        <p><a class="btn btn-default" href="/Home/SoftwareProductIntro">了解更多 &raquo;</a></p>
-    </div>
-</div>
+    }
+    @foreach (var item in Model)
+    {
+        <div>
+            <h2>
+                @Html.ActionLink(@item.Title, "Details", new { id = item.Id })
+            </h2>
+            <div class="col-md-6">
+                <div class="pull-left">
+                    来源：<a href="#">@item.Creater</a>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="pull-right">
+                    最后修改时间 @item.LastModifyDate
+                </div>
+            </div>
+
+            <p>@Html.Raw(item.Content.StripTagsRegex().ToSummary(100))</p>
+
+
+        </div>
+    }
+
+    <br />
+    页数 @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) 总数 @Model.PageCount
+
+    @Html.PagedListPager(Model, page => Url.Action("Index",
+    new { page, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter }))
