@@ -70,7 +70,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="HandlerQueue.cs" />
-    <Compile Include="Handler.cs" />
+    <Compile Include="HandlerBlog.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

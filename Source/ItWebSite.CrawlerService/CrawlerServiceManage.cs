@@ -47,7 +47,7 @@ namespace ItWebSiteCrawlerService
         {
             try
             {
-                Handler.Crawler(Helper.Url);
+                HandlerBlog.Crawler(Helper.Url);
 
                 return true;
             }

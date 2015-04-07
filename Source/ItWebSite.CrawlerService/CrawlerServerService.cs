@@ -13,7 +13,7 @@ namespace ItWebSiteCrawlerService
 
         protected override void OnStart(string[] args)
         {
-          Task.Factory.StartNew(()=> Handler.Crawler(Helper.Url));
+          Task.Factory.StartNew(()=> HandlerBlog.Crawler(Helper.Url));
         }
 
         protected override void OnStop()

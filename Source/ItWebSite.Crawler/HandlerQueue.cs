@@ -33,7 +33,7 @@ namespace ItWebSite.Crawler
 
         private HandlerQueue()
         {
-            _blogContentDal = Handler.Resolve<IBlogContentDal>();
+            _blogContentDal = HandlerBlog.Resolve<IBlogContentDal>();
         }
 
         public override void OnNotify(dynamic entity)

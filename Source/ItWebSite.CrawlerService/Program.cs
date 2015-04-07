@@ -34,7 +34,7 @@ namespace ItWebSiteCrawlerService
         public static void RunAsConsole()
         {
 
-            Handler.Crawler(Helper.Url);
+            HandlerBlog.Crawler(Helper.Url);
             Console.WriteLine("Input Q to exit.");
             while (string.Compare(Console.ReadLine(), ConsoleKey.Q.ToString(), StringComparison.OrdinalIgnoreCase) != 0)
             {
