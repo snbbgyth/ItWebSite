@@ -165,8 +165,6 @@ namespace ItWebSite.Web.Areas.Admin.Controllers
                 return HttpNotFound();
             }
             ViewBag.RoleId = new SelectList(RoleManager.Roles, "Id", "Name");
-
-
             ViewBag.UserRoleList = GetUserRole(user);
             return View(user);
         }

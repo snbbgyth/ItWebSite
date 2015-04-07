@@ -27,7 +27,7 @@ namespace ItWebSite.Web.Controllers
             _blogContentTypeDal = DependencyResolver.Current.GetService<IBlogContentTypeDal>();
         }
 
-        public async Task<ActionResult> CustomPage(string currentFilter, string searchString, int? page)
+        public async Task<ActionResult> Index(string currentFilter, string searchString, int? page)
         {
             int pageSize = 20;
             if (searchString != null)
@@ -47,35 +47,13 @@ namespace ItWebSite.Web.Controllers
             int pageNumber = (page ?? 1);
             ViewBag.CurrentPageIndex = pageNumber;
           
-            ViewBag.LastPageIndex =   _blogContentDal.QueryCount() ;
+            ViewBag.LastPageIndex =   _blogContentDal.QueryCount()/pageSize ;
             ViewBag.CurrentFilter = searchString;
             var entityList = await _blogContentDal.QueryPageAsync(wherExpression, t => t.LastModifyDate, false, pageNumber, pageSize);
             return View(entityList);
         }
 
-
-        public async Task<ActionResult> Index(string currentFilter, string searchString, int? page)
-        {
-            int pageSize = 20;
-            if (searchString != null)
-            {
-                page = 1;
-            }
-            else
-            {
-                searchString = currentFilter;
-            }
-
-            Expression<Func<BlogContent, bool>> wherExpression = t => t.Id > 0;
-            if (!String.IsNullOrEmpty(searchString))
-            {
-                wherExpression = s => s.Content.IsLike(searchString) || s.Title.IsLike(searchString) || s.Creater.IsLike(searchString) || s.LastModifier.IsLike(searchString);
-            }
-            int pageNumber = (page ?? 1);
-            ViewBag.CurrentFilter = searchString;
-            var entityList = await _blogContentDal.QueryPageAsync(wherExpression, t => t.LastModifier, false, pageNumber, pageSize);
-            return View(entityList.ToPagedList(pageNumber, pageSize));
-        }
+ 
 
         // GET: Admin/BlogContents/Details/5
         public async Task<ActionResult> Details(int? id)

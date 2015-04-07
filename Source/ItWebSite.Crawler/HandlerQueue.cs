@@ -26,7 +26,6 @@ namespace ItWebSite.Crawler
                 {
                     if (_instance == null)
                         _instance = new HandlerQueue();
-
                 }
                 return _instance;
             }

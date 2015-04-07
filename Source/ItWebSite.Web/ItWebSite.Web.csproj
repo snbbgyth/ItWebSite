@@ -930,7 +930,6 @@
     <Content Include="Views\News\ShowIndex.cshtml" />
     <Content Include="Views\BlogContents\Details.cshtml" />
     <Content Include="Views\BlogContents\Index.cshtml" />
-    <Content Include="Views\BlogContents\CustomPage.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
