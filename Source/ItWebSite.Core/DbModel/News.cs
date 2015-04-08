@@ -20,6 +20,9 @@ namespace ItWebSite.Core.DbModel
         [DisplayName("来源URL")]
         public virtual string NewsFromUrl { get; set; }
 
+        [DisplayName("摘要")]
+        public virtual string Summary { get; set; }
+
         /// <summary>
         /// Each content type just display max display order
         /// </summary>

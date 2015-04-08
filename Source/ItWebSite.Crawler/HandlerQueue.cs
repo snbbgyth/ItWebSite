@@ -18,6 +18,7 @@ namespace ItWebSite.Crawler
         private static HandlerQueue _instance;
 
         private static IBlogContentDal _blogContentDal;
+        private static INewsDal _newsDal;
         public static HandlerQueue Instance
         {
             get
@@ -34,6 +35,7 @@ namespace ItWebSite.Crawler
         private HandlerQueue()
         {
             _blogContentDal = HandlerBlog.Resolve<IBlogContentDal>();
+            _newsDal = HandlerBlog.Resolve<INewsDal>();
         }
 
         public override void OnNotify(dynamic entity)
@@ -43,6 +45,25 @@ namespace ItWebSite.Crawler
                 var blogContent = entity as BlogContent;
                 Task.Factory.StartNew(() => HandleBlogContent(blogContent));
                 //HandleBlogContent(blogContent);
+            }
+            if (entity is News)
+            {
+                var news = entity as News;
+                Task.Factory.StartNew(() => HandleNews(news));
+            }
+        }
+
+        private void HandleNews(News entity)
+        {
+            try
+            {
+                if(!string.IsNullOrEmpty(entity.NewsFromUrl))
+                _newsDal.DeleteByNewsFromUrl(entity.NewsFromUrl);
+                _newsDal.Insert(entity);
+            }
+            catch (Exception ex)
+            {
+                LogInfoQueue.Instance.Insert(GetType(), MethodBase.GetCurrentMethod().Name, ex);
             }
         }
 

@@ -18,7 +18,7 @@ using ItWebSite.Core.QueueDAL;
 
 namespace ItWebSite.Crawler
 {
-    public class HandleNews
+    public class HandleNews:ICrawler
     {
         private static IContainer _container;
 
@@ -37,7 +37,7 @@ namespace ItWebSite.Crawler
             _isSaveLocalFile = Convert.ToBoolean(ConfigurationManager.AppSettings["IsSaveLocalFile"]);
         }
 
-        public static T Resolve<T>()
+        public static   T Resolve<T>()
         {
             try
             {
@@ -50,7 +50,7 @@ namespace ItWebSite.Crawler
         }
 
 
-        public static void Crawler(string url)
+        public   void Crawler(string url)
         {
             try
             {
@@ -168,6 +168,7 @@ namespace ItWebSite.Crawler
         static void crawler_ProcessPageCrawlCompleted(object sender, PageCrawlCompletedArgs e)
         {
             //Process data
+            if (e.CrawledPage.Uri.ToString().Contains("http://www.csdn.net/article"))
             SaveContent(e.CrawledPage);
         }
 
@@ -187,13 +188,16 @@ namespace ItWebSite.Crawler
             {
                 var document = new HtmlDocument();
                 document.LoadHtml(crawledPage.Content.Text);
-                var title = document.GetElementbyId("cb_post_title_url");
-                var body = document.GetElementbyId("cnblogs_post_body");
+                var title = document.DocumentNode.SelectSingleNode("//title");
+                var body = document.DocumentNode.SelectSingleNode("//body");
+                var summary =body.SelectNodes("//div").SingleOrDefault(t => t.Attributes.Any(s => s.Name == "class" && s.Value == "summary"));
+
+                body =body.SelectNodes("//div").SingleOrDefault(t => t.Attributes.Any(s => s.Name == "class" && s.Value == "con news_content"));
                 if (title == null || body == null || string.IsNullOrEmpty(crawledPage.Uri.ToString()))
                     return false;
                 if (_isSaveLocalFile)
                     SaveFile(title.InnerText, body.InnerHtml);
-                SaveNews(title.InnerText, body.InnerHtml, crawledPage.Uri.ToString());
+                SaveNews(title.InnerText,summary==null?string.Empty:summary.InnerHtml, body.InnerHtml, crawledPage.Uri.ToString());
                 return true;
             }
             catch (Exception ex)
@@ -220,7 +224,7 @@ namespace ItWebSite.Crawler
             }
         }
 
-        private static void SaveNews(string title, string body, string sourceUrl)
+        private static void SaveNews(string title,string summary, string body, string sourceUrl)
         {
             var typeId = GetNewsTypeId(_newsTypeName);
             var entity = new News
@@ -234,7 +238,8 @@ namespace ItWebSite.Crawler
                 DisplayOrder = 1,
                 Title = title,
                 NewsFrom = "CSDN",
-                NewsFromUrl = sourceUrl
+                NewsFromUrl = sourceUrl,
+                Summary = summary
             };
             HandlerQueue.Instance.Add(entity);
         }

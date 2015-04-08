@@ -43,20 +43,7 @@ namespace ItWebSiteCrawlerService
             return true;
         }
 
-        public static bool Run(bool isConsole = true)
-        {
-            try
-            {
-                HandlerBlog.Crawler(Helper.Url);
-
-                return true;
-            }
-            catch (Exception ex)
-            {
-
-                return false;
-            }
-        }
+      
 
   
     }

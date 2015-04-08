@@ -1,4 +1,5 @@
-﻿using System.ServiceProcess;
+﻿using System;
+using System.ServiceProcess;
 using System.Threading.Tasks;
 using ItWebSite.Crawler;
 
@@ -13,7 +14,8 @@ namespace ItWebSiteCrawlerService
 
         protected override void OnStart(string[] args)
         {
-          Task.Factory.StartNew(()=> HandlerBlog.Crawler(Helper.Url));
+             
+            Task.Factory.StartNew(() => HandleFactory.GetCrawler(Helper.GetCrawlerType()).Crawler(Helper.Url));
         }
 
         protected override void OnStop()

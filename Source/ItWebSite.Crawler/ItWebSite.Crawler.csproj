@@ -69,9 +69,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="HandleFactory.cs" />
     <Compile Include="HandleNews.cs" />
     <Compile Include="HandlerQueue.cs" />
     <Compile Include="HandlerBlog.cs" />
+    <Compile Include="ICrawler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

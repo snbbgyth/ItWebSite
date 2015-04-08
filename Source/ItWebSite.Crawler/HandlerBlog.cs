@@ -18,7 +18,7 @@ using ItWebSite.Core.QueueDAL;
 
 namespace ItWebSite.Crawler
 {
-    public class HandlerBlog
+    public class HandlerBlog:ICrawler
     {
         private static IContainer _container;
 
@@ -37,7 +37,7 @@ namespace ItWebSite.Crawler
             _isSaveLocalFile = Convert.ToBoolean(ConfigurationManager.AppSettings["IsSaveLocalFile"]);
         }
 
-        public static T Resolve<T>()
+        public  static  T Resolve<T>()
         {
             try
             {
@@ -49,7 +49,7 @@ namespace ItWebSite.Crawler
             }
         }
 
-        public static void Crawler(string url)
+        public   void Crawler(string url)
         {
             try
             {

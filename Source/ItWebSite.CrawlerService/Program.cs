@@ -33,8 +33,7 @@ namespace ItWebSiteCrawlerService
 
         public static void RunAsConsole()
         {
-
-            HandlerBlog.Crawler(Helper.Url);
+            HandleFactory.GetCrawler(Helper.GetCrawlerType()).Crawler(Helper.Url);
             Console.WriteLine("Input Q to exit.");
             while (string.Compare(Console.ReadLine(), ConsoleKey.Q.ToString(), StringComparison.OrdinalIgnoreCase) != 0)
             {
@@ -57,5 +56,14 @@ namespace ItWebSiteCrawlerService
     public class Helper
     {
         public static string Url = ConfigurationManager.AppSettings["Url"];
+
+        public static string CrawType = ConfigurationManager.AppSettings["CrawType"];
+
+        public static CrawlerType GetCrawlerType()
+        {
+            CrawlerType crawlerType;
+            CrawlerType.TryParse(Helper.CrawType, out crawlerType);
+            return crawlerType;
+        }
     }
 }
