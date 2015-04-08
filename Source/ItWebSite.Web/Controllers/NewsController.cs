@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Net;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using ItWebSite.Core.DbModel;
 using ItWebSite.Core.IDAL;
 using ItWebSite.Web.DAL.Manage;
+using NHibernate.Criterion;
 using PagedList;
 
 namespace ItWebSite.Web.Controllers
@@ -22,33 +24,33 @@ namespace ItWebSite.Web.Controllers
 
         public async Task<ActionResult> ShowIndex(int id, string currentFilter, string searchString, int? page)
         {
+            int pageSize = 20;
             if (searchString != null)
             {
-                page = 1;
+                //page = 1;
             }
             else
             {
                 searchString = currentFilter;
             }
-            ViewBag.CurrentFilter = searchString;
-            IEnumerable<News> entityList = await _newsDal.QueryByFunAsync(t => t.NewsType.Id == id);
-            if (entityList.Any())
-            {
-                if (!String.IsNullOrEmpty(searchString))
-                {
-                    entityList = entityList.Where(s => (s.Content != null && s.Content.Contains(searchString))
-                                                                                          || (s.Title != null && s.Title.Contains(searchString))
-                                                                                          || (s.Creater != null && s.Creater.Contains(searchString))
-                                                                                          || (s.LastModifier != null && s.LastModifier.Contains(searchString)));
 
-                }
-                entityList = entityList.OrderByDescending(s => s.LastModifyDate);
+            Expression<Func<News, bool>> wherExpression = t => t.NewsTypeId==id;
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                wherExpression = s => s.Content.IsLike(searchString) || s.Title.IsLike(searchString) || s.Creater.IsLike(searchString) || s.LastModifier.IsLike(searchString);
             }
-            int pageSize = 20;
             int pageNumber = (page ?? 1);
+            ViewBag.CurrentPageIndex = pageNumber;
+
+            ViewBag.LastPageIndex = (await _newsDal.QueryCountAsync()) / pageSize;
+            ViewBag.CurrentFilter = searchString;
+            var entityList = await _newsDal.QueryPageAsync(wherExpression, t => t.LastModifyDate, false, pageNumber, pageSize);
             ViewBag.Title = NewsManage.QueryNewsTypeNameById(id);
             ViewBag.NewsTypeId = id;
-            return View(entityList.ToPagedList(pageNumber, pageSize));
+            return  View(entityList);
+
+
+ 
         }
 
         // GET: /News/Details/5
