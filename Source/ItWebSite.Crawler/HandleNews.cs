@@ -52,10 +52,8 @@ namespace ItWebSite.Crawler
 
         public static void Crawler(string url)
         {
-
             try
             {
-
                 log4net.Config.XmlConfigurator.Configure();
                 PrintDisclaimer();
                 Uri uriToCrawl = GetSiteToCrawl(url);
@@ -85,7 +83,7 @@ namespace ItWebSite.Crawler
             }
             catch (Exception ex)
             {
-                LogInfoQueue.Instance.Insert(typeof(HandlerBlog), MethodBase.GetCurrentMethod().Name, ex);
+                LogInfoQueue.Instance.Insert(typeof(HandleNews), MethodBase.GetCurrentMethod().Name, ex);
             }
         }
 
@@ -115,7 +113,6 @@ namespace ItWebSite.Crawler
             {
                 if (pageToCrawl.Uri.AbsoluteUri.Contains("ghost"))
                     return new CrawlDecision { Allow = false, Reason = "Scared of ghosts" };
-
                 return new CrawlDecision { Allow = true };
             });
 
@@ -147,7 +144,6 @@ namespace ItWebSite.Crawler
         {
             if (string.IsNullOrWhiteSpace(url))
                 throw new ApplicationException("Site url to crawl is as a required parameter");
-
             return new Uri(url);
         }
 
@@ -202,7 +198,7 @@ namespace ItWebSite.Crawler
             }
             catch (Exception ex)
             {
-                LogInfoQueue.Instance.Insert(typeof(HandlerBlog), MethodBase.GetCurrentMethod().Name, ex);
+                LogInfoQueue.Instance.Insert(typeof(HandleNews), MethodBase.GetCurrentMethod().Name, ex);
                 return false;
             }
         }
@@ -220,16 +216,16 @@ namespace ItWebSite.Crawler
             }
             catch (Exception ex)
             {
-                LogInfoQueue.Instance.Insert(typeof(HandlerBlog), MethodBase.GetCurrentMethod().Name, ex);
+                LogInfoQueue.Instance.Insert(typeof(HandleNews), MethodBase.GetCurrentMethod().Name, ex);
             }
         }
 
         private static void SaveNews(string title, string body, string sourceUrl)
         {
-            var newsTypeId = GetNewsTypeId(_newsTypeName);
+            var typeId = GetNewsTypeId(_newsTypeName);
             var entity = new News
             {
-                NewsTypeId = newsTypeId,
+                NewsTypeId = typeId,
                 Content = body,
                 Creater = "snbbdx@sina.com",
                 LastModifier = "snbbdx@sina.com",
@@ -243,7 +239,7 @@ namespace ItWebSite.Crawler
             HandlerQueue.Instance.Add(entity);
         }
 
-        private static int? newsTypeId = null;
+        private static int? _newsTypeId = null;
 
         private static object _syncTypeId = new object();
 
@@ -251,11 +247,11 @@ namespace ItWebSite.Crawler
         {
             lock (_syncTypeId)
             {
-                if (newsTypeId == null)
+                if (_newsTypeId == null)
                 {
-                    newsTypeId = GetNewsTypeIdFromDb(typeName);
+                    _newsTypeId = GetNewsTypeIdFromDb(typeName);
                 }
-                return (int)newsTypeId;
+                return (int)_newsTypeId;
             }
         }
 
@@ -278,7 +274,7 @@ namespace ItWebSite.Crawler
 
         
 
-        private static string NoHTML(string Htmlstring)
+        private static string NoHtml(string Htmlstring)
         {
             //删除脚本   
             Htmlstring = Regex.Replace(Htmlstring, @"<script[^>]*?>.*?</script>", "", RegexOptions.IgnoreCase);

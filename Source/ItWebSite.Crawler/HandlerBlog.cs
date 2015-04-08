@@ -47,16 +47,12 @@ namespace ItWebSite.Crawler
             {
                 return default(T);
             }
-
         }
-
 
         public static void Crawler(string url)
         {
-
             try
             {
-
                 log4net.Config.XmlConfigurator.Configure();
                 PrintDisclaimer();
                 Uri uriToCrawl = GetSiteToCrawl(url);
