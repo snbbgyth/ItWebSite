@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
 using Abot.Crawler;
 using Abot.Poco;
 using Autofac;
@@ -14,10 +12,11 @@ using ItWebSite.Core.BLL;
 using ItWebSite.Core.DbModel;
 using ItWebSite.Core.IDAL;
 using ItWebSite.Core.QueueDAL;
+using ItWebSite.Crawler.IDAL;
 
-namespace ItWebSite.Crawler
+namespace ItWebSite.Crawler.DAL
 {
-   public abstract class HandleBase:ICrawler
+    public class Handle51CtoNews:ICrawler
     {
         private static IContainer _container;
 
@@ -28,7 +27,7 @@ namespace ItWebSite.Crawler
 
         private static bool _isSaveLocalFile;
 
-        static HandleBase()
+        static Handle51CtoNews()
         {
             _container = BuildContainer();
             _newsDal = _container.Resolve<INewsDal>();

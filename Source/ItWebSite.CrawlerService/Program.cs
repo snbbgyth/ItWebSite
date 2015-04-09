@@ -3,6 +3,7 @@ using System.Configuration;
 using System.ServiceProcess;
 using System.Threading.Tasks;
 using ItWebSite.Crawler;
+using ItWebSite.Crawler.DAL;
 
 namespace ItWebSiteCrawlerService
 {

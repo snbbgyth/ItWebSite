@@ -69,14 +69,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Handle51CtoNews.cs" />
-    <Compile Include="HandleBase.cs" />
-    <Compile Include="HandleFactory.cs" />
-    <Compile Include="HandleNews.cs" />
-    <Compile Include="HandlerQueue.cs" />
-    <Compile Include="HandlerBlog.cs" />
-    <Compile Include="Helper.cs" />
-    <Compile Include="ICrawler.cs" />
+    <Compile Include="DAL\Handle51CtoNews.cs" />
+    <Compile Include="DAL\HandleBase.cs" />
+    <Compile Include="DAL\HandleFactory.cs" />
+    <Compile Include="DAL\HandleNews.cs" />
+    <Compile Include="DAL\HandlerQueue.cs" />
+    <Compile Include="DAL\HandlerBlog.cs" />
+    <Compile Include="Help\Helper.cs" />
+    <Compile Include="IDAL\ICrawler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

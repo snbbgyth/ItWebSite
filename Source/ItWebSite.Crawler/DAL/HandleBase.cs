@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using Abot.Crawler;
 using Abot.Poco;
 using Autofac;
@@ -15,42 +12,21 @@ using ItWebSite.Core.BLL;
 using ItWebSite.Core.DbModel;
 using ItWebSite.Core.IDAL;
 using ItWebSite.Core.QueueDAL;
+using ItWebSite.Crawler.IDAL;
 
-namespace ItWebSite.Crawler
+namespace ItWebSite.Crawler.DAL
 {
-    public class Handle51CtoNews:ICrawler
+    public abstract class HandleBase : ICrawler
     {
-        private static IContainer _container;
 
-        private static INewsDal _newsDal;
-        private static INewsTypeDal _newsTypeDal;
+        public static bool _isSaveLocalFile;
 
-        private static string _newsTypeName = ConfigurationManager.AppSettings["NewsTypeName"];
-
-        private static bool _isSaveLocalFile;
-
-        static Handle51CtoNews()
+        static HandleBase()
         {
-            _container = BuildContainer();
-            _newsDal = _container.Resolve<INewsDal>();
-            _newsTypeDal = _container.Resolve<INewsTypeDal>();
             _isSaveLocalFile = Convert.ToBoolean(ConfigurationManager.AppSettings["IsSaveLocalFile"]);
         }
 
-        public static   T Resolve<T>()
-        {
-            try
-            {
-                return _container.Resolve<T>();
-            }
-            catch (Exception ex)
-            {
-                return default(T);
-            }
-        }
-
-
-        public   void Crawler(string url)
+        public void Crawler(string url)
         {
             try
             {
@@ -85,15 +61,6 @@ namespace ItWebSite.Crawler
             {
                 LogInfoQueue.Instance.Insert(typeof(HandleNews), MethodBase.GetCurrentMethod().Name, ex);
             }
-        }
-
-        private static IContainer BuildContainer()
-        {
-            var builder = new ContainerBuilder();
-
-            // FunnelWeb Database
-            builder.RegisterModule(new CoreModule());
-            return builder.Build();
         }
 
         private static IWebCrawler GetDefaultWebCrawler()
@@ -160,38 +127,29 @@ namespace ItWebSite.Crawler
             System.Console.ForegroundColor = originalColor;
         }
 
-        static void crawler_ProcessPageCrawlStarting(object sender, PageCrawlStartingArgs e)
+        void crawler_ProcessPageCrawlStarting(object sender, PageCrawlStartingArgs e)
         {
             //Process data
         }
 
-        static void crawler_ProcessPageCrawlCompleted(object sender, PageCrawlCompletedArgs e)
+        void crawler_ProcessPageCrawlCompleted(object sender, PageCrawlCompletedArgs e)
         {
             //Process data
             if (e.CrawledPage.Uri.ToString().Contains("http://www.csdn.net/article"))
-            SaveContent(e.CrawledPage);
+                SaveContent(e.CrawledPage);
         }
 
-        static void crawler_PageLinksCrawlDisallowed(object sender, PageLinksCrawlDisallowedArgs e)
+        void crawler_PageLinksCrawlDisallowed(object sender, PageLinksCrawlDisallowedArgs e)
         {
             //Process data
         }
 
-        static void crawler_PageCrawlDisallowed(object sender, PageCrawlDisallowedArgs e)
+        void crawler_PageCrawlDisallowed(object sender, PageCrawlDisallowedArgs e)
         {
             //Process data
         }
 
-        private static  DateTime GetCreateTime(HtmlDocument document)
-        {
-            var nodes = document.DocumentNode.SelectNodes("//span").Where(t => t.Attributes.Any(s => s.Name == "class" && s.Value == "ago"));
-           var node= nodes.SingleOrDefault(t => ConvertToDateTime(t.InnerText) != DateTime.MinValue);
-            if (node != null)
-                return ConvertToDateTime(node.InnerText);
-            return DateTime.Now;
-        }
-
-        private static  DateTime ConvertToDateTime(string value)
+        private DateTime ConvertToDateTime(string value)
         {
             DateTime result;
             if (DateTime.TryParse(value, out result))
@@ -199,106 +157,11 @@ namespace ItWebSite.Crawler
             return DateTime.MinValue;
         }
 
-        static bool SaveContent(CrawledPage crawledPage)
-        {
-            try
-            {
-                var document = new HtmlDocument();
-                document.LoadHtml(crawledPage.Content.Text);
-                var title = document.DocumentNode.SelectNodes("//h1").SingleOrDefault(t => t.Attributes.Any(s => s.Name == "class" && s.Value == "title"));
-                var body = document.DocumentNode.SelectSingleNode("//body");
-                var summary =body.SelectNodes("//div").SingleOrDefault(t => t.Attributes.Any(s => s.Name == "class" && s.Value == "summary"));
-                var createTime = GetCreateTime(document);
-                body =body.SelectNodes("//div").SingleOrDefault(t => t.Attributes.Any(s => s.Name == "class" && s.Value == "con news_content"));
-                if (title == null || body == null || string.IsNullOrEmpty(crawledPage.Uri.ToString()))
-                    return false;
-                if (_isSaveLocalFile)
-                    SaveFile(title.InnerText, body.InnerHtml);
-                SaveNews(title.InnerText,summary==null?string.Empty:summary.InnerHtml, body.InnerHtml, crawledPage.Uri.ToString(),createTime);
-                return true;
-            }
-            catch (Exception ex)
-            {
-                LogInfoQueue.Instance.Insert(typeof(HandleNews), MethodBase.GetCurrentMethod().Name, ex);
-                return false;
-            }
-        }
+        public abstract bool SaveContent(CrawledPage crawledPage);
 
-        private static void SaveFile(string title, string body)
-        {
-            var filePath = Path.Combine(SavePath(), title + ".html");
-            try
-            {
-                using (var writer = new StreamWriter(filePath, false, Encoding.UTF8))
-                {
-                    writer.Write(body);
-                    writer.Flush();
-                }
-            }
-            catch (Exception ex)
-            {
-                LogInfoQueue.Instance.Insert(typeof(HandleNews), MethodBase.GetCurrentMethod().Name, ex);
-            }
-        }
 
-        private static void SaveNews(string title,string summary, string body, string sourceUrl,DateTime createTime)
-        {
-            var typeId = GetNewsTypeId(_newsTypeName);
-            var entity = new News
-            {
-                NewsTypeId = typeId,
-                Content = body,
-                Creater = "snbbdx@sina.com",
-                LastModifier = "snbbdx@sina.com",
-                CreateDate = createTime,
-                LastModifyDate = createTime,
-                DisplayOrder = 1,
-                Title = title,
-                NewsFrom = "CSDN",
-                NewsFromUrl = sourceUrl,
-                Summary = summary
-            };
-            HandlerQueue.Instance.Add(entity);
-        }
 
-        private static int? _newsTypeId = null;
-
-        private static object _syncTypeId = new object();
-
-        private static int GetNewsTypeId(string typeName)
-        {
-            lock (_syncTypeId)
-            {
-                if (_newsTypeId == null)
-                {
-                    _newsTypeId = GetNewsTypeIdFromDb(typeName);
-                }
-                return (int)_newsTypeId;
-            }
-        }
-
-        private static int GetNewsTypeIdFromDb(string typeName)
-        {
-            var entityList = _newsTypeDal.QueryByFun(t => t.Name == typeName);
-            if (entityList.Any())
-            {
-                return entityList.First().Id;
-            }
-            return _newsTypeDal.Insert(new NewsType()
-            {
-                Creater = "snbbdx@sina.com",
-                LastModifier = "snbbdx@sina.com",
-                CreateDate = DateTime.Now,
-                LastModifyDate = DateTime.Now,
-                Name = typeName
-            });
-        }
-
-        
-
- 
-
-        static string SavePath()
+        string SavePath()
         {
             var basePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Config");
             if (!Directory.Exists(basePath))

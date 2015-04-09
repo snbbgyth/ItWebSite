@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using ItWebSite.Crawler.IDAL;
 
-namespace ItWebSite.Crawler
+namespace ItWebSite.Crawler.DAL
 {
     public  class HandleFactory
     {

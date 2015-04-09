@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using Abot.Crawler;
 using Abot.Poco;
 using Autofac;
@@ -15,29 +13,30 @@ using ItWebSite.Core.BLL;
 using ItWebSite.Core.DbModel;
 using ItWebSite.Core.IDAL;
 using ItWebSite.Core.QueueDAL;
+using ItWebSite.Crawler.IDAL;
 
-namespace ItWebSite.Crawler
+namespace ItWebSite.Crawler.DAL
 {
-    public class HandleNews:ICrawler
+    public class HandlerBlog:ICrawler
     {
         private static IContainer _container;
 
-        private static INewsDal _newsDal;
-        private static INewsTypeDal _newsTypeDal;
+        private static IBlogContentDal _blogContentDal;
+        private static IBlogContentTypeDal _blogContentTypeDal;
 
-        private static string _newsTypeName = ConfigurationManager.AppSettings["NewsTypeName"];
+        private static string _blogContentTypeName = ConfigurationManager.AppSettings["CnblogsTypeName"];
 
         private static bool _isSaveLocalFile;
 
-        static HandleNews()
+        static HandlerBlog()
         {
             _container = BuildContainer();
-            _newsDal = _container.Resolve<INewsDal>();
-            _newsTypeDal = _container.Resolve<INewsTypeDal>();
+            _blogContentDal = _container.Resolve<IBlogContentDal>();
+            _blogContentTypeDal = _container.Resolve<IBlogContentTypeDal>();
             _isSaveLocalFile = Convert.ToBoolean(ConfigurationManager.AppSettings["IsSaveLocalFile"]);
         }
 
-        public static   T Resolve<T>()
+        public  static  T Resolve<T>()
         {
             try
             {
@@ -48,7 +47,6 @@ namespace ItWebSite.Crawler
                 return default(T);
             }
         }
-
 
         public   void Crawler(string url)
         {
@@ -83,7 +81,7 @@ namespace ItWebSite.Crawler
             }
             catch (Exception ex)
             {
-                LogInfoQueue.Instance.Insert(typeof(HandleNews), MethodBase.GetCurrentMethod().Name, ex);
+                LogInfoQueue.Instance.Insert(typeof(HandlerBlog), MethodBase.GetCurrentMethod().Name, ex);
             }
         }
 
@@ -113,6 +111,7 @@ namespace ItWebSite.Crawler
             {
                 if (pageToCrawl.Uri.AbsoluteUri.Contains("ghost"))
                     return new CrawlDecision { Allow = false, Reason = "Scared of ghosts" };
+
                 return new CrawlDecision { Allow = true };
             });
 
@@ -144,6 +143,7 @@ namespace ItWebSite.Crawler
         {
             if (string.IsNullOrWhiteSpace(url))
                 throw new ApplicationException("Site url to crawl is as a required parameter");
+
             return new Uri(url);
         }
 
@@ -168,7 +168,6 @@ namespace ItWebSite.Crawler
         static void crawler_ProcessPageCrawlCompleted(object sender, PageCrawlCompletedArgs e)
         {
             //Process data
-            if (e.CrawledPage.Uri.ToString().Contains("http://www.csdn.net/article"))
             SaveContent(e.CrawledPage);
         }
 
@@ -182,21 +181,14 @@ namespace ItWebSite.Crawler
             //Process data
         }
 
-        private static  DateTime GetCreateTime(HtmlDocument document)
+        private static DateTime GetCreateTime(HtmlDocument document)
         {
-            var nodes = document.DocumentNode.SelectNodes("//span").Where(t => t.Attributes.Any(s => s.Name == "class" && s.Value == "ago"));
-           var node= nodes.SingleOrDefault(t => ConvertToDateTime(t.InnerText) != DateTime.MinValue);
-            if (node != null)
-                return ConvertToDateTime(node.InnerText);
-            return DateTime.Now;
-        }
+            var createTime = document.GetElementbyId("post-date");
 
-        private static  DateTime ConvertToDateTime(string value)
-        {
-            DateTime result;
-            if (DateTime.TryParse(value, out result))
+             DateTime result;
+            if (createTime!=null&& DateTime.TryParse(createTime.InnerText, out result))
                 return result;
-            return DateTime.MinValue;
+            return DateTime.Now;
         }
 
         static bool SaveContent(CrawledPage crawledPage)
@@ -205,21 +197,19 @@ namespace ItWebSite.Crawler
             {
                 var document = new HtmlDocument();
                 document.LoadHtml(crawledPage.Content.Text);
-                var title = document.DocumentNode.SelectNodes("//h1").SingleOrDefault(t => t.Attributes.Any(s => s.Name == "class" && s.Value == "title"));
-                var body = document.DocumentNode.SelectSingleNode("//body");
-                var summary =body.SelectNodes("//div").SingleOrDefault(t => t.Attributes.Any(s => s.Name == "class" && s.Value == "summary"));
-                var createTime = GetCreateTime(document);
-                body =body.SelectNodes("//div").SingleOrDefault(t => t.Attributes.Any(s => s.Name == "class" && s.Value == "con news_content"));
+                var title = document.GetElementbyId("cb_post_title_url");
+                var body = document.GetElementbyId("cnblogs_post_body");
+               
                 if (title == null || body == null || string.IsNullOrEmpty(crawledPage.Uri.ToString()))
                     return false;
                 if (_isSaveLocalFile)
                     SaveFile(title.InnerText, body.InnerHtml);
-                SaveNews(title.InnerText,summary==null?string.Empty:summary.InnerHtml, body.InnerHtml, crawledPage.Uri.ToString(),createTime);
+                SaveBlogContent(title.InnerText, body.InnerHtml, crawledPage.Uri.ToString(),GetCreateTime(document));
                 return true;
             }
             catch (Exception ex)
             {
-                LogInfoQueue.Instance.Insert(typeof(HandleNews), MethodBase.GetCurrentMethod().Name, ex);
+                LogInfoQueue.Instance.Insert(typeof(HandlerBlog), MethodBase.GetCurrentMethod().Name, ex);
                 return false;
             }
         }
@@ -237,16 +227,16 @@ namespace ItWebSite.Crawler
             }
             catch (Exception ex)
             {
-                LogInfoQueue.Instance.Insert(typeof(HandleNews), MethodBase.GetCurrentMethod().Name, ex);
+                LogInfoQueue.Instance.Insert(typeof(HandlerBlog), MethodBase.GetCurrentMethod().Name, ex);
             }
         }
 
-        private static void SaveNews(string title,string summary, string body, string sourceUrl,DateTime createTime)
+        private static void SaveBlogContent(string title, string body, string sourceUrl,DateTime createTime)
         {
-            var typeId = GetNewsTypeId(_newsTypeName);
-            var entity = new News
+            var blogContentTypeId = GetBlogContentTypeId(_blogContentTypeName);
+            var entity = new BlogContent
             {
-                NewsTypeId = typeId,
+                BlogContentTypeId = blogContentTypeId,
                 Content = body,
                 Creater = "snbbdx@sina.com",
                 LastModifier = "snbbdx@sina.com",
@@ -254,37 +244,36 @@ namespace ItWebSite.Crawler
                 LastModifyDate = createTime,
                 DisplayOrder = 1,
                 Title = title,
-                NewsFrom = "CSDN",
-                NewsFromUrl = sourceUrl,
-                Summary = summary
+                BlogFrom = "博客园",
+                BlogFromUrl = sourceUrl
             };
             HandlerQueue.Instance.Add(entity);
         }
 
-        private static int? _newsTypeId = null;
+        private static int? blogContentTypeId = null;
 
         private static object _syncTypeId = new object();
 
-        private static int GetNewsTypeId(string typeName)
+        private static int GetBlogContentTypeId(string typeName)
         {
             lock (_syncTypeId)
             {
-                if (_newsTypeId == null)
+                if (blogContentTypeId == null)
                 {
-                    _newsTypeId = GetNewsTypeIdFromDb(typeName);
+                    blogContentTypeId = GetBlogContentTypeIdFromDb(typeName);
                 }
-                return (int)_newsTypeId;
+                return (int)blogContentTypeId;
             }
         }
 
-        private static int GetNewsTypeIdFromDb(string typeName)
+        private static int GetBlogContentTypeIdFromDb(string typeName)
         {
-            var entityList = _newsTypeDal.QueryByFun(t => t.Name == typeName);
+            var entityList = _blogContentTypeDal.QueryByFun(t => t.Name == typeName);
             if (entityList.Any())
             {
                 return entityList.First().Id;
             }
-            return _newsTypeDal.Insert(new NewsType()
+            return _blogContentTypeDal.Insert(new BlogContentType
             {
                 Creater = "snbbdx@sina.com",
                 LastModifier = "snbbdx@sina.com",
@@ -294,9 +283,22 @@ namespace ItWebSite.Crawler
             });
         }
 
-        
+        private static bool GetContent(string htmlString)
+        {
+            var document = new HtmlDocument();
 
-        private static string NoHtml(string Htmlstring)
+            document.LoadHtml(htmlString);
+            var title = document.GetElementbyId("cb_post_title_url");
+
+            var body = document.GetElementbyId("cnblogs_post_body");
+            if (title == null || body == null)
+                return false;
+            SaveFile(title.InnerText, body.InnerHtml);
+
+            return true;
+        }
+
+        private static string NoHTML(string Htmlstring)
         {
             //删除脚本   
             Htmlstring = Regex.Replace(Htmlstring, @"<script[^>]*?>.*?</script>", "", RegexOptions.IgnoreCase);
