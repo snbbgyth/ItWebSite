@@ -31,7 +31,7 @@ namespace ItWebSite.Core.DAL
         {
             try
             {
-                InitInsertBaseTable(entity);
+                //InitInsertBaseTable(entity);
                 using (var session = FluentNHibernateDal.Instance.GetSession())
                 {
                     session.Transaction.Begin();
@@ -58,7 +58,7 @@ namespace ItWebSite.Core.DAL
         {
             try
             {
-                InitInsertBaseTable(entity);
+                //InitInsertBaseTable(entity);
                 using (var session = FluentNHibernateDal.Instance.GetSession())
                 {
                     session.SaveOrUpdate(entity);
@@ -82,7 +82,7 @@ namespace ItWebSite.Core.DAL
         {
             try
             {
-                InitModifyBaseTable(entity);
+                //InitModifyBaseTable(entity);
                 using (var session = FluentNHibernateDal.Instance.GetSession())
                 {
                     session.Update(entity);
@@ -176,7 +176,6 @@ namespace ItWebSite.Core.DAL
 
         public virtual int QueryCount()
         {
-            var entityList = new List<T>();
             try
             {
                 using (var session = FluentNHibernateDal.Instance.GetSession())
@@ -283,7 +282,6 @@ namespace ItWebSite.Core.DAL
                 return new List<T>();
             }
         }
-
 
         public IEnumerable<T> QueryPage( Expression<Func<T, bool>> whereFunc, Expression<Func<T, object>> orderByFunc, bool isAsc, int pageNum, int count)
         {

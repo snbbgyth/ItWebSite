@@ -44,7 +44,6 @@ namespace ItWebSite.Crawler
             {
                 var blogContent = entity as BlogContent;
                 Task.Factory.StartNew(() => HandleBlogContent(blogContent));
-                //HandleBlogContent(blogContent);
             }
             if (entity is News)
             {

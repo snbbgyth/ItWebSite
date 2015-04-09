@@ -48,9 +48,29 @@ namespace ItWebSite.Web.Controllers
             ViewBag.Title = NewsManage.QueryNewsTypeNameById(id);
             ViewBag.NewsTypeId = id;
             return  View(entityList);
+        }
 
 
+        public async Task<ActionResult> Index( string currentFilter, string searchString, int? page)
+        {
+            int pageSize = 20;
+            if (searchString == null)
+            {
+                searchString = currentFilter;
+            }
+            Expression<Func<News, bool>> wherExpression = null;
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                wherExpression = s => s.Content.IsLike(searchString) || s.Title.IsLike(searchString) || s.Creater.IsLike(searchString) || s.LastModifier.IsLike(searchString);
+            }
+            int pageNumber = (page ?? 1);
+            ViewBag.CurrentPageIndex = pageNumber;
+
+            ViewBag.LastPageIndex = (await _newsDal.QueryCountAsync()) / pageSize;
+            ViewBag.CurrentFilter = searchString;
+            var entityList = await _newsDal.QueryPageAsync(wherExpression, t => t.LastModifyDate, false, pageNumber, pageSize);
  
+            return View(entityList);
         }
 
         // GET: /News/Details/5
@@ -64,6 +84,19 @@ namespace ItWebSite.Web.Controllers
             if (news == null)
             {
                 return HttpNotFound();
+            }
+            var nextEntity = await _newsDal.QueryByIdAsync(id + 1);
+            if (nextEntity != null)
+            {
+                ViewBag.NextId = nextEntity.Id;
+                ViewBag.NextTitle = nextEntity.Title;
+            }
+
+            var previousEntity = await _newsDal.QueryByIdAsync(id - 1);
+            if (previousEntity != null)
+            {
+                ViewBag.PriviousId = previousEntity.Id;
+                ViewBag.PriviousTitle = previousEntity.Title;
             }
             return View(news);
         }

@@ -63,7 +63,7 @@
     {
         <div>
             <h2>
-                <a href="/News/Details/@item.Id">@item.Title</a>
+                <a href="/News/Details/@item.Id" target="_blank">@item.Title</a>
             </h2>
             <div class="col-md-6">
                 <div class="pull-left">
@@ -76,7 +76,7 @@
                 </div>
             </div>
 
-            <p>@Html.Raw(item.Content.StripTagsRegex().ToSummary(100))</p>
+            <p>@Html.Raw(item.Content.StripTagsRegex().ToSummary(300))</p>
 
         </div>
     }
@@ -115,32 +115,32 @@
                 {
 
                     @:$("#btnPrevious").attr("disabled");
-                                                    if (ViewBag.CurrentPageIndex == 2)
+                    if (ViewBag.CurrentPageIndex == 2)
                     {
                         @:$("#btnTwo").css("border", "1px solid #e1e2e3");
-                                                    }
+                    }
                     else
                     {
                         @:$("#btnThree").css("border", "1px solid #e1e2e3");
-                                                    }
+                    }
                 }
                 else
                 {
                     @:$("#btnPrevious").attr("disabled", true);
-                                                    @:$("#btnPrevious").css("color", "Gray");
+                    @:$("#btnPrevious").css("color", "Gray");
 
                     @:$("#btnOne").css("border", "1px solid #e1e2e3");
-                                                }
+                }
 
                 @if (ViewBag.CurrentPageIndex < ViewBag.LastPageIndex)
                 {
                     @:$("#btnNext").attr("disabled");
-                                                }
+                }
                 else
                 {
                     @:$("#btnNext").attr("disabled", true);
-                                                    @:$("#btnNext").css("color", "Gray");
-                                                }
+                    @:$("#btnNext").css("color", "Gray");
+                }
             </script>
             <input id="currentPageIndex" type="hidden" value=@ViewBag.CurrentPageIndex />
         </td>

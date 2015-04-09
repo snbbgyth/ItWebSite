@@ -182,6 +182,15 @@ namespace ItWebSite.Crawler
             //Process data
         }
 
+        private static DateTime GetCreateTime(HtmlDocument document)
+        {
+            var createTime = document.GetElementbyId("post-date");
+             DateTime result;
+            if (DateTime.TryParse(createTime.InnerText, out result))
+                return result;
+            return DateTime.Now;
+        }
+
         static bool SaveContent(CrawledPage crawledPage)
         {
             try
@@ -190,11 +199,12 @@ namespace ItWebSite.Crawler
                 document.LoadHtml(crawledPage.Content.Text);
                 var title = document.GetElementbyId("cb_post_title_url");
                 var body = document.GetElementbyId("cnblogs_post_body");
+               
                 if (title == null || body == null || string.IsNullOrEmpty(crawledPage.Uri.ToString()))
                     return false;
                 if (_isSaveLocalFile)
                     SaveFile(title.InnerText, body.InnerHtml);
-                SaveBlogContent(title.InnerText, body.InnerHtml, crawledPage.Uri.ToString());
+                SaveBlogContent(title.InnerText, body.InnerHtml, crawledPage.Uri.ToString(),GetCreateTime(document));
                 return true;
             }
             catch (Exception ex)
@@ -221,7 +231,7 @@ namespace ItWebSite.Crawler
             }
         }
 
-        private static void SaveBlogContent(string title, string body, string sourceUrl)
+        private static void SaveBlogContent(string title, string body, string sourceUrl,DateTime createTime)
         {
             var blogContentTypeId = GetBlogContentTypeId(_blogContentTypeName);
             var entity = new BlogContent
@@ -230,8 +240,8 @@ namespace ItWebSite.Crawler
                 Content = body,
                 Creater = "snbbdx@sina.com",
                 LastModifier = "snbbdx@sina.com",
-                CreateDate = DateTime.Now,
-                LastModifyDate = DateTime.Now,
+                CreateDate = createTime,
+                LastModifyDate = createTime,
                 DisplayOrder = 1,
                 Title = title,
                 BlogFrom = "博客园",

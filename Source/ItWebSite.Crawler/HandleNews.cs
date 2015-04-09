@@ -182,22 +182,39 @@ namespace ItWebSite.Crawler
             //Process data
         }
 
+        private static  DateTime GetCreateTime(HtmlDocument document)
+        {
+            var nodes = document.DocumentNode.SelectNodes("//span").Where(t => t.Attributes.Any(s => s.Name == "class" && s.Value == "ago"));
+           var node= nodes.SingleOrDefault(t => ConvertToDateTime(t.InnerText) != DateTime.MinValue);
+            if (node != null)
+                return ConvertToDateTime(node.InnerText);
+            return DateTime.Now;
+        }
+
+        private static  DateTime ConvertToDateTime(string value)
+        {
+            DateTime result;
+            if (DateTime.TryParse(value, out result))
+                return result;
+            return DateTime.MinValue;
+        }
+
         static bool SaveContent(CrawledPage crawledPage)
         {
             try
             {
                 var document = new HtmlDocument();
                 document.LoadHtml(crawledPage.Content.Text);
-                var title = document.DocumentNode.SelectSingleNode("//title");
+                var title = document.DocumentNode.SelectNodes("//h1").SingleOrDefault(t => t.Attributes.Any(s => s.Name == "class" && s.Value == "title"));
                 var body = document.DocumentNode.SelectSingleNode("//body");
                 var summary =body.SelectNodes("//div").SingleOrDefault(t => t.Attributes.Any(s => s.Name == "class" && s.Value == "summary"));
-
+                var createTime = GetCreateTime(document);
                 body =body.SelectNodes("//div").SingleOrDefault(t => t.Attributes.Any(s => s.Name == "class" && s.Value == "con news_content"));
                 if (title == null || body == null || string.IsNullOrEmpty(crawledPage.Uri.ToString()))
                     return false;
                 if (_isSaveLocalFile)
                     SaveFile(title.InnerText, body.InnerHtml);
-                SaveNews(title.InnerText,summary==null?string.Empty:summary.InnerHtml, body.InnerHtml, crawledPage.Uri.ToString());
+                SaveNews(title.InnerText,summary==null?string.Empty:summary.InnerHtml, body.InnerHtml, crawledPage.Uri.ToString(),createTime);
                 return true;
             }
             catch (Exception ex)
@@ -224,7 +241,7 @@ namespace ItWebSite.Crawler
             }
         }
 
-        private static void SaveNews(string title,string summary, string body, string sourceUrl)
+        private static void SaveNews(string title,string summary, string body, string sourceUrl,DateTime createTime)
         {
             var typeId = GetNewsTypeId(_newsTypeName);
             var entity = new News
@@ -233,8 +250,8 @@ namespace ItWebSite.Crawler
                 Content = body,
                 Creater = "snbbdx@sina.com",
                 LastModifier = "snbbdx@sina.com",
-                CreateDate = DateTime.Now,
-                LastModifyDate = DateTime.Now,
+                CreateDate = createTime,
+                LastModifyDate = createTime,
                 DisplayOrder = 1,
                 Title = title,
                 NewsFrom = "CSDN",

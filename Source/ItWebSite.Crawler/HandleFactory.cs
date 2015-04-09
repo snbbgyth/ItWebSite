@@ -18,11 +18,22 @@ namespace ItWebSite.Crawler
                 return _newsCrawler;
             return _blogCrawler;
         }
+
+        public static ICrawler GetBlogCrawler()
+        {
+            return _blogCrawler;
+        }
+
+        public static ICrawler GetNewsCrawler()
+        {
+            return _newsCrawler;
+        }
     }
 
-    public    enum CrawlerType
+    public enum CrawlerType
     {
         CsdnNews=1,
-        CnBlogs=2
+        CnBlogs,
+        All
     }
 }

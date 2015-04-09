@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Configuration;
 using System.ServiceProcess;
+using System.Threading.Tasks;
 using ItWebSite.Crawler;
 
 namespace ItWebSiteCrawlerService
@@ -33,7 +34,7 @@ namespace ItWebSiteCrawlerService
 
         public static void RunAsConsole()
         {
-            HandleFactory.GetCrawler(Helper.GetCrawlerType()).Crawler(Helper.Url);
+            ExecuteHandler.Execute();
             Console.WriteLine("Input Q to exit.");
             while (string.Compare(Console.ReadLine(), ConsoleKey.Q.ToString(), StringComparison.OrdinalIgnoreCase) != 0)
             {
@@ -55,15 +56,48 @@ namespace ItWebSiteCrawlerService
 
     public class Helper
     {
-        public static string Url = ConfigurationManager.AppSettings["Url"];
+        public static string BlogUrl = ConfigurationManager.AppSettings["BlogUrl"];
+
+        public static string NewsUrl = ConfigurationManager.AppSettings["NewsUrl"];
 
         public static string CrawType = ConfigurationManager.AppSettings["CrawType"];
 
         public static CrawlerType GetCrawlerType()
         {
             CrawlerType crawlerType;
-            CrawlerType.TryParse(Helper.CrawType, out crawlerType);
+            CrawlerType.TryParse(CrawType, out crawlerType);
             return crawlerType;
+        }
+    }
+
+    public class ExecuteHandler
+    {
+        public static  void Execute()
+        {
+            var crawlerType = Helper.GetCrawlerType();
+            if (crawlerType == CrawlerType.CnBlogs)
+            {
+                RunBlogCrawler();
+            }
+            if (crawlerType == CrawlerType.CsdnNews)
+            {
+                RunNewsCrawler();
+            }
+            if (crawlerType == CrawlerType.All)
+            {
+                RunBlogCrawler();
+                RunNewsCrawler();
+            }
+        }
+
+        private static void RunBlogCrawler()
+        {
+            Task.Factory.StartNew(() => HandleFactory.GetBlogCrawler().Crawler(Helper.BlogUrl));
+        }
+
+        private static void RunNewsCrawler()
+        {
+            Task.Factory.StartNew(() => HandleFactory.GetNewsCrawler().Crawler(Helper.NewsUrl));
         }
     }
 }

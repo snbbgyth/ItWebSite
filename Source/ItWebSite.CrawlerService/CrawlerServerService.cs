@@ -14,8 +14,7 @@ namespace ItWebSiteCrawlerService
 
         protected override void OnStart(string[] args)
         {
-             
-            Task.Factory.StartNew(() => HandleFactory.GetCrawler(Helper.GetCrawlerType()).Crawler(Helper.Url));
+             ExecuteHandler.Execute();
         }
 
         protected override void OnStop()

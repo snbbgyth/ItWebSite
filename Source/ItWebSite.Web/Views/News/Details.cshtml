@@ -24,6 +24,52 @@
                 <div class="CompanyIntroBody">
                     @Html.Raw(Model.Content)
                 </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="pull-left">
+                            来源：<a href="#">@Html.DisplayFor(model => model.NewsFrom)</a>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="pull-right">
+                            来源Url：@Html.DisplayFor(model => model.NewsFromUrl)
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="pull-left">
+                            上一页：
+                            @{
+                                if (ViewBag.NextId != null)
+                                {
+                                    <a href="/News/Details/@ViewBag.NextId">@ViewBag.NextTitle</a>
+                                }
+                                else
+                                {
+                                    <a>没有了</a>
+                                }
+                            }
+
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="pull-right">
+                            下一页：
+                            @{
+                                if (ViewBag.PriviousId != null)
+                                {
+                                    <a href="/News/Details/@ViewBag.PriviousId">@ViewBag.PriviousTitle</a>
+                                }
+                                else
+                                {
+                                    <a>没有了</a>
+                                }
+                            }
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

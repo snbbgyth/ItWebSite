@@ -1,71 +1,69 @@
 ﻿@using System.Web.Mvc.Html
+@using ItWebSite.Core.DbModel;
 @using ItWebSite.Web.Help
-@model System.Collections.Generic.IEnumerable<ItWebSite.Core.DbModel.BlogContent>
+@model System.Collections.Generic.IEnumerable<News>
 
-@{
-    ViewBag.Title = "博客列表";
-}
-
-<h2>博客列表</h2>
 
 <script type="text/javascript">
-    $(document).ready(function () {
-        $("#btnNext").click(function () {
-            var nextPage = @ViewBag.CurrentPageIndex +1;
-            $.ajax({
-                url: '@Url.Action("Index", "BlogContents")',
-                data: { currentFilter: null, searchString: null, page: nextPage },
-                success: function (response) {
-                    $("body").html(response);
-                }
+        $(document).ready(function () {
+            $("#btnNext").click(function () {
+                var nextPage = @ViewBag.CurrentPageIndex +1;
+                $.ajax({
+                    url: '@Url.Action("Index", "News")',
+                    data: { currentFilter: null, searchString: null, page: nextPage },
+                    success: function (response) {
+                        $("body").html(response);
+                    }
+                });
             });
-        });
 
-        $("#btnPrevious").click(function () {
-            var previousPage = @ViewBag.CurrentPageIndex -1;
-            $.ajax({
-                url: '@Url.Action("Index", "BlogContents")',
-                data: { currentFilter: null, searchString: null, page: previousPage },
-                success: function (response) {
-                    $("body").html(response);
-                }
+            $("#btnPrevious").click(function () {
+                var previousPage = @ViewBag.CurrentPageIndex -1;
+                $.ajax({
+                    url: '@Url.Action("Index", "News")',
+                    data: { currentFilter: null, searchString: null, page: previousPage },
+                    success: function (response) {
+                        $("body").html(response);
+                    }
+                });
             });
-        });
-        $("#btnSkip").click(function () {
-            var skip2Page = $("#txtSkipTo").val();;
-            $.ajax({
-                url: '@Url.Action("Index", "BlogContents")',
-                data: { currentFilter: null, searchString: null, page: skip2Page },
-                success: function (response) {
-                    $("body").html(response);
-                }
+            $("#btnSkip").click(function () {
+                var skip2Page = $("#txtSkipTo").val();;
+                $.ajax({
+                    url: '@Url.Action("Index", "News")',
+                    data: { currentFilter: null, searchString: null, page: skip2Page },
+                    success: function (response) {
+                        $("body").html(response);
+                    }
+                });
             });
-        });
-    });
-    function NavigaePage(itemId) {
-        $.ajax({
 
-            url: '@Url.Action("Index", "BlogContents")',
-            data: { currentFilter: null, searchString: null, page: itemId },
-            success: function (response) {
-                $("body").html(response);
-            }
         });
-    }
+        function NavigaePage(itemId) {
+            $.ajax({
+
+                url: '@Url.Action("Index", "News")',
+                data: { currentFilter: null, searchString: null, page: itemId },
+                success: function (response) {
+                    $("body").html(response);
+                }
+            });
+        }
 </script>
-
-@using (Html.BeginForm("Index", "BlogContents", FormMethod.Get))
+<h2>@ViewBag.Title</h2>
+@using (Html.BeginForm("Index", "News", FormMethod.Get))
 {
     <p>
         输入查找内容: @Html.TextBox("SearchString", ViewBag.CurrentFilter as string)
         <input type="submit" value="Search" />
     </p>
 }
+
 @foreach (var item in Model)
 {
     <div>
         <h2>
-            <a href="/BlogContents/Details/@item.Id" target="_blank">@item.Title</a>
+            <a href="/News/Details/@item.Id" target="_blank">@item.Title</a>
         </h2>
         <div class="col-md-6">
             <div class="pull-left">
@@ -77,10 +75,11 @@
                 最后修改时间 @item.LastModifyDate
             </div>
         </div>
+
         <p>@Html.Raw(item.Content.StripTagsRegex().ToSummary(300))</p>
+
     </div>
 }
-
 
 @{
     int one = 1;
@@ -133,15 +132,15 @@
                     @:$("#btnOne").css("border", "1px solid #e1e2e3");
                 }
 
-            @if (ViewBag.CurrentPageIndex < ViewBag.LastPageIndex)
-            {
-                @:$("#btnNext").attr("disabled");
-            }
-            else
-            {
-                @:$("#btnNext").attr("disabled", true);
-                @:$("#btnNext").css("color", "Gray");
-            }
+                @if (ViewBag.CurrentPageIndex < ViewBag.LastPageIndex)
+                {
+                    @:$("#btnNext").attr("disabled");
+                }
+                else
+                {
+                    @:$("#btnNext").attr("disabled", true);
+                    @:$("#btnNext").css("color", "Gray");
+                }
         </script>
         <input id="currentPageIndex" type="hidden" value=@ViewBag.CurrentPageIndex />
     </td>
