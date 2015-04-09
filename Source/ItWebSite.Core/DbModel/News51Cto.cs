@@ -1,11 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Web.Mvc;
 using ItWebSite.Core.Model;
 
 namespace ItWebSite.Core.DbModel
 {
-    public class News : BaseTable
+    public class News51Cto: BaseTable
     {
         [DisplayName("标题")]
         public virtual string Title { get; set; }
