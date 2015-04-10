@@ -3,6 +3,7 @@ using System.Configuration;
 using System.ServiceProcess;
 using System.Threading.Tasks;
 using ItWebSite.Crawler;
+using ItWebSite.Crawler.BLL;
 using ItWebSite.Crawler.DAL;
 
 namespace ItWebSiteCrawlerService
@@ -57,9 +58,11 @@ namespace ItWebSiteCrawlerService
 
     public class Helper
     {
-        public static string BlogUrl = ConfigurationManager.AppSettings["BlogUrl"];
+        public static string CnBlogUrl = ConfigurationManager.AppSettings["CnBlogUrl"];
 
-        public static string NewsUrl = ConfigurationManager.AppSettings["NewsUrl"];
+        public static string CsdnNewsUrl = ConfigurationManager.AppSettings["CsdnNewsUrl"];
+
+        public static string News51CtoUrl = ConfigurationManager.AppSettings["News51CtoUrl"];
 
         public static string CrawType = ConfigurationManager.AppSettings["CrawType"];
 
@@ -84,21 +87,31 @@ namespace ItWebSiteCrawlerService
             {
                 RunNewsCrawler();
             }
+            if (crawlerType == CrawlerType.News51Cto)
+            {
+                Run51CtoCrawler();
+            }
             if (crawlerType == CrawlerType.All)
             {
                 RunBlogCrawler();
                 RunNewsCrawler();
+                Run51CtoCrawler();
             }
+        }
+
+        private static void Run51CtoCrawler()
+        {
+            Task.Factory.StartNew(() => HandleFactory.Get51CtoNewsCrawler().Crawler(Helper.News51CtoUrl));
         }
 
         private static void RunBlogCrawler()
         {
-            Task.Factory.StartNew(() => HandleFactory.GetBlogCrawler().Crawler(Helper.BlogUrl));
+            Task.Factory.StartNew(() => HandleFactory.GetBlogCrawler().Crawler(Helper.CnBlogUrl));
         }
 
         private static void RunNewsCrawler()
         {
-            Task.Factory.StartNew(() => HandleFactory.GetNewsCrawler().Crawler(Helper.NewsUrl));
+            Task.Factory.StartNew(() => HandleFactory.GetNewsCrawler().Crawler(Helper.CsdnNewsUrl));
         }
     }
 }

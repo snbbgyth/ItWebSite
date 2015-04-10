@@ -1,7 +1,6 @@
-﻿@model ItWebSite.Core.DbModel.News
-
+﻿@model ItWebSite.Core.DbModel.News51Cto
 @{
-    ViewBag.Title = "CSDN新闻";
+    ViewBag.Title = "51CTO新闻";
 }
 
 <body>
@@ -44,7 +43,7 @@
                             @{
                                 if (ViewBag.NextId != null)
                                 {
-                                    <a href="/News/Details/@ViewBag.NextId">@ViewBag.NextTitle</a>
+                                    <a href="/News51Cto/Details/@ViewBag.NextId">@ViewBag.NextTitle</a>
                                 }
                                 else
                                 {
@@ -60,7 +59,7 @@
                             @{
                                 if (ViewBag.PriviousId != null)
                                 {
-                                    <a href="/News/Details/@ViewBag.PriviousId">@ViewBag.PriviousTitle</a>
+                                    <a href="/News51Cto/Details/@ViewBag.PriviousId">@ViewBag.PriviousTitle</a>
                                 }
                                 else
                                 {

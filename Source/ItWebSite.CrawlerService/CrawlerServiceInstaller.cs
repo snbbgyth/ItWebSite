@@ -16,8 +16,8 @@ namespace ItWebSiteCrawlerService
 
             processInstaller.Account = ServiceAccount.LocalSystem;
             serviceInstaller.StartType = ServiceStartMode.Automatic;
-            serviceInstaller.ServiceName = "ItWebSiteCrawlerNewsService";
-            serviceInstaller.Description = "CSDN爬虫服务";
+            serviceInstaller.ServiceName = "ItWebSiteCrawlerService";
+            serviceInstaller.Description = "爬虫服务";
 
             Installers.Add(serviceInstaller);
             Installers.Add(processInstaller);

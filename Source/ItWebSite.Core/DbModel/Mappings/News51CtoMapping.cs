@@ -19,7 +19,7 @@ namespace ItWebSite.Core.DbModel.Mappings
             Map(x => x.LastModifyDate).Index("LastModifyDate");
 
             Map(x => x.IsPublish);
-            Map(x => x.Content).Length(int.MaxValue);
+            Map(x => x.Content).Length(50000);
             Map(x => x.Title);
             Map(x => x.NewsTypeId);
             Map(x => x.NewsFrom);

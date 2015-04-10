@@ -12,21 +12,22 @@ using ItWebSite.Core.DbModel;
 using ItWebSite.Core.IDAL;
 using ItWebSite.Web.Areas.Admin.Models;
 using NHibernate.Criterion;
-using PagedList;
 
 namespace ItWebSite.Web.Controllers
 {
-    public class BlogContentsController : Controller
+    public class News51CtoController : Controller
     {
-        private static IBlogContentDal _blogContentDal;
-        private static IBlogContentTypeDal _blogContentTypeDal;
+       // private ApplicationDbContext db = new ApplicationDbContext();
 
-        static BlogContentsController()
+        private static  INews51CtoDal _news51CtoDal;
+
+        static News51CtoController()
         {
-            _blogContentDal = DependencyResolver.Current.GetService<IBlogContentDal>();
-            _blogContentTypeDal = DependencyResolver.Current.GetService<IBlogContentTypeDal>();
+            _news51CtoDal = DependencyResolver.Current.GetService<INews51CtoDal>();
         }
 
+ 
+        // GET: News51Cto
         public async Task<ActionResult> Index(string currentFilter, string searchString, int? page)
         {
             int pageSize = 20;
@@ -34,57 +35,54 @@ namespace ItWebSite.Web.Controllers
             {
                 searchString = currentFilter;
             }
-
-            Expression<Func<BlogContent, bool>> wherExpression = t => t.Id > 0;
+            Expression<Func<News51Cto, bool>> wherExpression = null;
             if (!String.IsNullOrEmpty(searchString))
             {
                 wherExpression = s => s.Content.IsLike(searchString) || s.Title.IsLike(searchString) || s.Creater.IsLike(searchString) || s.LastModifier.IsLike(searchString);
             }
             int pageNumber = (page ?? 1);
             ViewBag.CurrentPageIndex = pageNumber;
-          
-            ViewBag.LastPageIndex =(await  _blogContentDal.QueryCountAsync())/pageSize ;
+
+            ViewBag.LastPageIndex = (await _news51CtoDal.QueryCountAsync()) / pageSize;
             ViewBag.CurrentFilter = searchString;
-            var entityList = await _blogContentDal.QueryPageAsync(wherExpression, t => t.LastModifyDate, false, pageNumber, pageSize);
+            var entityList = await _news51CtoDal.QueryPageAsync(wherExpression, t => t.LastModifyDate, false, pageNumber, pageSize);
+
             return View(entityList);
         }
 
- 
-
-        // GET: Admin/BlogContents/Details/5
+        // GET: /News/Details/5
         public async Task<ActionResult> Details(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            BlogContent blogContent = await _blogContentDal.QueryByIdAsync(id);
-            if (blogContent == null)
+            var news = await _news51CtoDal.QueryByIdAsync(id);
+            if (news == null)
             {
                 return HttpNotFound();
             }
-            
-            var nextEntity = await _blogContentDal.QueryByIdAsync(id+1);
+            var nextEntity = await _news51CtoDal.QueryByIdAsync(id + 1);
             if (nextEntity != null)
             {
                 ViewBag.NextId = nextEntity.Id;
                 ViewBag.NextTitle = nextEntity.Title;
             }
 
-            var previousEntity = await _blogContentDal.QueryByIdAsync(id-1);
+            var previousEntity = await _news51CtoDal.QueryByIdAsync(id - 1);
             if (previousEntity != null)
             {
                 ViewBag.PriviousId = previousEntity.Id;
                 ViewBag.PriviousTitle = previousEntity.Title;
             }
-            blogContent.BlogContentType = await _blogContentTypeDal.QueryByIdAsync(id);
-            return View(blogContent);
+            return View(news);
         }
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
-             
+            
             }
             base.Dispose(disposing);
         }

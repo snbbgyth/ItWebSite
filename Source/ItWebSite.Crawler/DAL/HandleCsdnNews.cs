@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using Abot.Crawler;
 using Abot.Poco;
 using Autofac;
@@ -17,46 +18,48 @@ using ItWebSite.Crawler.IDAL;
 
 namespace ItWebSite.Crawler.DAL
 {
-    public class Handle51CtoNews : HandleBase
+    public class HandleCsdnNews : HandleBase
     {
  
         private static INewsTypeDal _newsTypeDal;
-        private static string _newsTypeName = ConfigurationManager.AppSettings["News51CtoType"];
+        private static string _newsTypeName = ConfigurationManager.AppSettings["CSDNNewsType"];
 
-        public  Handle51CtoNews()
+        public HandleCsdnNews()
         {
+
             _newsTypeDal = Helper.Resolve<INewsTypeDal>();
         }
  
         private static DateTime GetCreateTime(HtmlDocument document)
         {
-            var node = document.DocumentNode.SelectNodes("//div").SingleOrDefault(t => t.Attributes.Any(s => s.Name == "class" && s.Value == "msg"));
-            var childNode = node.SelectSingleNode("//div");
-            if (childNode != null&&childNode.InnerText.Length>16)
+            var nodes = document.DocumentNode.SelectNodes("//span").Where(t => t.Attributes.Any(s => s.Name == "class" && s.Value == "ago"));
+            var node = nodes.SingleOrDefault(t => ConvertToDateTime(t.InnerText) != DateTime.MinValue);
+            if (node != null)
                 return ConvertToDateTime(node.InnerText);
             return DateTime.Now;
         }
 
         private static DateTime ConvertToDateTime(string value)
         {
-
             DateTime result;
-            if (DateTime.TryParse(value.Substring(0,16), out result))
+            if (DateTime.TryParse(value, out result))
                 return result;
             return DateTime.MinValue;
         }
 
         public override bool SaveContent(CrawledPage crawledPage)
         {
+            
             try
             {
-                if (!crawledPage.Uri.ToString().Contains("51cto.com/art")) return false;
+                if (!crawledPage.Uri.ToString().Contains("http://www.csdn.net/article")) return false;
                 var document = new HtmlDocument();
                 document.LoadHtml(crawledPage.Content.Text);
-                var title = document.DocumentNode.SelectSingleNode("//h1") ;
-                var body = document.GetElementbyId("content");
+                var title = document.DocumentNode.SelectNodes("//h1").SingleOrDefault(t => t.Attributes.Any(s => s.Name == "class" && s.Value == "title"));
+                var body = document.DocumentNode.SelectSingleNode("//body");
+                var summary = body.SelectNodes("//div").SingleOrDefault(t => t.Attributes.Any(s => s.Name == "class" && s.Value == "summary"));
                 var createTime = GetCreateTime(document);
-                var summary =document.DocumentNode.SelectNodes("//p").SingleOrDefault(t => t.Attributes.Any(s => s.Name == "class" && s.Value == "f14 green"));
+                body = body.SelectNodes("//div").SingleOrDefault(t => t.Attributes.Any(s => s.Name == "class" && s.Value == "con news_content"));
                 if (title == null || body == null || string.IsNullOrEmpty(crawledPage.Uri.ToString()))
                     return false;
                 if (_isSaveLocalFile)
@@ -91,7 +94,7 @@ namespace ItWebSite.Crawler.DAL
         private void SaveNews(string title, string summary, string body, string sourceUrl, DateTime createTime)
         {
             var typeId = GetNewsTypeId(_newsTypeName);
-            var entity = new News51Cto
+            var entity = new News
             {
                 NewsTypeId = typeId,
                 Content = body,
@@ -101,7 +104,7 @@ namespace ItWebSite.Crawler.DAL
                 LastModifyDate = createTime,
                 DisplayOrder = 1,
                 Title = title,
-                NewsFrom = "51CTO",
+                NewsFrom = "CSDN",
                 NewsFromUrl = sourceUrl,
                 Summary = summary
             };

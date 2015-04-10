@@ -5,6 +5,7 @@ using ItWebSite.Core.DAL;
 using ItWebSite.Core.DbModel;
 using ItWebSite.Core.IDAL;
 using ItWebSite.Core.QueueDAL;
+using ItWebSite.Crawler.Help;
 
 namespace ItWebSite.Crawler.DAL
 {
@@ -16,6 +17,8 @@ namespace ItWebSite.Crawler.DAL
 
         private static IBlogContentDal _blogContentDal;
         private static INewsDal _newsDal;
+        private static INews51CtoDal _news51CtoDal;
+
         public static HandlerQueue Instance
         {
             get
@@ -31,8 +34,9 @@ namespace ItWebSite.Crawler.DAL
 
         private HandlerQueue()
         {
-            _blogContentDal = HandlerBlog.Resolve<IBlogContentDal>();
-            _newsDal = HandlerBlog.Resolve<INewsDal>();
+            _blogContentDal = Helper.Resolve<IBlogContentDal>();
+            _newsDal = Helper.Resolve<INewsDal>();
+            _news51CtoDal = Helper.Resolve<INews51CtoDal>();
         }
 
         public override void OnNotify(dynamic entity)
@@ -47,6 +51,11 @@ namespace ItWebSite.Crawler.DAL
                 var news = entity as News;
                 Task.Factory.StartNew(() => HandleNews(news));
             }
+            if (entity is News51Cto)
+            {
+                var news = entity as News51Cto;
+                Task.Factory.StartNew(() => HandleNews51Cto(news));
+            }
         }
 
         private void HandleNews(News entity)
@@ -56,6 +65,20 @@ namespace ItWebSite.Crawler.DAL
                 if(!string.IsNullOrEmpty(entity.NewsFromUrl))
                 _newsDal.DeleteByNewsFromUrl(entity.NewsFromUrl);
                 _newsDal.Insert(entity);
+            }
+            catch (Exception ex)
+            {
+                LogInfoQueue.Instance.Insert(GetType(), MethodBase.GetCurrentMethod().Name, ex);
+            }
+        }
+
+        private void HandleNews51Cto(News51Cto entity)
+        {
+            try
+            {
+                if (!string.IsNullOrEmpty(entity.NewsFromUrl))
+                    _news51CtoDal.DeleteByNewsFromUrl(entity.NewsFromUrl);
+                _news51CtoDal.Insert(entity);
             }
             catch (Exception ex)
             {

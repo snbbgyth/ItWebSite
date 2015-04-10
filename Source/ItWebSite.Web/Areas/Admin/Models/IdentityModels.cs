@@ -38,5 +38,9 @@ namespace ItWebSite.Web.Areas.Admin.Models
             return new ApplicationDbContext();
         }
 
+        public System.Data.Entity.DbSet<ItWebSite.Core.DbModel.News51Cto> News51Cto { get; set; }
+
+        public System.Data.Entity.DbSet<ItWebSite.Core.DbModel.NewsType> NewsTypes { get; set; }
+
     }
 }

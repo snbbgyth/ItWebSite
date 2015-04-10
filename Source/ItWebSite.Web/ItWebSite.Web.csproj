@@ -235,6 +235,7 @@
     <Compile Include="Controllers\BlogContentsController.cs" />
     <Compile Include="Controllers\CommentsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\News51CtoController.cs" />
     <Compile Include="Controllers\NewsController.cs" />
     <Compile Include="Controllers\OrdersController.cs" />
     <Compile Include="Controllers\ProductsController.cs" />
@@ -931,6 +932,8 @@
     <Content Include="Views\BlogContents\Details.cshtml" />
     <Content Include="Views\BlogContents\Index.cshtml" />
     <Content Include="Views\News\Index.cshtml" />
+    <Content Include="Views\News51Cto\Details.cshtml" />
+    <Content Include="Views\News51Cto\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

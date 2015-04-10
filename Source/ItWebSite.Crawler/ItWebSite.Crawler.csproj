@@ -71,10 +71,10 @@
   <ItemGroup>
     <Compile Include="DAL\Handle51CtoNews.cs" />
     <Compile Include="DAL\HandleBase.cs" />
-    <Compile Include="DAL\HandleFactory.cs" />
-    <Compile Include="DAL\HandleNews.cs" />
+    <Compile Include="BLL\HandleFactory.cs" />
+    <Compile Include="DAL\HandleCsdnNews.cs" />
     <Compile Include="DAL\HandlerQueue.cs" />
-    <Compile Include="DAL\HandlerBlog.cs" />
+    <Compile Include="DAL\HandlerCnBlogs.cs" />
     <Compile Include="Help\Helper.cs" />
     <Compile Include="IDAL\ICrawler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

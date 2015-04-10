@@ -59,7 +59,7 @@ namespace ItWebSite.Crawler.DAL
             }
             catch (Exception ex)
             {
-                LogInfoQueue.Instance.Insert(typeof(HandleNews), MethodBase.GetCurrentMethod().Name, ex);
+                LogInfoQueue.Instance.Insert(typeof(HandleCsdnNews), MethodBase.GetCurrentMethod().Name, ex);
             }
         }
 
@@ -135,7 +135,7 @@ namespace ItWebSite.Crawler.DAL
         void crawler_ProcessPageCrawlCompleted(object sender, PageCrawlCompletedArgs e)
         {
             //Process data
-            if (e.CrawledPage.Uri.ToString().Contains("http://www.csdn.net/article"))
+        
                 SaveContent(e.CrawledPage);
         }
 
@@ -161,7 +161,7 @@ namespace ItWebSite.Crawler.DAL
 
 
 
-        string SavePath()
+       public string SavePath()
         {
             var basePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Config");
             if (!Directory.Exists(basePath))
