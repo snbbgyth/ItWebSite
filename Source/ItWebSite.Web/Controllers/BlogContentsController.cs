@@ -42,7 +42,6 @@ namespace ItWebSite.Web.Controllers
             }
             int pageNumber = (page ?? 1);
             ViewBag.CurrentPageIndex = pageNumber;
-          
             ViewBag.LastPageIndex =(await  _blogContentDal.QueryCountAsync())/pageSize ;
             ViewBag.CurrentFilter = searchString;
             var entityList = await _blogContentDal.QueryPageAsync(wherExpression, t => t.LastModifyDate, false, pageNumber, pageSize);

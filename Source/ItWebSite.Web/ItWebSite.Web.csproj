@@ -408,6 +408,7 @@
     <Content Include="Areas\Admin\Views\BlogContents\Details.cshtml" />
     <Content Include="Areas\Admin\Views\BlogContents\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\BlogContents\Index.cshtml" />
+    <None Include="Properties\PublishProfiles\ItWebSite.pubxml" />
     <None Include="Properties\PublishProfiles\SpringSoftwareWeb.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />

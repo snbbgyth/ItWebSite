@@ -33,15 +33,10 @@ namespace ItWebSite.Web.Areas.Admin.Controllers
         public async Task<ActionResult> Index(string currentFilter, string searchString, int? page)
         {
             int pageSize = 20;
-            if (searchString != null)
-            {
-                //page = 1;
-            }
-            else
+            if (searchString == null)
             {
                 searchString = currentFilter;
             }
-
             Expression<Func<BlogContent, bool>> wherExpression = t => t.Id > 0;
             if (!String.IsNullOrEmpty(searchString))
             {

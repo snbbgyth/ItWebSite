@@ -26,7 +26,6 @@ namespace ItWebSite.Crawler.DAL
 
         public HandleCsdnNews()
         {
-
             _newsTypeDal = Helper.Resolve<INewsTypeDal>();
         }
  

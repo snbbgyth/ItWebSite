@@ -43,8 +43,5 @@ namespace ItWebSiteCrawlerService
             return true;
         }
 
-      
-
-  
     }
 }
