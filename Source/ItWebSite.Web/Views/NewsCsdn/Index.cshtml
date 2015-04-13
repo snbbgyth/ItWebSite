@@ -1,72 +1,69 @@
 ﻿@using System.Web.Mvc.Html
+@using ItWebSite.Core.DbModel;
 @using ItWebSite.Web.Help
-@model System.Collections.Generic.IEnumerable<ItWebSite.Core.DbModel.BlogContent>
+@model System.Collections.Generic.IEnumerable<NewsCsdn>
 
-@{
-    ViewBag.Title = "技术分享网";
-}
-
-<h2>最新博客</h2>
 
 <script type="text/javascript">
-    $(document).ready(function () {
-        $("#btnNext").click(function () {
-            var nextPage = @ViewBag.CurrentPageIndex +1;
+        $(document).ready(function () {
+            $("#btnNext").click(function () {
+                var nextPage = @ViewBag.CurrentPageIndex +1;
+                $.ajax({
+                    url: '@Url.Action("Index", "NewsCsdn")',
+                    data: { currentFilter: null, searchString: null, page: nextPage },
+                    success: function (response) {
+                        $("body").html(response);
+                    }
+                });
+            });
+
+            $("#btnPrevious").click(function () {
+                var previousPage = @ViewBag.CurrentPageIndex -1;
+                $.ajax({
+                    url: '@Url.Action("Index", "NewsCsdn")',
+                    data: { currentFilter: null, searchString: null, page: previousPage },
+                    success: function (response) {
+                        $("body").html(response);
+                    }
+                });
+            });
+            $("#btnSkip").click(function () {
+                var skip2Page = $("#txtSkipTo").val();;
+                $.ajax({
+                    url: '@Url.Action("Index", "NewsCsdn")',
+                    data: { currentFilter: null, searchString: null, page: skip2Page },
+                    success: function (response) {
+                        $("body").html(response);
+                    }
+                });
+            });
+
+        });
+        function NavigaePage(itemId) {
             $.ajax({
-                url: '@Url.Action("Index", "Home")',
-                data: { currentFilter: null, searchString: null, page: nextPage },
+
+                url: '@Url.Action("Index", "NewsCsdn")',
+                data: { currentFilter: null, searchString: null, page: itemId },
                 success: function (response) {
                     $("body").html(response);
                 }
             });
-        });
-
-        $("#btnPrevious").click(function () {
-            var previousPage = @ViewBag.CurrentPageIndex -1;
-            $.ajax({
-                url: '@Url.Action("Index", "Home")',
-                data: { currentFilter: null, searchString: null, page: previousPage },
-                success: function (response) {
-                    $("body").html(response);
-                }
-            });
-        });
-        $("#btnSkip").click(function () {
-            var skip2Page = $("#txtSkipTo").val();;
-            $.ajax({
-                url: '@Url.Action("Index", "Home")',
-                data: { currentFilter: null, searchString: null, page: skip2Page },
-                success: function (response) {
-                    $("body").html(response);
-                }
-            });
-        });
-
-    });
-    function NavigaePage(itemId) {
-        $.ajax({
-
-            url: '@Url.Action("Index", "Home")',
-            data: { currentFilter: null, searchString: null, page: itemId },
-            success: function (response) {
-                $("body").html(response);
-            }
-        });
-    }
+        }
 </script>
-
-@using (Html.BeginForm("Index", "Home", FormMethod.Get))
+<h2>最新CSDN新闻</h2>
+@using (Html.BeginForm("Index", "NewsCsdn", FormMethod.Get))
 {
     <p>
         输入查找内容: @Html.TextBox("SearchString", ViewBag.CurrentFilter as string)
         <input type="submit" value="Search" />
     </p>
 }
+
 @foreach (var item in Model)
 {
     <div>
         <h2>
-            <a href="/BlogContents/Details/@item.Id" target="_blank">@item.Title</a>
+            <a href="/NewsCsdn/Details/@item.Id" target="_blank">@item.Title</a>
         </h2>
         <div class="col-md-6">
             <div class="pull-left">
@@ -78,10 +75,20 @@
                 最后修改时间 @item.LastModifyDate
             </div>
         </div>
+
+        @{
+    if (!string.IsNullOrEmpty(item.Summary))
+    {
+        <p>@Html.Raw(item.Summary.StripTagsRegex().ToSummary(300))</p>
+    }
+    else
+    {
         <p>@Html.Raw(item.Content.StripTagsRegex().ToSummary(300))</p>
+    }
+        }
+
     </div>
 }
-
 
 @{
     int one = 1;
@@ -89,6 +96,7 @@
     {
         one = ViewBag.CurrentPageIndex - 2;
     }
+
     var two = one + 1;
     var three = two + 1;
     var four = three + 1;
@@ -114,6 +122,7 @@
         <script type="text/javascript">
                 @if (ViewBag.CurrentPageIndex > 1)
                 {
+
                     @:$("#btnPrevious").attr("disabled");
                     if (ViewBag.CurrentPageIndex == 2)
                     {
@@ -128,18 +137,19 @@
                 {
                     @:$("#btnPrevious").attr("disabled", true);
                     @:$("#btnPrevious").css("color", "Gray");
+
                     @:$("#btnOne").css("border", "1px solid #e1e2e3");
                 }
 
-            @if (ViewBag.CurrentPageIndex < ViewBag.LastPageIndex)
-            {
-                @:$("#btnNext").attr("disabled");
-            }
-            else
-            {
-                @:$("#btnNext").attr("disabled", true);
-                @:$("#btnNext").css("color", "Gray");
-            }
+                @if (ViewBag.CurrentPageIndex < ViewBag.LastPageIndex)
+                {
+                    @:$("#btnNext").attr("disabled");
+                }
+                else
+                {
+                    @:$("#btnNext").attr("disabled", true);
+                    @:$("#btnNext").css("color", "Gray");
+                }
         </script>
         <input id="currentPageIndex" type="hidden" value=@ViewBag.CurrentPageIndex />
     </td>

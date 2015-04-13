@@ -1,79 +1,92 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.Entity;
 using System.Linq;
-using System.Net;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
+using System.Net;
+using System.Web;
 using System.Web.Mvc;
 using ItWebSite.Core.DbModel;
 using ItWebSite.Core.IDAL;
+using ItWebSite.Web.Areas.Admin.Models;
 using ItWebSite.Web.DAL;
-using ItWebSite.Web.DAL.MySql;
-using PagedList;
+using NHibernate.Criterion;
 
 namespace ItWebSite.Web.Areas.Admin.Controllers
 {
-    [MyAuthorize(Roles = "Admin,Edit")]
-    public class NewsController : BaseController
+    public class News51CtoController : BaseController
     {
-        private INewsDal _newsDal;
-        private INewsTypeDal _newsTypeDal;
+        //private ApplicationDbContext db = new ApplicationDbContext();
 
-        public NewsController()
+        private static INews51CtoDal _news51CtoDal;
+
+        private static INewsTypeDal _newsTypeDal;
+
+        static News51CtoController()
         {
-            _newsDal = DependencyResolver.Current.GetService<INewsDal>();
+            _news51CtoDal = DependencyResolver.Current.GetService<INews51CtoDal>();
             _newsTypeDal = DependencyResolver.Current.GetService<INewsTypeDal>();
         }
-        // GET: /News/
+
+        // GET: Admin/News51Cto
         public async Task<ActionResult> Index(string currentFilter, string searchString, int? page)
         {
-            if (searchString != null)
-            {
-                page = 1;
-            }
-            else
+            int pageSize = 20;
+            if (searchString == null)
             {
                 searchString = currentFilter;
             }
-            ViewBag.CurrentFilter = searchString;
-            IEnumerable<News> entityList = await _newsDal.QueryAllAsync();
-            if (entityList.Any())
+            Expression<Func<News51Cto, bool>> wherExpression = null;
+            if (!String.IsNullOrEmpty(searchString))
             {
-                if (!String.IsNullOrEmpty(searchString))
-                {
-                    entityList = entityList.Where(s => (s.Content != null && s.Content.Contains(searchString))
-                                                                                          || (s.Title != null && s.Title.Contains(searchString))
-                                                                                          || (s.Creater != null && s.Creater.Contains(searchString))
-                                                                                          || (s.LastModifier != null && s.LastModifier.Contains(searchString)));
-
-                }
-                entityList = entityList.OrderByDescending(s => s.LastModifyDate);
+                wherExpression = s => s.Content.IsLike(searchString) || s.Title.IsLike(searchString) || s.Creater.IsLike(searchString) || s.LastModifier.IsLike(searchString);
             }
-            int pageSize = 20;
             int pageNumber = (page ?? 1);
-            return View(entityList.ToPagedList(pageNumber, pageSize));
+            ViewBag.CurrentPageIndex = pageNumber;
+
+            ViewBag.LastPageIndex = (await _news51CtoDal.QueryCountAsync()) / pageSize;
+            ViewBag.CurrentFilter = searchString;
+            var entityList = await _news51CtoDal.QueryPageAsync(wherExpression, t => t.LastModifyDate, false, pageNumber, pageSize);
+
+            return View(entityList);
         }
 
-        // GET: /News/Details/5
+        // GET: Admin/News51Cto/Details/5
         public async Task<ActionResult> Details(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            var news = await _newsDal.QueryByIdAsync(id);
+            var news = await _news51CtoDal.QueryByIdAsync(id);
             if (news == null)
             {
                 return HttpNotFound();
             }
+            var nextEntity = await _news51CtoDal.QueryByIdAsync(id + 1);
+            if (nextEntity != null)
+            {
+                ViewBag.NextId = nextEntity.Id;
+                ViewBag.NextTitle = nextEntity.Title;
+            }
+
+            var previousEntity = await _news51CtoDal.QueryByIdAsync(id - 1);
+            if (previousEntity != null)
+            {
+                ViewBag.PriviousId = previousEntity.Id;
+                ViewBag.PriviousTitle = previousEntity.Title;
+            }
             return View(news);
         }
 
-        // GET: /News/Create
+        // GET: Admin/News51Cto/Create
         public async Task<ActionResult> Create()
         {
-            var news = new News();
-            news.NewsTypeList = await _newsTypeDal.QueryAllAsync();
-            return View(news);
+            var news51Cto = new News51Cto();
+            news51Cto.NewsTypeList = await _newsTypeDal.QueryAllAsync();
+            return View(news51Cto);
         }
 
         // POST: /News/Create
@@ -81,15 +94,15 @@ namespace ItWebSite.Web.Areas.Admin.Controllers
         // 详细信息，请参阅 http://go.microsoft.com/fwlink/?LinkId=317598。
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind(Include = "Id,Title,Content,IsPublish,NewsType,NewsTypeList,CreateDate,LastModifyDate,IsDelete,Creater,LastModifier")] News news)
+        public async Task<ActionResult> Create(  News51Cto news51Cto)
         {
             if (ModelState.IsValid)
             {
-                InitInsert(news);
-                await _newsDal.InsertAsync(news);
+                InitInsert(news51Cto);
+                await _news51CtoDal.InsertAsync(news51Cto);
                 return RedirectToAction("Index");
             }
-            return View(news);
+            return View(news51Cto);
         }
 
         // GET: /News/Edit/5
@@ -99,7 +112,7 @@ namespace ItWebSite.Web.Areas.Admin.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            var news = await _newsDal.QueryByIdAsync(id);
+            var news = await _news51CtoDal.QueryByIdAsync(id);
             if (news == null)
             {
                 return HttpNotFound();
@@ -113,15 +126,15 @@ namespace ItWebSite.Web.Areas.Admin.Controllers
         // 详细信息，请参阅 http://go.microsoft.com/fwlink/?LinkId=317598。
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit([Bind(Include = "Id,Title,Content,IsPublish,NewsType,NewsTypeList,CreateDate,LastModifyDate,IsDelete,Creater,LastModifier")] News news)
+        public async Task<ActionResult> Edit(  News51Cto news51Cto)
         {
             if (ModelState.IsValid)
             {
-                news.LastModifier = User.Identity.Name;
-                await _newsDal.ModifyAsync(news);
+                news51Cto.LastModifier = User.Identity.Name;
+                await _news51CtoDal.ModifyAsync(news51Cto);
                 return RedirectToAction("Index");
             }
-            return View(news);
+            return View(news51Cto);
         }
 
         // GET: /News/Delete/5
@@ -131,12 +144,12 @@ namespace ItWebSite.Web.Areas.Admin.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            News news = await _newsDal.QueryByIdAsync(id);
-            if (news == null)
+            var news51Cto = await _news51CtoDal.QueryByIdAsync(id);
+            if (news51Cto == null)
             {
                 return HttpNotFound();
             }
-            return View(news);
+            return View(news51Cto);
         }
 
         // POST: /News/Delete/5
@@ -144,15 +157,16 @@ namespace ItWebSite.Web.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(int id)
         {
-            await _newsDal.DeleteByIdAsync(id);
+            await _news51CtoDal.DeleteByIdAsync(id);
             return RedirectToAction("Index");
         }
+
 
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
-                //db.Dispose();
+          
             }
             base.Dispose(disposing);
         }

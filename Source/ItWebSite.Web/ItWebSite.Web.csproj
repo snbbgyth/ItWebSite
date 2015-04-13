@@ -217,7 +217,8 @@
     <Compile Include="Areas\Admin\Controllers\CommentsController.cs" />
     <Compile Include="Areas\Admin\Controllers\HomeController.cs" />
     <Compile Include="Areas\Admin\Controllers\ManageController.cs" />
-    <Compile Include="Areas\Admin\Controllers\NewsController.cs" />
+    <Compile Include="Areas\Admin\Controllers\News51CtoController.cs" />
+    <Compile Include="Areas\Admin\Controllers\NewsCsdnController.cs" />
     <Compile Include="Areas\Admin\Controllers\NewsTypesController.cs" />
     <Compile Include="Areas\Admin\Controllers\OrdersController.cs" />
     <Compile Include="Areas\Admin\Controllers\ProductsController.cs" />
@@ -236,7 +237,7 @@
     <Compile Include="Controllers\CommentsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\News51CtoController.cs" />
-    <Compile Include="Controllers\NewsController.cs" />
+    <Compile Include="Controllers\NewsCsdnController.cs" />
     <Compile Include="Controllers\OrdersController.cs" />
     <Compile Include="Controllers\ProductsController.cs" />
     <Compile Include="Controllers\ShopCartItemsController.cs" />
@@ -259,6 +260,7 @@
     </Compile>
     <Compile Include="Help\Extentions.cs" />
     <Compile Include="DAL\Manage\ImageManage.cs" />
+    <Compile Include="Help\Filter.cs" />
     <Compile Include="Help\NullJsonResult.cs" />
     <Compile Include="Areas\Admin\Models\AccountViewModels.cs" />
     <Compile Include="Areas\Admin\Models\IdentityModels.cs" />
@@ -324,11 +326,11 @@
     <Content Include="Images\Product\Web\7.jpg" />
     <Content Include="Areas\Admin\Views\_ViewStart.cshtml" />
     <Content Include="Areas\Admin\Views\Shared\_Layout.cshtml" />
-    <Content Include="Areas\Admin\Views\News\Create.cshtml" />
-    <Content Include="Areas\Admin\Views\News\Delete.cshtml" />
-    <Content Include="Areas\Admin\Views\News\Details.cshtml" />
-    <Content Include="Areas\Admin\Views\News\Edit.cshtml" />
-    <Content Include="Areas\Admin\Views\News\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\NewsCsdn\Create.cshtml" />
+    <Content Include="Areas\Admin\Views\NewsCsdn\Delete.cshtml" />
+    <Content Include="Areas\Admin\Views\NewsCsdn\Details.cshtml" />
+    <Content Include="Areas\Admin\Views\NewsCsdn\Edit.cshtml" />
+    <Content Include="Areas\Admin\Views\NewsCsdn\Index.cshtml" />
     <Content Include="Areas\Admin\Views\NewsTypes\Create.cshtml" />
     <Content Include="Areas\Admin\Views\NewsTypes\Delete.cshtml" />
     <Content Include="Areas\Admin\Views\NewsTypes\Details.cshtml" />
@@ -408,6 +410,11 @@
     <Content Include="Areas\Admin\Views\BlogContents\Details.cshtml" />
     <Content Include="Areas\Admin\Views\BlogContents\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\BlogContents\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\News51Cto\Create.cshtml" />
+    <Content Include="Areas\Admin\Views\News51Cto\Delete.cshtml" />
+    <Content Include="Areas\Admin\Views\News51Cto\Details.cshtml" />
+    <Content Include="Areas\Admin\Views\News51Cto\Edit.cshtml" />
+    <Content Include="Areas\Admin\Views\News51Cto\Index.cshtml" />
     <None Include="Properties\PublishProfiles\ItWebSite.pubxml" />
     <None Include="Properties\PublishProfiles\SpringSoftwareWeb.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
@@ -879,7 +886,7 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Shared\Lockout.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
-    <Content Include="Views\News\Details.cshtml" />
+    <Content Include="Views\NewsCsdn\Details.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\tinymce_jquery_full_compressed.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\tinymce_jquery_full.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\tinymce_jquery_classic_compressed.cshtml" />
@@ -929,10 +936,10 @@
     <Content Include="Views\Orders\Submit.cshtml" />
     <Content Include="Views\Orders\Complete.cshtml" />
     <Content Include="Views\Products\ShowIndex.cshtml" />
-    <Content Include="Views\News\ShowIndex.cshtml" />
+    <Content Include="Views\NewsCsdn\ShowIndex.cshtml" />
     <Content Include="Views\BlogContents\Details.cshtml" />
     <Content Include="Views\BlogContents\Index.cshtml" />
-    <Content Include="Views\News\Index.cshtml" />
+    <Content Include="Views\NewsCsdn\Index.cshtml" />
     <Content Include="Views\News51Cto\Details.cshtml" />
     <Content Include="Views\News51Cto\Index.cshtml" />
   </ItemGroup>

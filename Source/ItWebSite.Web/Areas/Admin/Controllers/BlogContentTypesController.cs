@@ -66,14 +66,14 @@ namespace ItWebSite.Web.Areas.Admin.Controllers
                         break;
                 }
             }
-            Expression<Func<BlogContentType, bool>> wherExpression = t => t.Id > 0;
+            Expression<Func<BlogContentType, bool>> whereExpression = t => t.Id > 0;
             if (!String.IsNullOrEmpty(searchString))
             {
-                wherExpression = s => (s.Name != null && s.Name.IsLike(searchString))
+                whereExpression = s => (s.Name != null && s.Name.IsLike(searchString))
                                                                       || (s.Creater != null && s.Creater.IsLike(searchString))
                                                                       || (s.LastModifier != null && s.LastModifier.IsLike(searchString));
             }
-            var entityList = await _blogContentTypeDal.QueryPageAsync(wherExpression, orderByExpression, isAsc, pageNumber, pageSize);
+            var entityList = await _blogContentTypeDal.QueryPageAsync(whereExpression, orderByExpression, isAsc, pageNumber, pageSize);
 
             return View(entityList.ToPagedList(pageNumber, pageSize));
         }

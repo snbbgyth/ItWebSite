@@ -5,52 +5,52 @@
 
 
 <script type="text/javascript">
-        $(document).ready(function () {
-            $("#btnNext").click(function () {
-                var nextPage = @ViewBag.CurrentPageIndex +1;
-                $.ajax({
-                    url: '@Url.Action("Index", "News51Cto")',
-                    data: { currentFilter: null, searchString: null, page: nextPage },
-                    success: function (response) {
-                        $("body").html(response);
-                    }
-                });
-            });
-
-            $("#btnPrevious").click(function () {
-                var previousPage = @ViewBag.CurrentPageIndex -1;
-                $.ajax({
-                    url: '@Url.Action("Index", "News51Cto")',
-                    data: { currentFilter: null, searchString: null, page: previousPage },
-                    success: function (response) {
-                        $("body").html(response);
-                    }
-                });
-            });
-            $("#btnSkip").click(function () {
-                var skip2Page = $("#txtSkipTo").val();;
-                $.ajax({
-                    url: '@Url.Action("Index", "News51Cto")',
-                    data: { currentFilter: null, searchString: null, page: skip2Page },
-                    success: function (response) {
-                        $("body").html(response);
-                    }
-                });
-            });
-
-        });
-        function NavigaePage(itemId) {
+    $(document).ready(function () {
+        $("#btnNext").click(function () {
+            var nextPage = @ViewBag.CurrentPageIndex +1;
             $.ajax({
-
                 url: '@Url.Action("Index", "News51Cto")',
-                data: { currentFilter: null, searchString: null, page: itemId },
+                data: { currentFilter: null, searchString: null, page: nextPage },
                 success: function (response) {
                     $("body").html(response);
                 }
             });
-        }
+        });
+
+        $("#btnPrevious").click(function () {
+            var previousPage = @ViewBag.CurrentPageIndex -1;
+            $.ajax({
+                url: '@Url.Action("Index", "News51Cto")',
+                data: { currentFilter: null, searchString: null, page: previousPage },
+                success: function (response) {
+                    $("body").html(response);
+                }
+            });
+        });
+        $("#btnSkip").click(function () {
+            var skip2Page = $("#txtSkipTo").val();;
+            $.ajax({
+                url: '@Url.Action("Index", "News51Cto")',
+                data: { currentFilter: null, searchString: null, page: skip2Page },
+                success: function (response) {
+                    $("body").html(response);
+                }
+            });
+        });
+
+    });
+    function NavigaePage(itemId) {
+        $.ajax({
+
+            url: '@Url.Action("Index", "News51Cto")',
+            data: { currentFilter: null, searchString: null, page: itemId },
+            success: function (response) {
+                $("body").html(response);
+            }
+        });
+    }
 </script>
-<h2>最新新闻</h2>
+<h2>最新51CTO新闻</h2>
 @using (Html.BeginForm("Index", "News51Cto", FormMethod.Get))
 {
     <p>
@@ -75,8 +75,17 @@
                 最后修改时间 @item.LastModifyDate
             </div>
         </div>
-
+        @{
+    if (!string.IsNullOrEmpty(item.Summary))
+    {
+        <p>@Html.Raw(item.Summary.StripTagsRegex().ToSummary(300))</p>
+    }
+    else
+    {
         <p>@Html.Raw(item.Content.StripTagsRegex().ToSummary(300))</p>
+    }
+        }
+
 
     </div>
 }
@@ -116,32 +125,32 @@
                 {
 
                     @:$("#btnPrevious").attr("disabled");
-                                    if (ViewBag.CurrentPageIndex == 2)
+                                                    if (ViewBag.CurrentPageIndex == 2)
                     {
                         @:$("#btnTwo").css("border", "1px solid #e1e2e3");
-                                    }
+                                                    }
                     else
                     {
                         @:$("#btnThree").css("border", "1px solid #e1e2e3");
-                                    }
+                                                    }
                 }
                 else
                 {
                     @:$("#btnPrevious").attr("disabled", true);
-                                    @:$("#btnPrevious").css("color", "Gray");
+                                                    @:$("#btnPrevious").css("color", "Gray");
 
                     @:$("#btnOne").css("border", "1px solid #e1e2e3");
-                                }
+                                                }
 
                 @if (ViewBag.CurrentPageIndex < ViewBag.LastPageIndex)
                 {
                     @:$("#btnNext").attr("disabled");
-                                }
+                                                }
                 else
                 {
                     @:$("#btnNext").attr("disabled", true);
-                                    @:$("#btnNext").css("color", "Gray");
-                                }
+                                                    @:$("#btnNext").css("color", "Gray");
+                                                }
             </script>
             <input id="currentPageIndex" type="hidden" value=@ViewBag.CurrentPageIndex />
         </td>

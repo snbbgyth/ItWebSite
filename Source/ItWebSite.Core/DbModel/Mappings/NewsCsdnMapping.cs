@@ -2,9 +2,9 @@
 
 namespace ItWebSite.Core.DbModel.Mappings
 {
-    public class NewsMapping : ClassMap<News>
+    public class NewsCsdnMapping : ClassMap<NewsCsdn>
     {
-        public NewsMapping()
+        public NewsCsdnMapping()
         {
             Id(x => x.Id).UniqueKey("Id").GeneratedBy.Identity();
             Map(x => x.CreateDate);

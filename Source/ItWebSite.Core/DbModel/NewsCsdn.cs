@@ -5,7 +5,7 @@ using ItWebSite.Core.Model;
 
 namespace ItWebSite.Core.DbModel
 {
-    public class News : BaseTable
+    public class NewsCsdn : BaseTable
     {
         [DisplayName("标题")]
         public virtual string Title { get; set; }

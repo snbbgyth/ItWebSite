@@ -97,7 +97,7 @@ namespace ItWebSite.Core.DAL
                     _fluentConfig = Fluently.Configure()
                         .Database((MySQLConfiguration.Standard.ConnectionString(c => c.FromConnectionStringWithKey("DefaultConnection"))))
                         //.Database(SQLiteConfiguration.Standard.UsingFile(UtilHelper.SqliteFilePath))
-                                            .Mappings(m => m.FluentMappings.AddFromAssemblyOf<News>());
+                                            .Mappings(m => m.FluentMappings.AddFromAssemblyOf<NewsCsdn>());
                     //m.AutoMappings.Add(CreateAutomappings));
                     BuildSchema(_fluentConfig.BuildConfiguration());
                 }

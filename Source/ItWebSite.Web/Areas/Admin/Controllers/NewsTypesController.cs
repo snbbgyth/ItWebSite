@@ -28,7 +28,6 @@ namespace ItWebSite.Web.Areas.Admin.Controllers
 
             ViewBag.CurrentSort = sortOrder;
             ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
-
             if (searchString != null)
             {
                 page = 1;
@@ -37,7 +36,6 @@ namespace ItWebSite.Web.Areas.Admin.Controllers
             {
                 searchString = currentFilter;
             }
-
             ViewBag.CurrentFilter = searchString;
 
             IEnumerable<NewsType> entityList = await _newsTypeDal.QueryAllAsync();

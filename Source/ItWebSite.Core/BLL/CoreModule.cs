@@ -13,7 +13,7 @@ namespace ItWebSite.Core.BLL
             builder.RegisterType<FluentNHibernateDal>().As<IFluentNHibernate>().SingleInstance();
             builder.Register(c => c.Resolve<IFluentNHibernate>().GetSession()).As<ISession>();
             builder.RegisterType<OtherLogInfoDal>().As<IOtherLogInfo>();
-            builder.RegisterType<NewsDal>().As<INewsDal>();
+            builder.RegisterType<NewsCsdnDal>().As<INewsCsdnDal>();
             builder.RegisterType<NewsTypeDal>().As<INewsTypeDal>();
             builder.RegisterType<CommentDal>().As<ICommentDal>();
             builder.RegisterType<OrderDal>().As<IOrderDal>();

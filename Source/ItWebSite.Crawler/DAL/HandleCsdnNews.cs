@@ -93,7 +93,7 @@ namespace ItWebSite.Crawler.DAL
         private void SaveNews(string title, string summary, string body, string sourceUrl, DateTime createTime)
         {
             var typeId = GetNewsTypeId(_newsTypeName);
-            var entity = new News
+            var entity = new NewsCsdn
             {
                 NewsTypeId = typeId,
                 Content = body,

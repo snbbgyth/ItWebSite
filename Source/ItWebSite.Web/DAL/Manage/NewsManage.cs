@@ -8,12 +8,12 @@ namespace ItWebSite.Web.DAL.Manage
 {
     public static  class NewsManage
     {
-        private static INewsDal _newsDal;
+        private static INewsCsdnDal _newsDal;
         private static INewsTypeDal _newsTypeDal;
 
         static NewsManage()
         {
-            _newsDal = DependencyResolver.Current.GetService<INewsDal>();
+            _newsDal = DependencyResolver.Current.GetService<INewsCsdnDal>();
             _newsTypeDal = DependencyResolver.Current.GetService<INewsTypeDal>();
             _newsTypeList = _newsTypeDal.QueryAll();
         }

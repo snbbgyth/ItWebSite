@@ -6,7 +6,7 @@ using ItWebSite.Core.QueueDAL;
 
 namespace ItWebSite.Core.DAL
 {
-    public class NewsDal : DataOperationActivityBase<News>, INewsDal
+    public class NewsCsdnDal : DataOperationActivityBase<NewsCsdn>, INewsCsdnDal
     {
         public virtual int DeleteByNewsFromUrl(string url)
         {
@@ -16,7 +16,7 @@ namespace ItWebSite.Core.DAL
             {
                 using (var session = FluentNHibernateDal.Instance.GetSession())
                 {
-                    session.Delete(string.Format("from {0} where NewsFromUrl = '{1}'", typeof(News).Name, url));
+                    session.Delete(string.Format("from {0} where NewsFromUrl = '{1}'", typeof(NewsCsdn).Name, url));
                     session.Flush();
                 }
             }

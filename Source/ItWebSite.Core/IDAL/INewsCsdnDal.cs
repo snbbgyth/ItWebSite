@@ -2,7 +2,7 @@
 
 namespace ItWebSite.Core.IDAL
 {
-    public interface INewsDal : IDataOperationActivity<News>
+    public interface INewsCsdnDal : IDataOperationActivity<NewsCsdn>
     {
         int DeleteByNewsFromUrl(string url);
     }

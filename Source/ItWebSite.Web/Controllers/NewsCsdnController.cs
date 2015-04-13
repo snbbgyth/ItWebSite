@@ -13,13 +13,13 @@ using PagedList;
 
 namespace ItWebSite.Web.Controllers
 {
-    public class NewsController : Controller
+    public class NewsCsdnController : Controller
     {
-        private INewsDal _newsDal;
+        private INewsCsdnDal _newsDal;
 
-        public NewsController()
+        public NewsCsdnController()
         {
-            _newsDal = DependencyResolver.Current.GetService<INewsDal>();
+            _newsDal = DependencyResolver.Current.GetService<INewsCsdnDal>();
         }
 
         public async Task<ActionResult> ShowIndex(int id, string currentFilter, string searchString, int? page)
@@ -34,7 +34,7 @@ namespace ItWebSite.Web.Controllers
                 searchString = currentFilter;
             }
 
-            Expression<Func<News, bool>> wherExpression = t => t.NewsTypeId==id;
+            Expression<Func<NewsCsdn, bool>> wherExpression = t => t.NewsTypeId==id;
             if (!String.IsNullOrEmpty(searchString))
             {
                 wherExpression = s => s.Content.IsLike(searchString) || s.Title.IsLike(searchString) || s.Creater.IsLike(searchString) || s.LastModifier.IsLike(searchString);
@@ -58,7 +58,7 @@ namespace ItWebSite.Web.Controllers
             {
                 searchString = currentFilter;
             }
-            Expression<Func<News, bool>> wherExpression = null;
+            Expression<Func<NewsCsdn, bool>> wherExpression = null;
             if (!String.IsNullOrEmpty(searchString))
             {
                 wherExpression = s => s.Content.IsLike(searchString) || s.Title.IsLike(searchString) || s.Creater.IsLike(searchString) || s.LastModifier.IsLike(searchString);

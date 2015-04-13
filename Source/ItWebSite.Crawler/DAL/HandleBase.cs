@@ -38,24 +38,19 @@ namespace ItWebSite.Crawler.DAL
                 crawler = GetDefaultWebCrawler();
                 //crawler = GetManuallyConfiguredWebCrawler();
                 //crawler = GetCustomBehaviorUsingLambdaWebCrawler();
-
                 //Subscribe to any of these asynchronous events, there are also sychronous versions of each.
                 //This is where you process data about specific events of the crawl
                 crawler.PageCrawlStartingAsync += crawler_ProcessPageCrawlStarting;
                 crawler.PageCrawlCompletedAsync += crawler_ProcessPageCrawlCompleted;
                 crawler.PageCrawlDisallowedAsync += crawler_PageCrawlDisallowed;
                 crawler.PageLinksCrawlDisallowedAsync += crawler_PageLinksCrawlDisallowed;
-
                 //Start the crawl
                 //This is a synchronous call
                 CrawlResult result = crawler.Crawl(uriToCrawl);
-
                 //Now go view the log.txt file that is in the same directory as this executable. It has
                 //all the statements that you were trying to read in the console window :).
                 //Not enough data being logged? Change the app.config file's log4net log level from "INFO" TO "DEBUG"
-
-                PrintDisclaimer();
-
+                //PrintDisclaimer();
             }
             catch (Exception ex)
             {
@@ -135,8 +130,8 @@ namespace ItWebSite.Crawler.DAL
         void crawler_ProcessPageCrawlCompleted(object sender, PageCrawlCompletedArgs e)
         {
             //Process data
-        
-                SaveContent(e.CrawledPage);
+            SaveContent(e.CrawledPage);
+         
         }
 
         void crawler_PageLinksCrawlDisallowed(object sender, PageLinksCrawlDisallowedArgs e)
@@ -159,9 +154,7 @@ namespace ItWebSite.Crawler.DAL
 
         public abstract bool SaveContent(CrawledPage crawledPage);
 
-
-
-       public string SavePath()
+        public string SavePath()
         {
             var basePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Config");
             if (!Directory.Exists(basePath))

@@ -16,7 +16,7 @@ namespace ItWebSite.Crawler.DAL
         private static HandlerQueue _instance;
 
         private static IBlogContentDal _blogContentDal;
-        private static INewsDal _newsDal;
+        private static INewsCsdnDal _newsDal;
         private static INews51CtoDal _news51CtoDal;
 
         public static HandlerQueue Instance
@@ -35,7 +35,7 @@ namespace ItWebSite.Crawler.DAL
         private HandlerQueue()
         {
             _blogContentDal = Helper.Resolve<IBlogContentDal>();
-            _newsDal = Helper.Resolve<INewsDal>();
+            _newsDal = Helper.Resolve<INewsCsdnDal>();
             _news51CtoDal = Helper.Resolve<INews51CtoDal>();
         }
 
@@ -46,9 +46,9 @@ namespace ItWebSite.Crawler.DAL
                 var blogContent = entity as BlogContent;
                 Task.Factory.StartNew(() => HandleBlogContent(blogContent));
             }
-            if (entity is News)
+            if (entity is NewsCsdn)
             {
-                var news = entity as News;
+                var news = entity as NewsCsdn;
                 Task.Factory.StartNew(() => HandleNews(news));
             }
             if (entity is News51Cto)
@@ -58,7 +58,7 @@ namespace ItWebSite.Crawler.DAL
             }
         }
 
-        private void HandleNews(News entity)
+        private void HandleNews(NewsCsdn entity)
         {
             try
             {

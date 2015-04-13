@@ -8,19 +8,34 @@ namespace ItWebSite.Web.Help
 {
     public static class Extentions
     {
-        public static string ToSummary(this string content,int count)
+        public static string ToSummary(this string content, int count)
         {
             if (string.IsNullOrEmpty(content) || content.Length < count)
                 return content;
             return content.Substring(0, count) + ".........";
         }
 
+       
+
         public static string StripTagsRegex(this string source)
         {
             if (string.IsNullOrEmpty(source)) return string.Empty;
-            return Regex.Replace(source, "<.*?>", string.Empty);
+            //return Regex.Replace(source, "<.*?>", string.Empty);
+
+            string stroutput = source;
+            //Regex regex = new Regex(@"<.*?>");
+
+
+            stroutput = StripTagsCharArray(stroutput);
+
+            var scriptRegex = new Regex(@"(?s)<\s?script.*?(/\s?>|<\s?/\s?script\s?>)");
+            stroutput = scriptRegex.Replace(stroutput, "");
+            //stroutput = FilterScript(stroutput);
+            return stroutput;
+
         }
 
+      
         /// <summary>
         /// Compiled regular expression for performance.
         /// </summary>

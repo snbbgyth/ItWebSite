@@ -92,7 +92,7 @@
     <Compile Include="DAL\DataOperationActivityBase.cs" />
     <Compile Include="DAL\FluentNHibernateDal.cs" />
     <Compile Include="DAL\News51CtoDal.cs" />
-    <Compile Include="DAL\NewsDal.cs" />
+    <Compile Include="DAL\NewsCsdnDal.cs" />
     <Compile Include="DAL\NewsTypeDal.cs" />
     <Compile Include="DAL\OrderDal.cs" />
     <Compile Include="DAL\OrderItemDal.cs" />
@@ -114,7 +114,7 @@
     <Compile Include="DbModel\Mappings\BlogContentMapping.cs" />
     <Compile Include="DbModel\Mappings\BlogContentTypeMapping.cs" />
     <Compile Include="DbModel\Mappings\CommentMapping.cs" />
-    <Compile Include="DbModel\Mappings\NewsMapping.cs" />
+    <Compile Include="DbModel\Mappings\NewsCsdnMapping.cs" />
     <Compile Include="DbModel\Mappings\NewsTypeMapping.cs" />
     <Compile Include="DbModel\Mappings\OrderItemMapping.cs" />
     <Compile Include="DbModel\Mappings\OrderMapping.cs" />
@@ -126,7 +126,7 @@
     <Compile Include="DbModel\Mappings\ShopCartItemMapping.cs" />
     <Compile Include="DbModel\Mappings\WebContentMapping.cs" />
     <Compile Include="DbModel\Mappings\WebContentTypeMapping.cs" />
-    <Compile Include="DbModel\News.cs" />
+    <Compile Include="DbModel\NewsCsdn.cs" />
     <Compile Include="DbModel\NewsType.cs" />
     <Compile Include="DbModel\Order.cs" />
     <Compile Include="DbModel\OrderItem.cs" />
@@ -147,7 +147,7 @@
     <Compile Include="IDAL\IDataOperationActivity.cs" />
     <Compile Include="IDAL\IFluentNHibernate.cs" />
     <Compile Include="IDAL\INews51CtoDal.cs" />
-    <Compile Include="IDAL\INewsDal.cs" />
+    <Compile Include="IDAL\INewsCsdnDal.cs" />
     <Compile Include="IDAL\INewsTypeDal.cs" />
     <Compile Include="IDAL\IOrderDal.cs" />
     <Compile Include="IDAL\IOrderItemDal.cs" />

@@ -1,5 +1,5 @@
 ﻿@using System.Web.Mvc.Html
-@model ItWebSite.Core.DbModel.News
+@model ItWebSite.Core.DbModel.NewsCsdn
 
 @{
     ViewBag.Title = "祥细";
@@ -26,7 +26,18 @@
                 <div class="CompanyIntroBody">
                     @Html.Raw(Model.Content)
                 </div>
-    
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="pull-left">
+                            来源：<a href="#">@Html.DisplayFor(model => model.NewsFrom)</a>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="pull-right">
+                            来源Url：@Html.DisplayFor(model => model.NewsFromUrl)
+                        </div>
+                    </div>
+                </div>
                 <div class="row">
                     <div class="col-md-6">
                         <div class="pull-left">

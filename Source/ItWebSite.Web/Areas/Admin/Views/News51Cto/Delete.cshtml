@@ -1,0 +1,89 @@
+﻿@using System.Web.Mvc.Html
+@model ItWebSite.Core.DbModel.News51Cto
+
+@{
+    ViewBag.Title = "删除51CTO新闻";
+}
+<h2>删除51CTO新闻</h2>
+
+<h3>确定删除这篇51CTO新闻?</h3>
+<div>
+
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Title)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Title)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Content)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Content)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.IsPublish)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.IsPublish)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CreateDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CreateDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.LastModifyDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.LastModifyDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.IsDelete)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.IsDelete)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Creater)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Creater)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.LastModifier)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.LastModifier)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="删除" class="btn btn-default" /> |
+            @Html.ActionLink("返回列表", "Index")
+        </div>
+    }
+</div>

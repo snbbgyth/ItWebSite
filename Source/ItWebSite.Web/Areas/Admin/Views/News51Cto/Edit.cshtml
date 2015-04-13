@@ -1,10 +1,10 @@
 ﻿@using System.Web.Mvc.Html
 @using System.Web.Optimization
-@model ItWebSite.Core.DbModel.News
+@model ItWebSite.Core.DbModel.News51Cto
 @{
-    ViewBag.Title = "编辑";
+    ViewBag.Title = "编辑51CTO新闻";
 }
-<h2>编辑新闻</h2>
+<h2>编辑51CTO新闻</h2>
 
 @using (Html.BeginForm())
 {
@@ -34,7 +34,7 @@
         <div class="form-group">
             @Html.LabelFor(model => model.NewsType.Name, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.DropDownListFor(model => model.NewsType.Id, Model.NewsTypeList.Select(t => new SelectListItem
+                @Html.DropDownListFor(model => model.NewsTypeId, Model.NewsTypeList.Select(t => new SelectListItem
                 {
                     Text = t.Name,
                     Value = t.Id.ToString()

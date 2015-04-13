@@ -1,15 +1,15 @@
 ﻿@using System.Web.Mvc.Html
 @using ItWebSite.Core.DbModel;
 @using ItWebSite.Web.Help
-@model System.Collections.Generic.IEnumerable<News>
+@model System.Collections.Generic.IEnumerable<NewsCsdn>
 
 
-    <script type="text/javascript">
+<script type="text/javascript">
         $(document).ready(function () {
             $("#btnNext").click(function () {
                 var nextPage = @ViewBag.CurrentPageIndex +1;
                 $.ajax({
-                    url: '@Url.Action("ShowIndex", "News")',
+                    url: '@Url.Action("Index", "NewsCsdn")',
                     data: { currentFilter: null, searchString: null, page: nextPage },
                     success: function (response) {
                         $("body").html(response);
@@ -20,7 +20,7 @@
             $("#btnPrevious").click(function () {
                 var previousPage = @ViewBag.CurrentPageIndex -1;
                 $.ajax({
-                    url: '@Url.Action("ShowIndex", "News")',
+                    url: '@Url.Action("Index", "NewsCsdn")',
                     data: { currentFilter: null, searchString: null, page: previousPage },
                     success: function (response) {
                         $("body").html(response);
@@ -30,7 +30,7 @@
             $("#btnSkip").click(function () {
                 var skip2Page = $("#txtSkipTo").val();;
                 $.ajax({
-                    url: '@Url.Action("ShowIndex", "News")',
+                    url: '@Url.Action("Index", "NewsCsdn")',
                     data: { currentFilter: null, searchString: null, page: skip2Page },
                     success: function (response) {
                         $("body").html(response);
@@ -42,58 +42,68 @@
         function NavigaePage(itemId) {
             $.ajax({
 
-                url: '@Url.Action("ShowIndex", "News")',
+                url: '@Url.Action("Index", "NewsCsdn")',
                 data: { currentFilter: null, searchString: null, page: itemId },
                 success: function (response) {
                     $("body").html(response);
                 }
             });
         }
-    </script>
-    <h2>@ViewBag.Title</h2>
-    @using (Html.BeginForm("ShowIndex", "News", new { id = @ViewBag.NewsTypeId, }, FormMethod.Get))
-    {
-        <p>
-            输入查找内容: @Html.TextBox("SearchString", ViewBag.CurrentFilter as string)
-            <input type="submit" value="Search" />
-        </p>
-    }
+</script>
+<h2>最新CSDN新闻</h2>
+@using (Html.BeginForm("Index", "NewsCsdn", FormMethod.Get))
+{
+    <p>
+        输入查找内容: @Html.TextBox("SearchString", ViewBag.CurrentFilter as string)
+        <input type="submit" value="Search" />
+    </p>
+}
 
-    @foreach (var item in Model)
-    {
-        <div>
-            <h2>
-                <a href="/News/Details/@item.Id" target="_blank">@item.Title</a>
-            </h2>
-            <div class="col-md-6">
-                <div class="pull-left">
-                    来源：<a href="#">@item.Creater</a>
-                </div>
+@foreach (var item in Model)
+{
+    <div>
+        <h2>
+            <a href="/NewsCsdn/Details/@item.Id" target="_blank">@item.Title</a>
+        </h2>
+        <div class="col-md-6">
+            <div class="pull-left">
+                来源：<a href="#">@item.Creater</a>
             </div>
-            <div class="col-md-6">
-                <div class="pull-right">
-                    最后修改时间 @item.LastModifyDate
-                </div>
-            </div>
-
-            <p>@Html.Raw(item.Content.StripTagsRegex().ToSummary(300))</p>
-
         </div>
+        <div class="col-md-6">
+            <div class="pull-right">
+                最后修改时间 @item.LastModifyDate
+            </div>
+        </div>
+
+        <p>@Html.Raw(item.Content.StripTagsRegex().ToSummary(300))</p>
+        <div class="col-md-6">
+            <div class="pull-left">
+                @Html.ActionLink("编辑", "Edit", new { id = item.Id })
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="pull-right">
+                @Html.ActionLink("删除", "Delete", new { id = item.Id })
+            </div>
+        </div>
+    </div>
+}
+
+@{
+    int one = 1;
+    if (ViewBag.CurrentPageIndex > 2)
+    {
+        one = ViewBag.CurrentPageIndex - 2;
     }
 
-    @{
-        int one = 1;
-        if (ViewBag.CurrentPageIndex > 2)
-        {
-            one = ViewBag.CurrentPageIndex - 2;
-        }
-
-        var two = one + 1;
-        var three = two + 1;
-        var four = three + 1;
-        var five = four + 1;
-        var totalPage = "总页数是：" + ViewBag.LastPageIndex;
-    }
+    var two = one + 1;
+    var three = two + 1;
+    var four = three + 1;
+    var five = four + 1;
+    var totalPage = "总页数是：" + ViewBag.LastPageIndex;
+}
+<div>
     <tr>
         <td></td>
         <td></td>
@@ -113,7 +123,6 @@
             <script type="text/javascript">
                 @if (ViewBag.CurrentPageIndex > 1)
                 {
-
                     @:$("#btnPrevious").attr("disabled");
                     if (ViewBag.CurrentPageIndex == 2)
                     {
@@ -128,7 +137,6 @@
                 {
                     @:$("#btnPrevious").attr("disabled", true);
                     @:$("#btnPrevious").css("color", "Gray");
-
                     @:$("#btnOne").css("border", "1px solid #e1e2e3");
                 }
 
@@ -145,3 +153,4 @@
             <input id="currentPageIndex" type="hidden" value=@ViewBag.CurrentPageIndex />
         </td>
     </tr>
+</div>
