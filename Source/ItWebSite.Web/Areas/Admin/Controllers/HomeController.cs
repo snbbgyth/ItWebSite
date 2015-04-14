@@ -1,8 +1,9 @@
 ﻿using System.Web.Mvc;
+using ItWebSite.Web.DAL;
 
 namespace ItWebSite.Web.Areas.Admin.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : BaseController
     {
         // GET: Admin/Home
         public ActionResult Index()

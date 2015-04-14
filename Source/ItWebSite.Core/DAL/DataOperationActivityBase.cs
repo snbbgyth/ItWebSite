@@ -273,7 +273,7 @@ namespace ItWebSite.Core.DAL
             {
                 using (var session = FluentNHibernateDal.Instance.GetSession())
                 {
-                    return session.QueryOver<T>().OrderBy(t => t.CreateDate).Desc.Take(count).List<T>();
+                    return session.QueryOver<T>().OrderBy(t => t.LastModifyDate).Desc.Take(count).List<T>();
                 }
             }
             catch (Exception ex)

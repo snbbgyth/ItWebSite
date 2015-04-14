@@ -12,7 +12,7 @@ namespace ItWebSite.Web.Help
         {
             if (string.IsNullOrEmpty(content) || content.Length < count)
                 return content;
-            return content.Substring(0, count) + ".........";
+            return content.Substring(0, count) + "...";
         }
 
        

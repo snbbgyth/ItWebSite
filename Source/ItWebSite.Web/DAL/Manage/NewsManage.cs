@@ -8,13 +8,15 @@ namespace ItWebSite.Web.DAL.Manage
 {
     public static  class NewsManage
     {
-        private static INewsCsdnDal _newsDal;
+        private static INewsCsdnDal _newsCsdnDal;
+        private static INews51CtoDal _news51CtoDal;
         private static INewsTypeDal _newsTypeDal;
 
         static NewsManage()
         {
-            _newsDal = DependencyResolver.Current.GetService<INewsCsdnDal>();
+            _newsCsdnDal = DependencyResolver.Current.GetService<INewsCsdnDal>();
             _newsTypeDal = DependencyResolver.Current.GetService<INewsTypeDal>();
+            _news51CtoDal = DependencyResolver.Current.GetService<INews51CtoDal>();
             _newsTypeList = _newsTypeDal.QueryAll();
         }
 
@@ -47,5 +49,14 @@ namespace ItWebSite.Web.DAL.Manage
             _newsTypeList = _newsTypeDal.QueryAll();
         }
 
+        public static IEnumerable<News51Cto> QueryTop51CtoNews(int count)
+        {
+            return _news51CtoDal.QueryLast(count);
+        }
+
+        public static IEnumerable<NewsCsdn> QueryTopCsdnNews(int count)
+        {
+            return _newsCsdnDal.QueryLast(count);
+        }
     }
 }

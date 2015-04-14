@@ -7,121 +7,64 @@
 
 @{
     var lastComments = CommentManage.LastComments(10);
-    var lastUsers =   UserRoleManage.QueryLast(10);
-    var lastOrders = OrderManage.LastOrders(10);
+    var newsCsdns = NewsManage.QueryTopCsdnNews(10);
+    var news51Ctos = NewsManage.QueryTop51CtoNews(10);
+    var cnBlogs = BlogContentManage.QueryTopCsdnBlogs(10);
 }
-<h4>最近10条留言</h4>
-
-<table class="table">
-    <tr>
-        <th>
-            用户名
-        </th>
-        <th>
-            手机号码
-        </th>
-        <th>
-            内容
-        </th>
-        <th>
-            最后修改时间
-        </th>
-        <th>
-            创建时间
-        </th>
-        <th>
-            最后修改时间
-        </th>
-    </tr>
-    @foreach (var item in lastComments)
-    {
-        <tr>
-            <td>
-                <a href="Comments/Details/@item.Id">@item.UserName</a>
-               
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Phone)
-            </td>
-
-            <td>
-                @Html.Raw(item.Content.StripTagsRegex().ToSummary(100))
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.LastModifyDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Creater)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.LastModifier)
-            </td>
-        </tr>
-    }
-</table>
-
-
-<h4>最近10位注册用户</h4>
-<table class="table">
-    <tr>
-        <th>
-            用户名
-        </th>
-    </tr>
-    @foreach (var item in lastUsers)
-    {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.UserName)
-            </td>
- 
-        </tr>
-    }
-</table>
-
-@{
-    if (lastOrders!=null&& lastOrders.Any())
-    { 
-<h4>最近10个己付款订单</h4>
-        <table class="table">
-            <tr>
-                <th>
-                    订单号
-                </th>
-                <th>
-                    客户名
-                </th>
-                <th>
-                    手机号
-                </th>
-                <th>
-                    收货地址
-                </th>
-                <th>
-                    订单金额
-                </th>
-            </tr>
-
-            @foreach (var item in lastOrders)
+<div>
+    <div class="col-md-6">
+        <div class="pull-left">
+            <h3>最新博客园博客</h3>
+            @foreach (var item in cnBlogs)
             {
-                <tr>
-                    <td>
-                        <a href="Orders/Details/@item.Id">@item.OrderNumber</a>
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.CustomerName)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.CustomerPhone)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.ReceiveAddress)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.TotalPrice)
-                    </td>
-                </tr>
+                <div>
+                    <h4>
+                        <a href="/Admin/BlogContents/Details/@item.Id" target="_blank">@item.Title</a>
+                    </h4>
+                </div>
             }
-        </table>
-    }
-}
+        </div>
+    </div>
+    <div class="col-md-6">
+        @*<div class="pull-right">*@
+            <h3>最新CSDN新闻</h3>
+            @foreach (var item in newsCsdns)
+            {
+                <div>
+                    <h4>
+                        <a href="/Admin/NewsCsdn/Details/@item.Id" target="_blank">@item.Title</a>
+                    </h4>
+                </div>
+            }
+       @* </div>*@
+    </div>
+</div>
+
+<div>
+    <div class="col-md-6">
+        <div class="pull-left">
+            <h3>最新51CTO新闻</h3>
+            @foreach (var item in news51Ctos)
+            {
+                <div>
+                    <h4>
+                        <a href="/Admin/News51Cto/Details/@item.Id" target="_blank">@item.Title.ToSummary(20)</a>
+                    </h4>
+                </div>
+            }
+        </div>
+    </div>
+    <div class="col-md-6">
+        @*<div class="pull-right">*@
+            <h3>最近10条留言</h3>
+            @foreach (var item in lastComments)
+            {
+                <div>
+                    <h4>
+                        <a href="/Admin/Comments/Details/@item.Id" target="_blank">@item.UserName</a>
+                    </h4>
+                </div>
+            }
+        @*</div>*@
+    </div>
+</div>

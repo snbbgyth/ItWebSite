@@ -24,32 +24,10 @@ namespace ItWebSite.Web.Controllers
             _blogContentTypeDal = DependencyResolver.Current.GetService<IBlogContentTypeDal>();
         }
 
-        public async Task<ActionResult> Index(string currentFilter, string searchString, int? page)
+        public async Task<ActionResult> Index()
         {
-            int pageSize = 20;
-            if (searchString != null)
-            {
-                //page = 1;
-            }
-            else
-            {
-                searchString = currentFilter;
-            }
-
-            Expression<Func<BlogContent, bool>> wherExpression =null;
-            if (!String.IsNullOrEmpty(searchString))
-            {
-                wherExpression = s => s.Content.IsLike(searchString) || s.Title.IsLike(searchString) || s.Creater.IsLike(searchString) || s.LastModifier.IsLike(searchString);
-            }
-            int pageNumber = (page ?? 1);
-            ViewBag.CurrentPageIndex = pageNumber;
-
-            ViewBag.LastPageIndex = (await _blogContentDal.QueryCountAsync()) / pageSize;
-            ViewBag.CurrentFilter = searchString;
-            var entityList = await _blogContentDal.QueryPageAsync(wherExpression, t => t.LastModifyDate, false, pageNumber, pageSize);
-            return View(entityList);
+            return View();
         }
-
 
         public async Task<ActionResult> About()
         {

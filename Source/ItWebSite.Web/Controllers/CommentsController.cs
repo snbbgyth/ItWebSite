@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using System.Web.Mvc;
 using ItWebSite.Core.DbModel;
 using ItWebSite.Core.IDAL;
@@ -44,6 +45,8 @@ namespace ItWebSite.Web.Controllers
 
         private void InitAuthor(Comment comment)
         {
+            comment.CreateDate = DateTime.Now;
+            comment.LastModifyDate = DateTime.Now;
             if (User.Identity.IsAuthenticated)
             {
                 comment.Creater = User.Identity.Name;
