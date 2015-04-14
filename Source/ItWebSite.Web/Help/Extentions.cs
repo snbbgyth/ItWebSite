@@ -12,7 +12,9 @@ namespace ItWebSite.Web.Help
         {
             if (string.IsNullOrEmpty(content) || content.Trim().Length < count)
                 return content;
-            return content.Trim().Substring(0, count) + "...";
+            var result = content.Trim().Replace(" ", "");
+            if (result.Length < count) return result;
+            return result.Substring(0, count) + "...";
         }
 
        
