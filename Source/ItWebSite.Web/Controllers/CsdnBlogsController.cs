@@ -12,18 +12,17 @@ using ItWebSite.Core.DbModel;
 using ItWebSite.Core.IDAL;
 using ItWebSite.Web.Areas.Admin.Models;
 using NHibernate.Criterion;
-using PagedList;
 
 namespace ItWebSite.Web.Controllers
 {
-    public class BlogContentsController : Controller
+    public class CsdnBlogsController: Controller
     {
-        private static IBlogContentDal _blogContentDal;
+        private static ICsdnBlogDal _blogContentDal;
         private static IBlogContentTypeDal _blogContentTypeDal;
 
-        static BlogContentsController()
+        static CsdnBlogsController()
         {
-            _blogContentDal = DependencyResolver.Current.GetService<IBlogContentDal>();
+            _blogContentDal = DependencyResolver.Current.GetService<ICsdnBlogDal>();
             _blogContentTypeDal = DependencyResolver.Current.GetService<IBlogContentTypeDal>();
         }
 
@@ -35,7 +34,7 @@ namespace ItWebSite.Web.Controllers
                 searchString = currentFilter;
             }
 
-            Expression<Func<BlogContent, bool>> wherExpression = t => t.Id > 0;
+            Expression<Func<CsdnBlog, bool>> wherExpression = t => t.Id > 0;
             if (!String.IsNullOrEmpty(searchString))
             {
                 wherExpression = s => s.Content.IsLike(searchString) || s.Title.IsLike(searchString) || s.Creater.IsLike(searchString) || s.LastModifier.IsLike(searchString);
@@ -57,7 +56,7 @@ namespace ItWebSite.Web.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            BlogContent blogContent = await _blogContentDal.QueryByIdAsync(id);
+            CsdnBlog blogContent = await _blogContentDal.QueryByIdAsync(id);
             if (blogContent == null)
             {
                 return HttpNotFound();

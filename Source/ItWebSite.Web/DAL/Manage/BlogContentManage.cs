@@ -10,19 +10,27 @@ namespace ItWebSite.Web.DAL.Manage
 {
     public class BlogContentManage
     {
-        private static IBlogContentDal _blogContentDal;
+        private static ICnblogsBlogDal _cnblogsBlogDal;
 
         private static IBlogContentTypeDal _blogContentTypeDal;
 
+        private static ICsdnBlogDal _csdnBlogDal;
+
         static BlogContentManage()
         {
-            _blogContentDal = DependencyResolver.Current.GetService<IBlogContentDal>();
+            _cnblogsBlogDal = DependencyResolver.Current.GetService<ICnblogsBlogDal>();
             _blogContentTypeDal = DependencyResolver.Current.GetService<IBlogContentTypeDal>();
+            _csdnBlogDal = DependencyResolver.Current.GetService<ICsdnBlogDal>();
         }
 
-        public static IEnumerable<BlogContent> QueryTopCsdnBlogs(int count)
+        public static IEnumerable<CnblogsBlog> QueryTopCnBlogs(int count)
         {
-            return _blogContentDal.QueryLast(count);
+            return _cnblogsBlogDal.QueryLast(count);
+        }
+
+        public static IEnumerable<CsdnBlog> QueryTopCsdnBlogs(int count)
+        {
+            return _csdnBlogDal.QueryLast(count);
         }
 
     }

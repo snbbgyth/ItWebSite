@@ -69,10 +69,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DAL\Handle51CtoNews.cs" />
-    <Compile Include="DAL\HandleBase.cs" />
+    <Compile Include="DAL\Handler51CtoNews.cs" />
+    <Compile Include="DAL\HandlerBase.cs" />
     <Compile Include="BLL\HandleFactory.cs" />
-    <Compile Include="DAL\HandleCsdnNews.cs" />
+    <Compile Include="DAL\HandlerCsdnNews.cs" />
+    <Compile Include="DAL\HandlerCsdnBlog.cs" />
     <Compile Include="DAL\HandlerQueue.cs" />
     <Compile Include="DAL\HandlerCnBlogs.cs" />
     <Compile Include="Help\Helper.cs" />

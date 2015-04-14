@@ -97,8 +97,13 @@
                                 <li>@Html.ActionLink("51CTO新闻", "Index", "News51Cto")</li>
                             </ul>
                         </li>
-       
-                        <li>@Html.ActionLink("博客", "Index", "BlogContents")</li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">博客<span class="caret"></span></a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li>@Html.ActionLink("博客园博客", "Index", "CnblogsBlogs")</li>
+                                <li>@Html.ActionLink("CSDN博客", "Index", "CsdnBlogs")</li>
+                            </ul>
+                        </li>
                         <li>@Html.ActionLink("权限", "Index", "RolesAdmin")</li>
                         <li>@Html.ActionLink("用户", "Index", "UsersAdmin")</li>
                         <li>@Html.ActionLink("留言", "Index", "Comments")</li>

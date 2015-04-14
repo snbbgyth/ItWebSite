@@ -16,12 +16,12 @@ using ItWebSite.Crawler.IDAL;
 
 namespace ItWebSite.Crawler.DAL
 {
-    public abstract class HandleBase : ICrawler
+    public abstract class HandlerBase : ICrawler
     {
 
         public static bool _isSaveLocalFile;
 
-        static HandleBase()
+        static HandlerBase()
         {
             _isSaveLocalFile = Convert.ToBoolean(ConfigurationManager.AppSettings["IsSaveLocalFile"]);
         }
@@ -54,7 +54,7 @@ namespace ItWebSite.Crawler.DAL
             }
             catch (Exception ex)
             {
-                LogInfoQueue.Instance.Insert(typeof(HandleCsdnNews), MethodBase.GetCurrentMethod().Name, ex);
+                LogInfoQueue.Instance.Insert(typeof(HandlerCsdnNews), MethodBase.GetCurrentMethod().Name, ex);
             }
         }
 

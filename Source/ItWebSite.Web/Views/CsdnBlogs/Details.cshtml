@@ -1,4 +1,4 @@
-﻿@model ItWebSite.Core.DbModel.BlogContent
+﻿@model ItWebSite.Core.DbModel.CsdnBlog
 
 @{
     ViewBag.Title = @Model.Title;
@@ -45,7 +45,7 @@
                             @{
                                 if (ViewBag.NextId != null)
                                 {
-                                    <a href="/BlogContents/Details/@ViewBag.NextId">@ViewBag.NextTitle</a>
+                                    <a href="/CsdnBlogs/Details/@ViewBag.NextId">@ViewBag.NextTitle</a>
                                 }
                                 else
                                 {
@@ -61,7 +61,7 @@
                             @{
                                 if (ViewBag.PriviousId != null)
                                 {
-                                    <a href="/BlogContents/Details/@ViewBag.PriviousId">@ViewBag.PriviousTitle</a>
+                                    <a href="/CsdnBlogs/Details/@ViewBag.PriviousId">@ViewBag.PriviousTitle</a>
                                 }
                                 else
                                 {

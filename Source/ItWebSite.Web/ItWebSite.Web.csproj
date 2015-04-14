@@ -212,9 +212,10 @@
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
     <Compile Include="Areas\Admin\BundleConfig.cs" />
     <Compile Include="Areas\Admin\Controllers\AccountController.cs" />
-    <Compile Include="Areas\Admin\Controllers\BlogContentsController.cs" />
+    <Compile Include="Areas\Admin\Controllers\CnblogsBlogsController.cs" />
     <Compile Include="Areas\Admin\Controllers\BlogContentTypesController.cs" />
     <Compile Include="Areas\Admin\Controllers\CommentsController.cs" />
+    <Compile Include="Areas\Admin\Controllers\CsdnBlogsController.cs" />
     <Compile Include="Areas\Admin\Controllers\HomeController.cs" />
     <Compile Include="Areas\Admin\Controllers\ManageController.cs" />
     <Compile Include="Areas\Admin\Controllers\News51CtoController.cs" />
@@ -233,8 +234,9 @@
     <Compile Include="Areas\Admin\Models\UserRoleViewModel.cs" />
     <Compile Include="Areas\Admin\RouteConfig.cs" />
     <Compile Include="Areas\Admin\ViewBundleRegistrar.cs" />
-    <Compile Include="Controllers\BlogContentsController.cs" />
+    <Compile Include="Controllers\CnblogsBlogsController.cs" />
     <Compile Include="Controllers\CommentsController.cs" />
+    <Compile Include="Controllers\CsdnBlogsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\News51CtoController.cs" />
     <Compile Include="Controllers\NewsCsdnController.cs" />
@@ -405,16 +407,21 @@
     <Content Include="Areas\Admin\Views\BlogContentTypes\Details.cshtml" />
     <Content Include="Areas\Admin\Views\BlogContentTypes\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\BlogContentTypes\Index.cshtml" />
-    <Content Include="Areas\Admin\Views\BlogContents\Create.cshtml" />
-    <Content Include="Areas\Admin\Views\BlogContents\Delete.cshtml" />
-    <Content Include="Areas\Admin\Views\BlogContents\Details.cshtml" />
-    <Content Include="Areas\Admin\Views\BlogContents\Edit.cshtml" />
-    <Content Include="Areas\Admin\Views\BlogContents\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\CnblogsBlogs\Create.cshtml" />
+    <Content Include="Areas\Admin\Views\CnblogsBlogs\Delete.cshtml" />
+    <Content Include="Areas\Admin\Views\CnblogsBlogs\Details.cshtml" />
+    <Content Include="Areas\Admin\Views\CnblogsBlogs\Edit.cshtml" />
+    <Content Include="Areas\Admin\Views\CnblogsBlogs\Index.cshtml" />
     <Content Include="Areas\Admin\Views\News51Cto\Create.cshtml" />
     <Content Include="Areas\Admin\Views\News51Cto\Delete.cshtml" />
     <Content Include="Areas\Admin\Views\News51Cto\Details.cshtml" />
     <Content Include="Areas\Admin\Views\News51Cto\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\News51Cto\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\CsdnBlogs\Create.cshtml" />
+    <Content Include="Areas\Admin\Views\CsdnBlogs\Delete.cshtml" />
+    <Content Include="Areas\Admin\Views\CsdnBlogs\Details.cshtml" />
+    <Content Include="Areas\Admin\Views\CsdnBlogs\Edit.cshtml" />
+    <Content Include="Areas\Admin\Views\CsdnBlogs\Index.cshtml" />
     <None Include="Properties\PublishProfiles\ItWebSite.pubxml" />
     <None Include="Properties\PublishProfiles\SpringSoftwareWeb.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
@@ -937,11 +944,13 @@
     <Content Include="Views\Orders\Complete.cshtml" />
     <Content Include="Views\Products\ShowIndex.cshtml" />
     <Content Include="Views\NewsCsdn\ShowIndex.cshtml" />
-    <Content Include="Views\BlogContents\Details.cshtml" />
-    <Content Include="Views\BlogContents\Index.cshtml" />
+    <Content Include="Views\CnblogsBlogs\Details.cshtml" />
+    <Content Include="Views\CnblogsBlogs\Index.cshtml" />
     <Content Include="Views\NewsCsdn\Index.cshtml" />
     <Content Include="Views\News51Cto\Details.cshtml" />
     <Content Include="Views\News51Cto\Index.cshtml" />
+    <Content Include="Views\CsdnBlogs\Details.cshtml" />
+    <Content Include="Views\CsdnBlogs\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

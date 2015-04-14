@@ -14,13 +14,13 @@ namespace ItWebSite.Web.Controllers
     {
         private static IWebContentDal _webContentDal;
         private static IWebContentTypeDal _webContentTypeDal;
-        private static IBlogContentDal _blogContentDal;
+        private static ICnblogsBlogDal _blogContentDal;
         private static IBlogContentTypeDal _blogContentTypeDal;
         static HomeController()
         {
             _webContentDal = DependencyResolver.Current.GetService<IWebContentDal>();
             _webContentTypeDal = DependencyResolver.Current.GetService<IWebContentTypeDal>();
-            _blogContentDal = DependencyResolver.Current.GetService<IBlogContentDal>();
+            _blogContentDal = DependencyResolver.Current.GetService<ICnblogsBlogDal>();
             _blogContentTypeDal = DependencyResolver.Current.GetService<IBlogContentTypeDal>();
         }
 

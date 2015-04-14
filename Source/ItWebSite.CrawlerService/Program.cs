@@ -64,6 +64,8 @@ namespace ItWebSiteCrawlerService
 
         public static string News51CtoUrl = ConfigurationManager.AppSettings["News51CtoUrl"];
 
+        public static string CsdnBlogUrl = ConfigurationManager.AppSettings["CsdnBlogUrl"];
+
         public static string CrawType = ConfigurationManager.AppSettings["CrawType"];
 
         public static CrawlerType GetCrawlerType()
@@ -91,11 +93,16 @@ namespace ItWebSiteCrawlerService
             {
                 Run51CtoCrawler();
             }
+            if (crawlerType == CrawlerType.CsdnBlog)
+            {
+                RunCsdnBlogCrawler();
+            }
             if (crawlerType == CrawlerType.All)
             {
                 RunBlogCrawler();
                 RunNewsCrawler();
                 Run51CtoCrawler();
+                RunCsdnBlogCrawler();
             }
         }
 
@@ -111,7 +118,12 @@ namespace ItWebSiteCrawlerService
 
         private static void RunNewsCrawler()
         {
-            Task.Factory.StartNew(() => HandleFactory.GetNewsCrawler().Crawler(Helper.CsdnNewsUrl));
+            Task.Factory.StartNew(() => HandleFactory.GetCsdnNewsCrawler().Crawler(Helper.CsdnNewsUrl));
+        }
+
+        private static void RunCsdnBlogCrawler()
+        {
+            Task.Factory.StartNew(() => HandleFactory.GetCsdnBlogCrawler().Crawler(Helper.CsdnBlogUrl));
         }
     }
 }

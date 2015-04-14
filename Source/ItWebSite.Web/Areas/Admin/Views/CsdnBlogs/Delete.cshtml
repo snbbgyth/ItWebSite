@@ -1,4 +1,4 @@
-﻿@model ItWebSite.Core.DbModel.BlogContent
+﻿@model ItWebSite.Core.DbModel.CsdnBlog
 
 @{
     ViewBag.Title = "删除";
@@ -6,9 +6,9 @@
 
 <h2>删除</h2>
 
-<h3>你确定要删除此博客?</h3>
+<h3>你确定要删除此CSDN博客?</h3>
 <div>
-    <h4>博客</h4>
+    <h4>CSDN博客</h4>
     <hr />
     <dl class="dl-horizontal">
         <dt>
@@ -101,7 +101,8 @@
 
     </dl>
 
-    @using (Html.BeginForm()) {
+    @using (Html.BeginForm())
+    {
         @Html.AntiForgeryToken()
 
         <div class="form-actions no-color">

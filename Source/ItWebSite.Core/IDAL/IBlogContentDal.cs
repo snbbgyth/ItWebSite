@@ -7,7 +7,7 @@ using ItWebSite.Core.DbModel;
 
 namespace ItWebSite.Core.IDAL
 {
-    public interface IBlogContentDal : IDataOperationActivity<BlogContent>
+    public interface ICnblogsBlogDal : IDataOperationActivity<CnblogsBlog>
     {
         int DeleteByBlogFromUrl(string url);
     }

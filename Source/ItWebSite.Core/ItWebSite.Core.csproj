@@ -86,11 +86,12 @@
   <ItemGroup>
     <Compile Include="BLL\CoreModule.cs" />
     <Compile Include="DAL\BaseQueueDal.cs" />
-    <Compile Include="DAL\BlogContentDal.cs" />
+    <Compile Include="DAL\CnblogsBlogDal.cs" />
     <Compile Include="DAL\BlogContentTypeDal.cs" />
     <Compile Include="DAL\CommentDal.cs" />
     <Compile Include="DAL\DataOperationActivityBase.cs" />
     <Compile Include="DAL\FluentNHibernateDal.cs" />
+    <Compile Include="DAL\CsdnBlogDal.cs" />
     <Compile Include="DAL\News51CtoDal.cs" />
     <Compile Include="DAL\NewsCsdnDal.cs" />
     <Compile Include="DAL\NewsTypeDal.cs" />
@@ -104,14 +105,16 @@
     <Compile Include="DAL\ShopCartItemDal.cs" />
     <Compile Include="DAL\WebContentDal.cs" />
     <Compile Include="DAL\WebContentTypeDal.cs" />
+    <Compile Include="DbModel\CsdnBlog.cs" />
+    <Compile Include="DbModel\Mappings\CsdnBlogMapping.cs" />
     <Compile Include="DbModel\Mappings\News51CtoMapping.cs" />
     <Compile Include="DbModel\News51Cto.cs" />
     <Compile Include="DbModel\AliPayPaymentSettings.cs" />
-    <Compile Include="DbModel\BlogContent.cs" />
+    <Compile Include="DbModel\CnblogsBlog.cs" />
     <Compile Include="DbModel\BlogContentType.cs" />
     <Compile Include="DbModel\Comment.cs" />
     <Compile Include="DbModel\Mappings\AliPayPaymentSettingsMapping.cs" />
-    <Compile Include="DbModel\Mappings\BlogContentMapping.cs" />
+    <Compile Include="DbModel\Mappings\CnblogsBlogMapping.cs" />
     <Compile Include="DbModel\Mappings\BlogContentTypeMapping.cs" />
     <Compile Include="DbModel\Mappings\CommentMapping.cs" />
     <Compile Include="DbModel\Mappings\NewsCsdnMapping.cs" />
@@ -146,6 +149,7 @@
     <Compile Include="IDAL\ICommentDal.cs" />
     <Compile Include="IDAL\IDataOperationActivity.cs" />
     <Compile Include="IDAL\IFluentNHibernate.cs" />
+    <Compile Include="IDAL\ICsdnBlogDal.cs" />
     <Compile Include="IDAL\INews51CtoDal.cs" />
     <Compile Include="IDAL\INewsCsdnDal.cs" />
     <Compile Include="IDAL\INewsTypeDal.cs" />

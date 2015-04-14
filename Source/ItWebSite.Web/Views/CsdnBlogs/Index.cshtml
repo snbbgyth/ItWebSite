@@ -1,19 +1,19 @@
 ﻿@using System.Web.Mvc.Html
 @using ItWebSite.Web.Help
-@model IEnumerable<ItWebSite.Core.DbModel.BlogContent>
+@model System.Collections.Generic.IEnumerable<ItWebSite.Core.DbModel.CsdnBlog>
 
 @{
-    ViewBag.Title = "博客列表";
+    ViewBag.Title = "CSDN博客列表";
 }
 
-<h2>博客列表</h2>
+<h2>最新CSDN博客</h2>
 
 <script type="text/javascript">
     $(document).ready(function () {
         $("#btnNext").click(function () {
             var nextPage = @ViewBag.CurrentPageIndex +1;
             $.ajax({
-                url: '@Url.Action("Index", "BlogContents")',
+                url: '@Url.Action("Index", "CsdnBlogs")',
                 data: { currentFilter: null, searchString: null, page: nextPage },
                 success: function (response) {
                     $("body").html(response);
@@ -24,7 +24,7 @@
         $("#btnPrevious").click(function () {
             var previousPage = @ViewBag.CurrentPageIndex -1;
             $.ajax({
-                url: '@Url.Action("Index", "BlogContents")',
+                url: '@Url.Action("Index", "CsdnBlogs")',
                 data: { currentFilter: null, searchString: null, page: previousPage },
                 success: function (response) {
                     $("body").html(response);
@@ -34,19 +34,18 @@
         $("#btnSkip").click(function () {
             var skip2Page = $("#txtSkipTo").val();;
             $.ajax({
-                url: '@Url.Action("Index", "BlogContents")',
+                url: '@Url.Action("Index", "CsdnBlogs")',
                 data: { currentFilter: null, searchString: null, page: skip2Page },
                 success: function (response) {
                     $("body").html(response);
                 }
             });
         });
-
     });
     function NavigaePage(itemId) {
         $.ajax({
 
-            url: '@Url.Action("Index", "BlogContents")',
+            url: '@Url.Action("Index", "CsdnBlogs")',
             data: { currentFilter: null, searchString: null, page: itemId },
             success: function (response) {
                 $("body").html(response);
@@ -55,7 +54,7 @@
     }
 </script>
 
-@using (Html.BeginForm("Index", "BlogContents", FormMethod.Get))
+@using (Html.BeginForm("Index", "CsdnBlogs", FormMethod.Get))
 {
     <p>
         输入查找内容: @Html.TextBox("SearchString", ViewBag.CurrentFilter as string)
@@ -66,7 +65,7 @@
 {
     <div>
         <h2>
-            <a href="/BlogContents/Details/@item.Id" target="_blank">@item.Title</a>
+            <a href="/CsdnBlogs/Details/@item.Id" target="_blank">@item.Title</a>
         </h2>
         <div class="col-md-6">
             <div class="pull-left">
@@ -78,7 +77,7 @@
                 最后修改时间 @item.LastModifyDate
             </div>
         </div>
-        <p>@Html.Raw(item.Content.StripTagsRegex().ToSummary(100))</p>
+        <p>@Html.Raw(item.Content.StripTagsRegex().ToSummary(300))</p>
     </div>
 }
 

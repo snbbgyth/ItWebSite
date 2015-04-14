@@ -10,9 +10,9 @@ namespace ItWebSite.Web.Help
     {
         public static string ToSummary(this string content, int count)
         {
-            if (string.IsNullOrEmpty(content) || content.Length < count)
+            if (string.IsNullOrEmpty(content) || content.Trim().Length < count)
                 return content;
-            return content.Substring(0, count) + "...";
+            return content.Trim().Substring(0, count) + "...";
         }
 
        

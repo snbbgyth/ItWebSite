@@ -42,5 +42,9 @@ namespace ItWebSite.Web.Areas.Admin.Models
 
         public System.Data.Entity.DbSet<ItWebSite.Core.DbModel.NewsType> NewsTypes { get; set; }
 
+        public System.Data.Entity.DbSet<ItWebSite.Core.DbModel.CsdnBlog> CsdnBlogs { get; set; }
+
+        public System.Data.Entity.DbSet<ItWebSite.Core.DbModel.BlogContentType> BlogContentTypes { get; set; }
+
     }
 }

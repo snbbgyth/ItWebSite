@@ -15,9 +15,10 @@ namespace ItWebSite.Crawler.DAL
 
         private static HandlerQueue _instance;
 
-        private static IBlogContentDal _blogContentDal;
+        private static ICnblogsBlogDal _blogContentDal;
         private static INewsCsdnDal _newsDal;
         private static INews51CtoDal _news51CtoDal;
+        private static ICsdnBlogDal _iteyeBlogDal;
 
         public static HandlerQueue Instance
         {
@@ -34,16 +35,17 @@ namespace ItWebSite.Crawler.DAL
 
         private HandlerQueue()
         {
-            _blogContentDal = Helper.Resolve<IBlogContentDal>();
+            _blogContentDal = Helper.Resolve<ICnblogsBlogDal>();
             _newsDal = Helper.Resolve<INewsCsdnDal>();
             _news51CtoDal = Helper.Resolve<INews51CtoDal>();
+            _iteyeBlogDal = Helper.Resolve<ICsdnBlogDal>();
         }
 
         public override void OnNotify(dynamic entity)
         {
-            if (entity is BlogContent)
+            if (entity is CnblogsBlog)
             {
-                var blogContent = entity as BlogContent;
+                var blogContent = entity as CnblogsBlog;
                 Task.Factory.StartNew(() => HandleBlogContent(blogContent));
             }
             if (entity is NewsCsdn)
@@ -55,6 +57,11 @@ namespace ItWebSite.Crawler.DAL
             {
                 var news = entity as News51Cto;
                 Task.Factory.StartNew(() => HandleNews51Cto(news));
+            }
+            if(entity is CsdnBlog)
+            {
+                var blog = entity as CsdnBlog;
+                Task.Factory.StartNew(() => HandleCsdnBlog(blog));
             }
         }
 
@@ -86,12 +93,25 @@ namespace ItWebSite.Crawler.DAL
             }
         }
 
-        private void HandleBlogContent(BlogContent entity)
+        private void HandleBlogContent(CnblogsBlog entity)
         {
             try
             {
                 _blogContentDal.DeleteByBlogFromUrl(entity.BlogFromUrl);
                 _blogContentDal.Insert(entity);
+            }
+            catch (Exception ex)
+            {
+                LogInfoQueue.Instance.Insert(GetType(), MethodBase.GetCurrentMethod().Name, ex);
+            }
+        }
+
+        private void HandleCsdnBlog(CsdnBlog entity)
+        {
+            try
+            {
+                _iteyeBlogDal.DeleteByBlogFromUrl(entity.BlogFromUrl);
+                _iteyeBlogDal.Insert(entity);
             }
             catch (Exception ex)
             {

@@ -1,39 +1,37 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.Text.RegularExpressions;
-using Abot.Crawler;
+using System.Threading.Tasks;
 using Abot.Poco;
 using Autofac;
 using HtmlAgilityPack;
-using ItWebSite.Core.BLL;
 using ItWebSite.Core.DbModel;
 using ItWebSite.Core.IDAL;
 using ItWebSite.Core.QueueDAL;
 using ItWebSite.Crawler.Help;
-using ItWebSite.Crawler.IDAL;
 
 namespace ItWebSite.Crawler.DAL
 {
-    public class HandlerCnBlogs : HandlerBase
+    public class HandlerCsdnBlog : HandlerBase
     {
         private static IContainer _container;
 
         private static IBlogContentTypeDal _blogContentTypeDal;
 
-        private static string _blogContentTypeName = ConfigurationManager.AppSettings["CnblogsType"];
+        private static string _blogContentTypeName = ConfigurationManager.AppSettings["CsdnBlogType"];
 
-        static HandlerCnBlogs()
+        static HandlerCsdnBlog()
         {
             _blogContentTypeDal = Helper.Resolve<IBlogContentTypeDal>();
         }
 
         private static DateTime GetCreateTime(HtmlDocument document)
         {
-            var createTime = document.GetElementbyId("post-date");
+            var createTime = document.DocumentNode.SelectNodes("//span").SingleOrDefault(t => t.Attributes.Any(s => s.Name == "class" && s.Value == "link_postdate")); 
             DateTime result;
             if (createTime != null && DateTime.TryParse(createTime.InnerText, out result))
                 return result;
@@ -44,20 +42,22 @@ namespace ItWebSite.Crawler.DAL
         {
             try
             {
+                if (!crawledPage.Uri.ToString().Contains("http://blog.csdn.net/")) return false;
                 var document = new HtmlDocument();
                 document.LoadHtml(crawledPage.Content.Text);
-                var title = document.GetElementbyId("cb_post_title_url");
-                var body = document.GetElementbyId("cnblogs_post_body");
-                if (title == null || body == null || string.IsNullOrEmpty(crawledPage.Uri.ToString()))
+                var title = document.DocumentNode.SelectNodes("//span").SingleOrDefault(t => t.Attributes.Any(s => s.Name == "class" && s.Value == "link_title"));
+                var body = document.GetElementbyId("article_content");
+                var createTime = GetCreateTime(document);
+                if (title == null||title.FirstChild==null || body == null || string.IsNullOrEmpty(crawledPage.Uri.ToString()))
                     return false;
                 if (_isSaveLocalFile)
-                    SaveFile(title.InnerText, body.InnerHtml);
-                SaveBlogContent(title.InnerText, body.InnerHtml, crawledPage.Uri.ToString(), GetCreateTime(document));
+                    SaveFile(title.FirstChild.InnerText, body.InnerHtml);
+                SaveBlogContent(title.FirstChild.InnerText,   body.InnerHtml, crawledPage.Uri.ToString(), createTime);
                 return true;
             }
             catch (Exception ex)
             {
-                LogInfoQueue.Instance.Insert(typeof(HandlerCnBlogs), MethodBase.GetCurrentMethod().Name, ex);
+                LogInfoQueue.Instance.Insert(typeof(HandlerCsdnNews), MethodBase.GetCurrentMethod().Name, ex);
                 return false;
             }
         }
@@ -82,7 +82,7 @@ namespace ItWebSite.Crawler.DAL
         private void SaveBlogContent(string title, string body, string sourceUrl, DateTime createTime)
         {
             var blogContentTypeId = GetBlogContentTypeId(_blogContentTypeName);
-            var entity = new CnblogsBlog
+            var entity = new CsdnBlog
             {
                 BlogContentTypeId = blogContentTypeId,
                 Content = body,
@@ -92,7 +92,7 @@ namespace ItWebSite.Crawler.DAL
                 LastModifyDate = createTime,
                 DisplayOrder = 1,
                 Title = title,
-                BlogFrom = "博客园",
+                BlogFrom = "CSDN博客",
                 BlogFromUrl = sourceUrl
             };
             HandlerQueue.Instance.Add(entity);

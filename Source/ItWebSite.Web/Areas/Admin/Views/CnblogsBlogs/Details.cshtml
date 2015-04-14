@@ -1,4 +1,4 @@
-﻿@model ItWebSite.Core.DbModel.BlogContent
+﻿@model ItWebSite.Core.DbModel.CnblogsBlog
 
 @{
     ViewBag.Title = @Model.Title;
@@ -22,6 +22,18 @@
                         </div>
                     </div>
                 </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="pull-left">
+                            @Html.ActionLink("编辑", "Edit", new { id = Model.Id })
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="pull-right">
+                            @Html.ActionLink("删除", "Delete", new { id = Model.Id })
+                        </div>
+                    </div>
+                </div>
                 <div class="CompanyIntroBody">
                     @Html.Raw(Model.Content)
                 </div>
@@ -37,18 +49,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="pull-left">
-                            @Html.ActionLink("编辑", "Edit", new { id = Model.Id })
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="pull-right">
-                            @Html.ActionLink("删除", "Delete", new { id = Model.Id })
-                        </div>
-                    </div>
-                </div>
+                
             </div>
         </div>
     </div>

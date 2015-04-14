@@ -7,18 +7,22 @@ namespace ItWebSite.Crawler.BLL
     {
         private  static ICrawler _blogCrawler=new HandlerCnBlogs();
 
-        private  static ICrawler _newsCrawler=new HandleCsdnNews();
+        private  static ICrawler _csdnNewsCrawler=new HandlerCsdnNews();
 
-        private static ICrawler _51CtonewsCrawler = new Handle51CtoNews();
+        private static ICrawler _51CtonewsCrawler = new Handler51CtoNews();
+
+        private static ICrawler _iteyeBlogCrawler = new HandlerCsdnBlog();
 
         public static ICrawler GetCrawler(CrawlerType crawlerType)
         {
             if (crawlerType == CrawlerType.CsdnNews)
-                return _newsCrawler;
+                return _csdnNewsCrawler;
             if (crawlerType == CrawlerType.CnBlogs)
                 return _blogCrawler;
             if (crawlerType == CrawlerType.News51Cto)
                 return _51CtonewsCrawler;
+            if (crawlerType == CrawlerType.CsdnBlog)
+                return _iteyeBlogCrawler;
             return _blogCrawler;
         }
 
@@ -27,14 +31,19 @@ namespace ItWebSite.Crawler.BLL
             return _blogCrawler;
         }
 
-        public static ICrawler GetNewsCrawler()
+        public static ICrawler GetCsdnNewsCrawler()
         {
-            return _newsCrawler;
+            return _csdnNewsCrawler;
         }
 
         public static ICrawler Get51CtoNewsCrawler()
         {
             return _51CtonewsCrawler;
+        }
+
+        public static ICrawler GetCsdnBlogCrawler()
+        {
+            return _iteyeBlogCrawler;
         }
     }
 
@@ -43,7 +52,7 @@ namespace ItWebSite.Crawler.BLL
         All=1,
         CsdnNews,
         CnBlogs,
-        News51Cto
-       
+        News51Cto,
+        CsdnBlog
     }
 }

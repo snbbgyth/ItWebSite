@@ -4,7 +4,6 @@ using System.Data;
 using System.Data.Entity;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using System.Net;
 using System.Web;
@@ -13,20 +12,18 @@ using ItWebSite.Core.DbModel;
 using ItWebSite.Core.IDAL;
 using ItWebSite.Web.Areas.Admin.Models;
 using ItWebSite.Web.DAL;
-using PagedList;
-using WebGrease.Css.Extensions;
 using NHibernate.Criterion;
 
 namespace ItWebSite.Web.Areas.Admin.Controllers
 {
-    public class BlogContentsController : BaseController
+    public class CsdnBlogsController : BaseController
     {
-        private static IBlogContentDal _blogContentDal;
+        private static ICsdnBlogDal _csdnBlogDal;
         private static IBlogContentTypeDal _blogContentTypeDal;
 
-        static BlogContentsController()
+        static CsdnBlogsController()
         {
-            _blogContentDal = DependencyResolver.Current.GetService<IBlogContentDal>();
+            _csdnBlogDal = DependencyResolver.Current.GetService<ICsdnBlogDal>();
             _blogContentTypeDal = DependencyResolver.Current.GetService<IBlogContentTypeDal>();
         }
 
@@ -37,16 +34,16 @@ namespace ItWebSite.Web.Areas.Admin.Controllers
             {
                 searchString = currentFilter;
             }
-            Expression<Func<BlogContent, bool>> wherExpression = t => t.Id > 0;
+            Expression<Func<CsdnBlog, bool>> wherExpression = t => t.Id > 0;
             if (!String.IsNullOrEmpty(searchString))
             {
                 wherExpression = s => s.Content.IsLike(searchString) || s.Title.IsLike(searchString) || s.Creater.IsLike(searchString) || s.LastModifier.IsLike(searchString);
             }
             int pageNumber = (page ?? 1);
             ViewBag.CurrentPageIndex = pageNumber;
-            ViewBag.LastPageIndex = (await _blogContentDal.QueryCountAsync()) / pageSize;
+            ViewBag.LastPageIndex = (await _csdnBlogDal.QueryCountAsync()) / pageSize;
             ViewBag.CurrentFilter = searchString;
-            var entityList = await _blogContentDal.QueryPageAsync(wherExpression, t => t.LastModifyDate, false, pageNumber, pageSize);
+            var entityList = await _csdnBlogDal.QueryPageAsync(wherExpression, t => t.LastModifyDate, false, pageNumber, pageSize);
             return View(entityList);
         }
 
@@ -57,7 +54,7 @@ namespace ItWebSite.Web.Areas.Admin.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            BlogContent blogContent = await _blogContentDal.QueryByIdAsync(id);
+            CsdnBlog blogContent = await _csdnBlogDal.QueryByIdAsync(id);
             if (blogContent == null)
             {
                 return HttpNotFound();
@@ -69,7 +66,7 @@ namespace ItWebSite.Web.Areas.Admin.Controllers
         // GET: Admin/BlogContents/Create
         public async Task<ActionResult> Create()
         {
-            var blogContent = new BlogContent();
+            var blogContent = new CnblogsBlog();
             blogContent.BlogContentTypeList = await _blogContentTypeDal.QueryAllAsync();
             return View(blogContent);
         }
@@ -79,12 +76,12 @@ namespace ItWebSite.Web.Areas.Admin.Controllers
         // 详细信息，请参阅 http://go.microsoft.com/fwlink/?LinkId=317598。
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create(BlogContent blogContent)
+        public async Task<ActionResult> Create(CsdnBlog blogContent)
         {
             try
             {
                 InitInsert(blogContent);
-                await _blogContentDal.InsertAsync(blogContent);
+                await _csdnBlogDal.InsertAsync(blogContent);
                 return RedirectToAction("Index");
             }
             catch (Exception ex)
@@ -100,7 +97,7 @@ namespace ItWebSite.Web.Areas.Admin.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            BlogContent blogContent = await _blogContentDal.QueryByIdAsync(id);
+            CsdnBlog blogContent = await _csdnBlogDal.QueryByIdAsync(id);
             if (blogContent == null)
             {
                 return HttpNotFound();
@@ -115,12 +112,12 @@ namespace ItWebSite.Web.Areas.Admin.Controllers
         // 详细信息，请参阅 http://go.microsoft.com/fwlink/?LinkId=317598。
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(BlogContent blogContent)
+        public async Task<ActionResult> Edit(CsdnBlog blogContent)
         {
             try
             {
                 InitModify(blogContent);
-                await _blogContentDal.ModifyAsync(blogContent);
+                await _csdnBlogDal.ModifyAsync(blogContent);
                 return RedirectToAction("Index");
             }
             catch (Exception ex)
@@ -136,7 +133,7 @@ namespace ItWebSite.Web.Areas.Admin.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            BlogContent blogContent = await _blogContentDal.QueryByIdAsync(id);
+            CsdnBlog blogContent = await _csdnBlogDal.QueryByIdAsync(id);
             if (blogContent == null)
             {
                 return HttpNotFound();
@@ -151,7 +148,7 @@ namespace ItWebSite.Web.Areas.Admin.Controllers
         public async Task<ActionResult> DeleteConfirmed(int id)
         {
 
-            await _blogContentDal.DeleteByIdAsync(id);
+            await _csdnBlogDal.DeleteByIdAsync(id);
             return RedirectToAction("Index");
         }
 
