@@ -88,7 +88,9 @@
     <Compile Include="DAL\BaseQueueDal.cs" />
     <Compile Include="DAL\CnblogsBlogDal.cs" />
     <Compile Include="DAL\BlogContentTypeDal.cs" />
+    <Compile Include="DAL\CnblogsCommentDal.cs" />
     <Compile Include="DAL\CommentDal.cs" />
+    <Compile Include="DAL\CsdnBlogCommentDal.cs" />
     <Compile Include="DAL\DataOperationActivityBase.cs" />
     <Compile Include="DAL\FluentNHibernateDal.cs" />
     <Compile Include="DAL\CsdnBlogDal.cs" />
@@ -105,7 +107,11 @@
     <Compile Include="DAL\ShopCartItemDal.cs" />
     <Compile Include="DAL\WebContentDal.cs" />
     <Compile Include="DAL\WebContentTypeDal.cs" />
+    <Compile Include="DbModel\CnblogsComment.cs" />
     <Compile Include="DbModel\CsdnBlog.cs" />
+    <Compile Include="DbModel\CsdnBlogComment.cs" />
+    <Compile Include="DbModel\Mappings\CnblogsCommentMapping.cs" />
+    <Compile Include="DbModel\Mappings\CsdnBlogCommentMapping.cs" />
     <Compile Include="DbModel\Mappings\CsdnBlogMapping.cs" />
     <Compile Include="DbModel\Mappings\News51CtoMapping.cs" />
     <Compile Include="DbModel\News51Cto.cs" />
@@ -144,9 +150,11 @@
     <Compile Include="Help\Constants.cs" />
     <Compile Include="Help\Enums.cs" />
     <Compile Include="Help\UtilHelper.cs" />
-    <Compile Include="IDAL\IBlogContentDal.cs" />
+    <Compile Include="IDAL\ICnblogsBlogDal.cs" />
     <Compile Include="IDAL\IBlogContentTypeDal.cs" />
+    <Compile Include="IDAL\ICnblogsCommentDal.cs" />
     <Compile Include="IDAL\ICommentDal.cs" />
+    <Compile Include="IDAL\ICsdnBlogCommentDal.cs" />
     <Compile Include="IDAL\IDataOperationActivity.cs" />
     <Compile Include="IDAL\IFluentNHibernate.cs" />
     <Compile Include="IDAL\ICsdnBlogDal.cs" />

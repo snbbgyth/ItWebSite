@@ -1,39 +1,40 @@
-﻿@model ItWebSite.Core.DbModel.CsdnBlog
+﻿@using ItWebSite.Core.DbModel
+@model ItWebSite.Web.Models.CsdnBlogViewModel
 
 @{
-    ViewBag.Title = @Model.Title;
+    ViewBag.Title = @Model.CsdnBlog.Title;
 }
 
 <body>
     <div id="layout-wrapper">
         <div id="content">
             <div>
-                <h1>@Html.DisplayFor(model => model.Title)</h1>
+                <h1>@Html.DisplayFor(model => model.CsdnBlog.Title)</h1>
 
                 <div class="row">
                     <div class="col-md-6">
                         <div class="pull-left">
-                            最后修改者：<a href="#">@Html.DisplayFor(model => model.LastModifier)</a>
+                            最后修改者：<a href="#">@Html.DisplayFor(model => model.CsdnBlog.LastModifier)</a>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="pull-right">
-                            最后修改日期：@Html.DisplayFor(model => model.LastModifyDate)
+                            最后修改日期：@Html.DisplayFor(model => model.CsdnBlog.LastModifyDate)
                         </div>
                     </div>
                 </div>
                 <div class="CompanyIntroBody">
-                    @Html.Raw(Model.Content)
+                    @Html.Raw(Model.CsdnBlog.Content)
                 </div>
                 <div class="row">
                     <div class="col-md-6">
                         <div class="pull-left">
-                            来源：<a href="#">@Html.DisplayFor(model => model.BlogFrom)</a>
+                            来源：<a href="#">@Html.DisplayFor(model => model.CsdnBlog.BlogFrom)</a>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="pull-right">
-                            来源Url：@Html.DisplayFor(model => model.BlogFromUrl)
+                            来源Url：@Html.DisplayFor(model => model.CsdnBlog.BlogFromUrl)
                         </div>
                     </div>
                 </div>
@@ -73,5 +74,16 @@
                 </div>
             </div>
         </div>
+        @{
+            if (Model.CsdnblogComments.Any())
+            {
+                @Html.Partial("_Comments", Model.CsdnblogComments)
+            }
+
+            if (User != null && !string.IsNullOrEmpty(User.Identity.Name))
+            {
+                @Html.Partial("_AddComment", new CsdnBlogComment { CsdnBlogId = Model.CsdnBlog.Id, Creater = User.Identity.Name })
+            }
+        }
     </div>
 </body>

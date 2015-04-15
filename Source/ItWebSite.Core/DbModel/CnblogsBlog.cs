@@ -26,21 +26,19 @@ namespace ItWebSite.Core.DbModel
         public virtual int DisplayOrder { get; set; }
 
         [DisplayName("标题")]
-        public virtual string  Title { get; set; }
+        public virtual string Title { get; set; }
 
-         [DisplayName("来源")]
+        [DisplayName("来源")]
         public virtual string BlogFrom { get; set; }
 
-         [DisplayName("来源URL")]
-         public virtual string BlogFromUrl { get; set; }
-
+        [DisplayName("来源URL")]
+        public virtual string BlogFromUrl { get; set; }
 
         [AllowHtml]
         [DisplayName("正文")]
         public virtual string Content { get; set; }
 
         public virtual BlogContentType BlogContentType { get; set; }
-
 
         public virtual IEnumerable<BlogContentType> BlogContentTypeList { get; set; }
 

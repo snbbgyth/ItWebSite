@@ -46,5 +46,7 @@ namespace ItWebSite.Web.Areas.Admin.Models
 
         public System.Data.Entity.DbSet<ItWebSite.Core.DbModel.BlogContentType> BlogContentTypes { get; set; }
 
+        public System.Data.Entity.DbSet<ItWebSite.Core.DbModel.CnblogsComment> CnblogsComments { get; set; }
+
     }
 }

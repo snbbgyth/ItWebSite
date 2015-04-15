@@ -12,6 +12,7 @@ using ItWebSite.Core.DbModel;
 using ItWebSite.Core.IDAL;
 using ItWebSite.Web.Areas.Admin.Models;
 using ItWebSite.Web.DAL;
+using ItWebSite.Web.DAL.Manage;
 using NHibernate.Criterion;
 
 namespace ItWebSite.Web.Areas.Admin.Controllers
@@ -20,11 +21,13 @@ namespace ItWebSite.Web.Areas.Admin.Controllers
     {
         private static ICsdnBlogDal _csdnBlogDal;
         private static IBlogContentTypeDal _blogContentTypeDal;
+        private static ICsdnBlogCommentDal _blogCommentDal;
 
         static CsdnBlogsController()
         {
             _csdnBlogDal = DependencyResolver.Current.GetService<ICsdnBlogDal>();
             _blogContentTypeDal = DependencyResolver.Current.GetService<IBlogContentTypeDal>();
+            _blogCommentDal = DependencyResolver.Current.GetService<ICsdnBlogCommentDal>();
         }
 
         public async Task<ActionResult> Index(string currentFilter, string searchString, int? page)
@@ -54,13 +57,8 @@ namespace ItWebSite.Web.Areas.Admin.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            CsdnBlog blogContent = await _csdnBlogDal.QueryByIdAsync(id);
-            if (blogContent == null)
-            {
-                return HttpNotFound();
-            }
-            blogContent.BlogContentType = await _blogContentTypeDal.QueryByIdAsync(id);
-            return View(blogContent);
+            var  entity = await BlogManage.QueryCsdnBlogViewByIdAsync((int)id);
+            return View(entity);
         }
 
         // GET: Admin/BlogContents/Create
@@ -152,12 +150,23 @@ namespace ItWebSite.Web.Areas.Admin.Controllers
             return RedirectToAction("Index");
         }
 
-        protected override void Dispose(bool disposing)
+        [HttpPost]
+        public async Task<ActionResult> CreateComment(CsdnBlogComment csdnblogComment)
         {
-            if (disposing)
+            if (!string.IsNullOrEmpty(csdnblogComment.Content))
             {
+                InitInsert(csdnblogComment);
+                await _blogCommentDal.InsertAsync(csdnblogComment);
             }
-            base.Dispose(disposing);
+            return RedirectToAction("Details", new { id = csdnblogComment.CsdnBlogId });
+        }
+
+        public void InitInsert(CsdnBlogComment entity)
+        {
+            entity.Creater = User.Identity.Name;
+            entity.LastModifier = User.Identity.Name;
+            entity.CreateDate = DateTime.Now;
+            entity.LastModifyDate = DateTime.Now;
         }
     }
 }

@@ -13,6 +13,7 @@ using ItWebSite.Core.DbModel;
 using ItWebSite.Core.IDAL;
 using ItWebSite.Web.Areas.Admin.Models;
 using ItWebSite.Web.DAL;
+using ItWebSite.Web.DAL.Manage;
 using PagedList;
 using WebGrease.Css.Extensions;
 using NHibernate.Criterion;
@@ -23,11 +24,13 @@ namespace ItWebSite.Web.Areas.Admin.Controllers
     {
         private static ICnblogsBlogDal _blogContentDal;
         private static IBlogContentTypeDal _blogContentTypeDal;
+        private static ICnblogsCommentDal _cnblogsCommentDal;
 
         static CnblogsBlogsController()
         {
             _blogContentDal = DependencyResolver.Current.GetService<ICnblogsBlogDal>();
             _blogContentTypeDal = DependencyResolver.Current.GetService<IBlogContentTypeDal>();
+            _cnblogsCommentDal = DependencyResolver.Current.GetService<ICnblogsCommentDal>();
         }
 
         public async Task<ActionResult> Index(string currentFilter, string searchString, int? page)
@@ -57,12 +60,7 @@ namespace ItWebSite.Web.Areas.Admin.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            CnblogsBlog blogContent = await _blogContentDal.QueryByIdAsync(id);
-            if (blogContent == null)
-            {
-                return HttpNotFound();
-            }
-            blogContent.BlogContentType = await _blogContentTypeDal.QueryByIdAsync(id);
+            var blogContent = await BlogManage.QueryCnBlogViewByIdAsync((int)id);
             return View(blogContent);
         }
 
@@ -150,17 +148,27 @@ namespace ItWebSite.Web.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(int id)
         {
-
             await _blogContentDal.DeleteByIdAsync(id);
             return RedirectToAction("Index");
         }
 
-        protected override void Dispose(bool disposing)
+        [HttpPost]
+        public async Task<ActionResult> CreateComment(CnblogsComment cnblogsComment)
         {
-            if (disposing)
+            if (!string.IsNullOrEmpty(cnblogsComment.Content))
             {
+                InitInsert(cnblogsComment);
+                await _cnblogsCommentDal.InsertAsync(cnblogsComment);
             }
-            base.Dispose(disposing);
+            return RedirectToAction("Details", new { id = cnblogsComment.CnBlogsId });
+        }
+
+        public void InitInsert(CnblogsComment entity)
+        {
+            entity.Creater = User.Identity.Name;
+            entity.LastModifier = User.Identity.Name;
+            entity.CreateDate = DateTime.Now;
+            entity.LastModifyDate = DateTime.Now;
         }
     }
 }

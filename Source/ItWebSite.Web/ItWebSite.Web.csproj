@@ -243,7 +243,7 @@
     <Compile Include="Controllers\OrdersController.cs" />
     <Compile Include="Controllers\ProductsController.cs" />
     <Compile Include="Controllers\ShopCartItemsController.cs" />
-    <Compile Include="DAL\Manage\BlogContentManage.cs" />
+    <Compile Include="DAL\Manage\BlogManage.cs" />
     <Compile Include="DAL\Manage\CommentManage.cs" />
     <Compile Include="DAL\Manage\UserRoleManage.cs" />
     <Compile Include="DAL\Payment\AliPayPaymentProcessor.cs" />
@@ -269,6 +269,8 @@
     <Compile Include="Areas\Admin\Models\ManageViewModels.cs" />
     <Compile Include="DAL\MySql\MySqlInitializer.cs" />
     <Compile Include="Areas\Admin\Models\RoleViewModel.cs" />
+    <Compile Include="Models\CnblogsBlogViewModel.cs" />
+    <Compile Include="Models\CsdnBlogViewModel.cs" />
     <Compile Include="Models\OrderItemViewModel.cs" />
     <Compile Include="Models\OrderViewModel.cs" />
     <Compile Include="Models\ProductContentViewModel.cs" />
@@ -422,6 +424,10 @@
     <Content Include="Areas\Admin\Views\CsdnBlogs\Details.cshtml" />
     <Content Include="Areas\Admin\Views\CsdnBlogs\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\CsdnBlogs\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\CnblogsBlogs\_AddComment.cshtml" />
+    <Content Include="Areas\Admin\Views\CnblogsBlogs\_Comments.cshtml" />
+    <Content Include="Areas\Admin\Views\CsdnBlogs\_AddComment.cshtml" />
+    <Content Include="Areas\Admin\Views\CsdnBlogs\_Comments.cshtml" />
     <None Include="Properties\PublishProfiles\ItWebSite.pubxml" />
     <None Include="Properties\PublishProfiles\SpringSoftwareWeb.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
@@ -951,6 +957,10 @@
     <Content Include="Views\News51Cto\Index.cshtml" />
     <Content Include="Views\CsdnBlogs\Details.cshtml" />
     <Content Include="Views\CsdnBlogs\Index.cshtml" />
+    <Content Include="Views\CnblogsBlogs\_Comments.cshtml" />
+    <Content Include="Views\CnblogsBlogs\_AddComment.cshtml" />
+    <Content Include="Views\CsdnBlogs\_Comments.cshtml" />
+    <Content Include="Views\CsdnBlogs\_AddComment.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

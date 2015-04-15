@@ -29,6 +29,8 @@ namespace ItWebSite.Core.BLL
             builder.RegisterType<BlogContentTypeDal>().As<IBlogContentTypeDal>();
             builder.RegisterType<News51CtoDal>().As<INews51CtoDal>();
             builder.RegisterType<CsdnBlogDal>().As<ICsdnBlogDal>();
+            builder.RegisterType<CnblogsCommentDal>().As<ICnblogsCommentDal>();
+            builder.RegisterType<CsdnBlogCommentDal>().As<ICsdnBlogCommentDal>();
         }
     }
 }

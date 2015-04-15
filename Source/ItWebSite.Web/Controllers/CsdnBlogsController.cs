@@ -11,19 +11,22 @@ using System.Web.Mvc;
 using ItWebSite.Core.DbModel;
 using ItWebSite.Core.IDAL;
 using ItWebSite.Web.Areas.Admin.Models;
+using ItWebSite.Web.DAL.Manage;
 using NHibernate.Criterion;
 
 namespace ItWebSite.Web.Controllers
 {
     public class CsdnBlogsController: Controller
     {
-        private static ICsdnBlogDal _blogContentDal;
+        private static ICsdnBlogDal _csdnBlogDal;
         private static IBlogContentTypeDal _blogContentTypeDal;
+        private static ICsdnBlogCommentDal _blogCommentDal;
 
         static CsdnBlogsController()
         {
-            _blogContentDal = DependencyResolver.Current.GetService<ICsdnBlogDal>();
+            _csdnBlogDal = DependencyResolver.Current.GetService<ICsdnBlogDal>();
             _blogContentTypeDal = DependencyResolver.Current.GetService<IBlogContentTypeDal>();
+            _blogCommentDal = DependencyResolver.Current.GetService<ICsdnBlogCommentDal>();
         }
 
         public async Task<ActionResult> Index(string currentFilter, string searchString, int? page)
@@ -41,9 +44,9 @@ namespace ItWebSite.Web.Controllers
             }
             int pageNumber = (page ?? 1);
             ViewBag.CurrentPageIndex = pageNumber;
-            ViewBag.LastPageIndex =(await  _blogContentDal.QueryCountAsync())/pageSize ;
+            ViewBag.LastPageIndex =(await  _csdnBlogDal.QueryCountAsync())/pageSize ;
             ViewBag.CurrentFilter = searchString;
-            var entityList = await _blogContentDal.QueryPageAsync(wherExpression, t => t.LastModifyDate, false, pageNumber, pageSize);
+            var entityList = await _csdnBlogDal.QueryPageAsync(wherExpression, t => t.LastModifyDate, false, pageNumber, pageSize);
             return View(entityList);
         }
 
@@ -56,35 +59,39 @@ namespace ItWebSite.Web.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            CsdnBlog blogContent = await _blogContentDal.QueryByIdAsync(id);
-            if (blogContent == null)
-            {
-                return HttpNotFound();
-            }
-            
-            var nextEntity = await _blogContentDal.QueryByIdAsync(id+1);
+            var entity = await BlogManage.QueryCsdnBlogViewByIdAsync((int)id);
+            var nextEntity = await _csdnBlogDal.QueryByIdAsync(id+1);
             if (nextEntity != null)
             {
                 ViewBag.NextId = nextEntity.Id;
                 ViewBag.NextTitle = nextEntity.Title;
             }
-
-            var previousEntity = await _blogContentDal.QueryByIdAsync(id-1);
+            var previousEntity = await _csdnBlogDal.QueryByIdAsync(id-1);
             if (previousEntity != null)
             {
                 ViewBag.PriviousId = previousEntity.Id;
                 ViewBag.PriviousTitle = previousEntity.Title;
             }
-            blogContent.BlogContentType = await _blogContentTypeDal.QueryByIdAsync(id);
-            return View(blogContent);
+            return View(entity);
         }
-        protected override void Dispose(bool disposing)
+
+        [HttpPost]
+        public async Task<ActionResult> CreateComment(CsdnBlogComment csdnblogComment)
         {
-            if (disposing)
+            if (!string.IsNullOrEmpty(csdnblogComment.Content))
             {
-             
+                InitInsert(csdnblogComment);
+                await _blogCommentDal.InsertAsync(csdnblogComment);
             }
-            base.Dispose(disposing);
+            return RedirectToAction("Details", new { id = csdnblogComment.CsdnBlogId });
+        }
+
+        public void InitInsert(CsdnBlogComment entity)
+        {
+            entity.Creater = User.Identity.Name;
+            entity.LastModifier = User.Identity.Name;
+            entity.CreateDate = DateTime.Now;
+            entity.LastModifyDate = DateTime.Now;
         }
     }
 }
