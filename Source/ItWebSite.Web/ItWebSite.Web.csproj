@@ -262,7 +262,6 @@
     </Compile>
     <Compile Include="Help\Extentions.cs" />
     <Compile Include="DAL\Manage\ImageManage.cs" />
-    <Compile Include="Help\Filter.cs" />
     <Compile Include="Help\NullJsonResult.cs" />
     <Compile Include="Areas\Admin\Models\AccountViewModels.cs" />
     <Compile Include="Areas\Admin\Models\IdentityModels.cs" />

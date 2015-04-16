@@ -62,8 +62,6 @@ namespace ItWebSite.Crawler.DAL
             return true;
         }
 
-      
-
         private bool SaveCsdnNews(CrawledPage crawledPage)
         {
             try
